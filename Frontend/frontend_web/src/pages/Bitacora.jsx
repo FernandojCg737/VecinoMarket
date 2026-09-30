@@ -1,0 +1,211 @@
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { ScrollText, ChevronLeft, ChevronRight, KeyRound } from 'lucide-react';
+import API from '../api/axios';
+import { useAuth } from '../context/AuthContext';
+import { esSuperAdmin } from '../utils/roles';
+
+const ACCIONES = [
+  { value: '', label: 'Todas las acciones' },
+  { value: 'LOGIN', label: 'Ingresos (login)' },
+  { value: 'LOGOUT', label: 'Salidas (logout)' },
+];
+
+function formatearFecha(iso) {
+  return new Date(iso).toLocaleString('es-BO', {
+    dateStyle: 'medium',
+    timeStyle: 'medium',
+  });
+}
+
+export default function Bitacora() {
+  const { usuario, cargando: cargandoAuth } = useAuth();
+  const [resultados, setResultados] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [pagina, setPagina] = useState(1);
+  const [accion, setAccion] = useState('');
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState('');
+  const [llave, setLlave] = useState('');
+  const [llaveIngresada, setLlaveIngresada] = useState('');
+
+  const porPagina = 50;
+
+  useEffect(() => {
+    if (!usuario || !esSuperAdmin(usuario) || !llave) return;
+    setCargando(true);
+    API.get('auditoria/bitacora/', {
+      params: { page: pagina, accion: accion || undefined },
+      headers: { 'X-Developer-Key': llave },
+    })
+      .then((res) => {
+        setResultados(res.data.results);
+        setTotal(res.data.count);
+        setError('');
+      })
+      .catch((err) => {
+        if (err.response?.status === 403) {
+          setError('Llave de desarrollador incorrecta.');
+          setLlave('');
+        } else {
+          setError('No se pudo cargar la bitácora.');
+        }
+      })
+      .finally(() => setCargando(false));
+  }, [usuario, pagina, accion, llave]);
+
+  if (cargandoAuth) return null;
+  if (!usuario) return <Navigate to="/login?next=/bitacora" replace />;
+  if (!esSuperAdmin(usuario)) return <Navigate to="/" replace />;
+
+  if (!llave) {
+    return (
+      <div className="mx-auto max-w-md px-4 py-16 text-center">
+        <KeyRound className="mx-auto mb-3 text-brand-600 dark:text-brand-400" size={32} />
+        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Bitácora confidencial</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          Este contenido es confidencial incluso para el administrador de base de datos — ingresa la llave de
+          desarrollador para verlo.
+        </p>
+        {error && <p className="text-sm text-red-600 dark:text-red-400 mb-3">{error}</p>}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setError('');
+            setLlave(llaveIngresada);
+          }}
+          className="flex gap-2"
+        >
+          <input
+            type="password"
+            value={llaveIngresada}
+            onChange={(e) => setLlaveIngresada(e.target.value)}
+            placeholder="Llave de desarrollador"
+            className="flex-1 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
+          />
+          <button
+            type="submit"
+            className="rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+          >
+            Entrar
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  const totalPaginas = Math.max(1, Math.ceil(total / porPagina));
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-8">
+      <div className="flex items-center gap-2 mb-1">
+        <ScrollText className="text-brand-600 dark:text-brand-400" size={24} />
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Bitácora del sistema</h1>
+      </div>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        Registro de ingresos, salidas y acciones críticas de los usuarios (CU22).
+      </p>
+
+      <div className="flex items-center gap-3 mb-4">
+        <label className="text-sm text-gray-600 dark:text-gray-400">Filtrar por:</label>
+        <select
+          value={accion}
+          onChange={(e) => {
+            setAccion(e.target.value);
+            setPagina(1);
+          }}
+          className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
+        >
+          {ACCIONES.map((op) => (
+            <option key={op.value} value={op.value}>{op.label}</option>
+          ))}
+        </select>
+      </div>
+
+      {error && <p className="text-sm text-red-600 dark:text-red-400 mb-4">{error}</p>}
+
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50 dark:bg-gray-900 text-left text-gray-500 dark:text-gray-400">
+            <tr>
+              <th className="px-4 py-3 font-medium">Usuario</th>
+              <th className="px-4 py-3 font-medium">Acción</th>
+              <th className="px-4 py-3 font-medium">Entidad</th>
+              <th className="px-4 py-3 font-medium">Fecha y hora</th>
+              <th className="px-4 py-3 font-medium">Dirección IP</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
+            {cargando ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
+                  Cargando...
+                </td>
+              </tr>
+            ) : resultados.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
+                  No hay registros para este filtro.
+                </td>
+              </tr>
+            ) : (
+              resultados.map((r) => (
+                <tr key={r.id}>
+                  <td className="px-4 py-3 text-gray-800 dark:text-gray-200">
+                    {r.usuario_nombre || <span className="text-gray-400 dark:text-gray-500 italic">Sistema (sin usuario)</span>}
+                    {r.usuario_email && (
+                      <div className="text-xs text-gray-400 dark:text-gray-500">{r.usuario_email}</div>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        r.accion === 'LOGIN'
+                          ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                          : r.accion === 'LOGOUT'
+                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                            : 'bg-brand-50 dark:bg-gray-800 text-brand-700 dark:text-brand-400'
+                      }`}
+                    >
+                      {r.accion}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                    {r.entidad_afectada}{r.entidad_id ? ` #${r.entidad_id}` : ''}
+                  </td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                    {formatearFecha(r.creado_en)}
+                  </td>
+                  <td className="px-4 py-3 font-mono text-gray-600 dark:text-gray-400">
+                    {r.ip_origen || '—'}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="flex items-center justify-between mt-4 text-sm text-gray-600 dark:text-gray-400">
+        <span>{total} registros en total</span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPagina((p) => Math.max(1, p - 1))}
+            disabled={pagina <= 1}
+            className="grid h-8 w-8 place-items-center rounded-full border border-gray-300 dark:border-gray-700 disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <span>Página {pagina} de {totalPaginas}</span>
+          <button
+            onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
+            disabled={pagina >= totalPaginas}
+            className="grid h-8 w-8 place-items-center rounded-full border border-gray-300 dark:border-gray-700 disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,16 @@
+Django>=5.0,<5.1
+djangorestframework>=3.15
+django-environ>=0.11
+psycopg2-binary>=2.9
+django-cors-headers>=4.4
+django-filter>=24.2
+djangorestframework-simplejwt>=5.3
+google-auth>=2.35
+requests>=2.32
+django-cloudinary-storage>=0.3
+cloudinary>=1.41
+Pillow>=10.4
+reportlab>=4.2
+openpyxl>=3.1
+channels>=4.1
+daphne>=4.1

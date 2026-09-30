@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: vecinomarket-frontend
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      # Vite 8 necesita Node reciente; el runtime por defecto de Render
+      # puede ser más viejo que eso.
+      - key: NODE_VERSION
+        value: "22"
+    routes:
+      # SPA: cualquier ruta que no sea un archivo real cae en index.html,
+      # para que React Router maneje el resto en el navegador.
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+# Los Static Sites de Render no soportan `sync: false` en envVars (no hay
+# prompt al crear el Blueprint), así que VITE_API_URL, VITE_GOOGLE_CLIENT_ID
+# y VITE_RECAPTCHA_SITE_KEY se cargan a mano después, desde la pestaña
+# Environment del servicio en el dashboard (ver guía de despliegue).

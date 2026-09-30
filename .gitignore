@@ -1,0 +1,42 @@
+# Variables de entorno y secretos
+.env
+*.env
+!.env.example
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.sqlite3
+staticfiles/
+*.log
+
+# Node / React
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Flutter / Dart / Android / iOS
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.apk
+*.aab
+.gradle/
+local.properties
+GeneratedPluginRegistrant.java
+
+# IDEs y SO
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

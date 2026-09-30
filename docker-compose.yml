@@ -1,0 +1,71 @@
+name: vecinomarket
+
+services:
+  # 1. Base de datos PostgreSQL con extensión PostGIS (GeoDjango)
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: vecinomarket_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vecinomarket
+      POSTGRES_USER: vecinomarket
+      POSTGRES_PASSWORD: vecinomarket_dev_pw
+    ports:
+      # Puerto 5434 en el host (Atelier Aranier usa 5433, Windows local usa 5432)
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - vecinomarket_network
+
+  # 2. Backend Django + GeoDjango + Channels/Daphne
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: vecinomarket_backend
+    restart: unless-stopped
+    command: sh -c "pip install -q django-debug-toolbar && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./Backend:/app
+    ports:
+      # Puerto 8001 en el host para poder correr SIMULTÁNEAMENTE con Atelier Aranier (que usa el 8000)
+      - "8001:8000"
+    env_file:
+      - ./Backend/.env
+    environment:
+      - DATABASE_URL=postgis://vecinomarket:vecinomarket_dev_pw@db:5432/vecinomarket
+      - DJANGO_SETTINGS_MODULE=config.settings.dev
+      - DEBUG=True
+      - ALLOWED_HOSTS=*
+    depends_on:
+      - db
+    networks:
+      - vecinomarket_network
+
+  # 3. Frontend Web React + Vite
+  frontend_web:
+    build:
+      context: ./Frontend/frontend_web
+      dockerfile: Dockerfile
+    container_name: vecinomarket_frontend
+    restart: unless-stopped
+    volumes:
+      - ./Frontend/frontend_web:/app
+      - /app/node_modules
+    ports:
+      # Puerto 5173 en el host (Atelier Aranier usa 4200)
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8001/api/
+    depends_on:
+      - backend
+    networks:
+      - vecinomarket_network
+
+volumes:
+  pgdata:
+
+networks:
+  vecinomarket_network:
+    driver: bridge

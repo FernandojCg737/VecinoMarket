@@ -1,0 +1,110 @@
+from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
+
+from .views import (
+    AprobarSolicitudEmpresaView,
+    BloquearUsuarioView,
+    CambiarPasswordView,
+    CambiarRolUsuarioView,
+    ConfirmarResetPasswordView,
+    CrearEmpleadoView,
+    CrearEmpresaDirectaAdminView,
+    DesactivarEmpleadoAdminView,
+    DesactivarEmpleadoView,
+    DesbloquearUsuarioView,
+    EditarEliminarMiDireccionView,
+    EditarEmpresaAdminView,
+    ListaEmpresasPublicoView,
+    EditarUsuarioAdminView,
+    EliminarRolBaseView,
+    GoogleAuthView,
+    ListaCrearRolBaseView,
+    ListaEmpleadosAdminView,
+    ListaEmpleadosView,
+    ListaEmpresasAdminView,
+    ListaPermisosView,
+    ListaSolicitudesEmpresaView,
+    ListaUsuariosView,
+    LoginView,
+    LogoutView,
+    MiEmpresaView,
+    PerfilView,
+    SubirLogoEmpresaView,
+    PermisoEmpleadoAdminView,
+    PermisoEmpleadoPropioView,
+    ListaCrearMisDireccionesView,
+    PermisoRolBaseView,
+    ReactivarEmpleadoAdminView,
+    ReactivarEmpleadoView,
+    ReactivarEmpresaView,
+    RechazarSolicitudEmpresaView,
+    RegistrarUsuarioAdminView,
+    RegistroCompradorView,
+    RestablecerPasswordAdminView,
+    SolicitarEmpresaCheckoutView,
+    SolicitarEmpresaConfirmarView,
+    SolicitarEmpresaView,
+    SolicitarResetPasswordView,
+    SuspenderEmpresaView,
+)
+
+urlpatterns = [
+    path('auth/login/', LoginView.as_view(), name='login'),
+    path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+    path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/logout/', LogoutView.as_view(), name='logout'),
+    path('auth/perfil/', PerfilView.as_view(), name='perfil'),
+    path('auth/cambiar-password/', CambiarPasswordView.as_view(), name='cambiar_password'),
+    path('auth/solicitar-reset/', SolicitarResetPasswordView.as_view(), name='solicitar_reset_password'),
+    path('auth/confirmar-reset/', ConfirmarResetPasswordView.as_view(), name='confirmar_reset_password'),
+
+    path('solicitudes-empresa/', SolicitarEmpresaView.as_view(), name='solicitar_empresa'),
+    path('solicitudes-empresa/checkout/', SolicitarEmpresaCheckoutView.as_view(), name='solicitar_empresa_checkout'),
+    path('solicitudes-empresa/checkout/<int:solicitud_id>/confirmar/', SolicitarEmpresaConfirmarView.as_view(), name='solicitar_empresa_confirmar'),
+    path('solicitudes-empresa/lista/', ListaSolicitudesEmpresaView.as_view(), name='lista_solicitudes_empresa'),
+    path('solicitudes-empresa/<int:solicitud_id>/aprobar/', AprobarSolicitudEmpresaView.as_view(), name='aprobar_solicitud_empresa'),
+    path('solicitudes-empresa/<int:solicitud_id>/rechazar/', RechazarSolicitudEmpresaView.as_view(), name='rechazar_solicitud_empresa'),
+
+    path('empleados/', CrearEmpleadoView.as_view(), name='crear_empleado'),
+    path('empleados/lista/', ListaEmpleadosView.as_view(), name='lista_empleados'),
+    path('empleados/<int:empleado_id>/desactivar/', DesactivarEmpleadoView.as_view(), name='desactivar_empleado'),
+    path('empleados/<int:empleado_id>/reactivar/', ReactivarEmpleadoView.as_view(), name='reactivar_empleado'),
+    path('empleados/<int:empleado_id>/mis-permisos/<int:permiso_id>/', PermisoEmpleadoPropioView.as_view(), name='permiso_empleado_propio'),
+
+    path('mi-empresa/', MiEmpresaView.as_view(), name='mi_empresa'),
+    path('mi-empresa/logo/', SubirLogoEmpresaView.as_view(), name='subir_logo_empresa'),
+
+    # CU09: el SuperAdmin gestiona empleados de cualquier empresa y sus permisos
+    path('empleados/lista-admin/', ListaEmpleadosAdminView.as_view(), name='lista_empleados_admin'),
+    path('empleados/<int:empleado_id>/desactivar-admin/', DesactivarEmpleadoAdminView.as_view(), name='desactivar_empleado_admin'),
+    path('empleados/<int:empleado_id>/reactivar-admin/', ReactivarEmpleadoAdminView.as_view(), name='reactivar_empleado_admin'),
+    path('empleados/<int:empleado_id>/permisos/<int:permiso_id>/', PermisoEmpleadoAdminView.as_view(), name='permiso_empleado_admin'),
+
+    path('compradores/registro/', RegistroCompradorView.as_view(), name='registro_comprador'),
+
+    # T009 (RF01/RF02): gestión de usuarios y empresas — ADMIN
+    path('registrar/', RegistrarUsuarioAdminView.as_view(), name='registrar_usuario_admin'),
+    path('lista/', ListaUsuariosView.as_view(), name='lista_usuarios'),
+    path('<int:usuario_id>/editar/', EditarUsuarioAdminView.as_view(), name='editar_usuario_admin'),
+    path('<int:usuario_id>/cambiar-rol/', CambiarRolUsuarioView.as_view(), name='cambiar_rol_usuario'),
+    path('<int:usuario_id>/restablecer-password/', RestablecerPasswordAdminView.as_view(), name='restablecer_password_admin'),
+    path('<int:usuario_id>/bloquear/', BloquearUsuarioView.as_view(), name='bloquear_usuario'),
+    path('<int:usuario_id>/desbloquear/', DesbloquearUsuarioView.as_view(), name='desbloquear_usuario'),
+
+    path('empresas/crear-directa/', CrearEmpresaDirectaAdminView.as_view(), name='crear_empresa_directa_admin'),
+    path('empresas/lista/', ListaEmpresasAdminView.as_view(), name='lista_empresas_admin'),
+    path('empresas/lista-publica/', ListaEmpresasPublicoView.as_view(), name='lista_empresas_publico'),
+    path('empresas/<int:empresa_id>/editar/', EditarEmpresaAdminView.as_view(), name='editar_empresa_admin'),
+    path('empresas/<int:empresa_id>/suspender/', SuspenderEmpresaView.as_view(), name='suspender_empresa'),
+    path('empresas/<int:empresa_id>/reactivar/', ReactivarEmpresaView.as_view(), name='reactivar_empresa'),
+
+    # T054/T055 (RF53/RF54): roles administrativos globales y permisos base
+    path('permisos/', ListaPermisosView.as_view(), name='lista_permisos'),
+    path('roles-base/', ListaCrearRolBaseView.as_view(), name='lista_crear_rol_base'),
+    path('roles-base/<int:rol_id>/', EliminarRolBaseView.as_view(), name='eliminar_rol_base'),
+    path('roles-base/<int:rol_id>/permisos/<int:permiso_id>/', PermisoRolBaseView.as_view(), name='permiso_rol_base'),
+
+    # CU13: direcciones de envío del comprador autenticado
+    path('mis-direcciones/', ListaCrearMisDireccionesView.as_view(), name='mis_direcciones'),
+    path('mis-direcciones/<int:direccion_id>/', EditarEliminarMiDireccionView.as_view(), name='mi_direccion_detalle'),
+]

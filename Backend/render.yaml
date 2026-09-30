@@ -1,0 +1,70 @@
+databases:
+  - name: vecinomarket-db
+    databaseName: vecinomarket
+    user: vecinomarket
+    plan: free
+
+services:
+  - type: web
+    name: vecinomarket-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vecinomarket-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      # No hace falta declarar ALLOWED_HOSTS: prod.py agrega automáticamente
+      # el hostname *.onrender.com del propio servicio (RENDER_EXTERNAL_HOSTNAME).
+      # Solo hace falta si más adelante se usa un dominio propio.
+      - key: ALLOWED_HOSTS
+        sync: false
+      # URL del frontend desplegado (Static Site en Render), sin barra final.
+      # Ej: https://vecinomarket.onrender.com
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+      # Credenciales de empresa y recuperación de contraseña, vía Gmail API
+      # (HTTPS) — Render bloquea el puerto SMTP saliente en el plan free,
+      # así que EMAIL_HOST_USER/PASSWORD (SMTP) NO funcionan acá, solo sirven
+      # para correr local. Generar el refresh token con
+      # scripts/generar_refresh_token_gmail.py. Sin las 3, los correos solo
+      # quedan en los logs del servicio, no se envían.
+      - key: GMAIL_API_CLIENT_ID
+        sync: false
+      - key: GMAIL_API_CLIENT_SECRET
+        sync: false
+      - key: GMAIL_API_REFRESH_TOKEN
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      # Login con Google (opcional: si se deja vacío, esa validación queda
+      # desactivada en vez de romper el deploy).
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      # CU22: llave de desarrollador para poder ver la bitácora — sin esto
+      # configurado, la bitácora queda inaccesible para todos.
+      - key: DEVELOPER_KEY
+        sync: false
+      # Cloudinary (CU07): imágenes subidas por el admin/las empresas. Sin
+      # esto, el storage cae a disco local — que Render borra en cada
+      # redeploy. Sacar las 3 del dashboard de cloudinary.com.
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      # Hugging Face Inference API (CU08): sugerencia de categoría por
+      # visión artificial. Token gratuito de solo lectura, sacar de
+      # huggingface.co/settings/tokens. Sin esto, CU08 responde 502.
+      - key: HUGGINGFACE_API_TOKEN
+        sync: false

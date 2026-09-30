@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VecinoMarket</title>
+    <script>
+      // Aplica el tema (y el favicon acorde) antes de pintar la página, para
+      // evitar el parpadeo de claro→oscuro al recargar con el modo noche activado.
+      try {
+        var tema = localStorage.getItem('vecinomarket_tema');
+        if (!tema) tema = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        if (tema === 'dark') {
+          document.documentElement.classList.add('dark');
+          var favicon = document.querySelector('link[rel="icon"]');
+          if (favicon) favicon.href = '/favicon-dark.svg';
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
