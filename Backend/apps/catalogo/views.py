@@ -1,4 +1,4 @@
-from django.db import connection, models
+﻿from django.db import connection, models
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
@@ -81,6 +81,7 @@ def _log(request, accion, entidad_id, detalle=None, entidad_afectada='categoria'
         entidad_id=entidad_id,
         detalle=detalle or {},
         ip_origen=get_client_ip(request),
+        user_agent=request.META.get('HTTP_USER_AGENT', ''),
     )
 
 

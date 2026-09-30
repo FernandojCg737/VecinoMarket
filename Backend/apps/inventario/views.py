@@ -1,4 +1,4 @@
-from django.db import Error as DatabaseError
+﻿from django.db import Error as DatabaseError
 from django.db import connection, models
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
@@ -22,6 +22,7 @@ def _log(request, accion, entidad_id, detalle=None, entidad_afectada='inventario
         entidad_id=entidad_id,
         detalle=detalle or {},
         ip_origen=get_client_ip(request),
+        user_agent=request.META.get('HTTP_USER_AGENT', ''),
     )
 
 

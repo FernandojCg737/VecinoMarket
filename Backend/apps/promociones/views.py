@@ -1,4 +1,4 @@
-from asgiref.sync import async_to_sync
+﻿from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import DatabaseError, connection
 from django.shortcuts import get_object_or_404
@@ -34,6 +34,7 @@ def _log(request, accion, entidad_id, detalle=None, entidad_afectada='promocion'
         entidad_id=entidad_id,
         detalle=detalle or {},
         ip_origen=get_client_ip(request),
+        user_agent=request.META.get('HTTP_USER_AGENT', ''),
     )
 
 

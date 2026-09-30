@@ -12,6 +12,6 @@ class LogAuditoriaSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'usuario', 'usuario_email', 'usuario_nombre',
             'accion', 'entidad_afectada', 'entidad_id', 'detalle',
-            'ip_origen', 'creado_en',
+            'ip_origen', 'user_agent', 'creado_en',
         ]
         read_only_fields = fields

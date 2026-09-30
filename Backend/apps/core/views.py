@@ -25,6 +25,7 @@ class BackupView(APIView):
 
         LogAuditoria.objects.create(
             usuario=request.user, accion='BACKUP_SISTEMA', ip_origen=get_client_ip(request),
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
         )
 
         response = HttpResponse(contenido, content_type='application/json')
@@ -53,5 +54,6 @@ class RestoreView(APIView):
         LogAuditoria.objects.create(
             usuario=request.user, accion='RESTORE_SISTEMA', ip_origen=get_client_ip(request),
             detalle={'archivo': archivo.name},
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
         )
         return Response({'detail': 'Respaldo restaurado correctamente.'})

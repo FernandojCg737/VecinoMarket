@@ -14,6 +14,7 @@ class LogAuditoria(BaseModel):
     entidad_id = models.BigIntegerField(null=True, blank=True)
     detalle = models.JSONField(default=dict, blank=True)
     ip_origen = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(blank=True, default='')
 
     class Meta:
         verbose_name = 'Log de auditoría'

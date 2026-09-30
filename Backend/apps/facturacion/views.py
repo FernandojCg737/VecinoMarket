@@ -1,4 +1,4 @@
-from django.db import DatabaseError, connection
+﻿from django.db import DatabaseError, connection
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
@@ -23,6 +23,7 @@ def _log(request, accion, entidad_id, detalle=None, entidad_afectada='metodo_pag
         entidad_id=entidad_id,
         detalle=detalle or {},
         ip_origen=get_client_ip(request),
+        user_agent=request.META.get('HTTP_USER_AGENT', ''),
     )
 
 
