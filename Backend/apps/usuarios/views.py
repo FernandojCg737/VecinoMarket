@@ -115,7 +115,8 @@ class LoginView(TokenObtainPairView):
         if response.status_code == status.HTTP_200_OK:
             usuario = Usuario.objects.filter(email=request.data.get('email')).first()
             if usuario:
-                _log(request, 'LOGIN', 'usuario', usuario.id, usuario=usuario)
+                _log(request, 'LOGIN', 'usuario', usuario.id, usuario=usuario,
+                     detalle={'email': usuario.email, 'nombre': usuario.nombre, 'rol': usuario.rol})
                 empresa = usuario.get_empresa()
                 if empresa:
                     _verificar_aviso_vencimiento(empresa)
@@ -135,7 +136,8 @@ class LogoutView(APIView):
             except TokenError:
                 pass
 
-        _log(request, 'LOGOUT', 'usuario', request.user.id)
+        _log(request, 'LOGOUT', 'usuario', request.user.id,
+             detalle={'email': request.user.email, 'nombre': request.user.nombre, 'rol': request.user.rol})
         return Response({'detail': 'Sesión cerrada.'}, status=status.HTTP_200_OK)
 
 
@@ -155,7 +157,8 @@ class GoogleAuthView(APIView):
 
         refresh = LoginSerializer.get_token(usuario)
 
-        _log(request, 'REGISTRO_GOOGLE' if creado else 'LOGIN_GOOGLE', 'usuario', usuario.id, usuario=usuario)
+        _log(request, 'REGISTRO_GOOGLE' if creado else 'LOGIN_GOOGLE', 'usuario', usuario.id, usuario=usuario,
+             detalle={'email': usuario.email, 'nombre': usuario.nombre, 'rol': usuario.rol})
 
         return Response({
             'refresh': str(refresh),

@@ -31,16 +31,29 @@ function detectarDispositivo(userAgent = '') {
 
 /** Extrae un texto legible desde el campo detalle (JSON). */
 function extraerDetalle(detalle) {
-  if (!detalle || typeof detalle !== 'object') return '—';
-  // Si tiene un campo "descripcion" o "mensaje", mostrarlo directo
-  if (detalle.descripcion) return detalle.descripcion;
-  if (detalle.mensaje) return detalle.mensaje;
-  if (detalle.detalle) return detalle.detalle;
-  // Para logs de login, mostrar el email
-  if (detalle.email) return `Inicio de sesión: ${detalle.email}`;
-  // Fallback: serializar las primeras claves relevantes
-  const ignorar = ['id', 'usuario_id'];
-  const claves = Object.keys(detalle).filter((k) => !ignorar.includes(k)).slice(0, 2);
+  if (!detalle || typeof detalle !== 'object' || Object.keys(detalle).length === 0) return '—';
+
+  // Login/Logout: { email, nombre, rol }
+  if (detalle.email && detalle.rol) {
+    return `${detalle.nombre || detalle.email} (${detalle.rol.toLowerCase()})`;
+  }
+  // Transacciones/pagos: { monto_usd, monto_total }
+  if (detalle.monto_total !== undefined) {
+    const partes = [`Total: ${detalle.monto_total}`];
+    if (detalle.monto_usd) partes.push(`USD ${detalle.monto_usd}`);
+    return partes.join(' · ');
+  }
+  // Triggers automáticos BD: { antes: {...}, despues: {...} }
+  if (detalle.antes && detalle.despues) {
+    const cambiados = Object.keys(detalle.despues).filter(
+      (k) => JSON.stringify(detalle.antes[k]) !== JSON.stringify(detalle.despues[k])
+    );
+    if (cambiados.length === 0) return 'Sin cambios registrados';
+    return cambiados.map((k) => `${k}: ${detalle.antes[k]} → ${detalle.despues[k]}`).join(' · ');
+  }
+  // Triggers INSERT: objeto plano con los datos
+  const ignorar = ['activo', 'creado_en', 'actualizado_en'];
+  const claves = Object.keys(detalle).filter((k) => !ignorar.includes(k)).slice(0, 3);
   return claves.map((k) => `${k}: ${detalle[k]}`).join(' · ') || '—';
 }
 
