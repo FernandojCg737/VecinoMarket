@@ -36,3 +36,22 @@ class TenantModel(BaseModel):
 
     class Meta:
         abstract = True
+
+
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
+
+class BackupLog(BaseModel):
+    """Registro de las copias de seguridad (manuales y automáticas)."""
+
+    class TipoBackup(models.TextChoices):
+        MANUAL = 'MANUAL', 'Manual'
+        AUTOMATICO = 'AUTOMATICO', 'Automático'
+
+    tipo = models.CharField(max_length=20, choices=TipoBackup.choices, default=TipoBackup.MANUAL)
+    archivo = models.FileField(upload_to='backups/', storage=RawMediaCloudinaryStorage())
+
+    class Meta:
+        ordering = ['-creado_en']
+
+    def __str__(self):
+        return f"Backup {self.tipo} - {self.creado_en.strftime('%Y-%m-%d %H:%M')}"

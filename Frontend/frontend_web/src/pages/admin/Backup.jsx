@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { DatabaseBackup, Download, Upload, AlertTriangle } from 'lucide-react';
+import { DatabaseBackup, Download, Upload, AlertTriangle, Trash2, Cloud } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import { esSuperAdmin } from '../../utils/roles';
@@ -16,7 +16,34 @@ export default function Backup() {
   const [restaurando, setRestaurando] = useState(false);
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
+  const [historial, setHistorial] = useState([]);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (usuario && esSuperAdmin(usuario)) {
+      cargarHistorial();
+    }
+  }, [usuario]);
+
+  async function cargarHistorial() {
+    try {
+      const res = await API.get('core/backup/historial/');
+      setHistorial(res.data);
+    } catch (err) {
+      console.error('Error al cargar historial', err);
+    }
+  }
+
+  async function eliminarRespaldo(id) {
+    if (!window.confirm('¿Seguro que deseas eliminar este registro de la nube?')) return;
+    try {
+      await API.delete(`core/backup/historial/${id}/`);
+      setMensaje('Respaldo eliminado del historial.');
+      cargarHistorial();
+    } catch (err) {
+      setError('Error al eliminar el respaldo.');
+    }
+  }
 
   if (cargandoAuth) return null;
   if (!usuario) return <Navigate to="/login?next=/admin/backup" replace />;
@@ -38,6 +65,7 @@ export default function Backup() {
       a.remove();
       URL.revokeObjectURL(blobUrl);
       setMensaje('Respaldo descargado correctamente.');
+      cargarHistorial();
     } catch {
       setError('No se pudo generar el respaldo.');
     } finally {
@@ -127,6 +155,73 @@ export default function Backup() {
             onChange={restaurarBackup}
           />
         </label>
+      </div>
+
+      {/* Panel de Historial */}
+      <div className="mt-8 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+          <h2 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <Cloud size={18} className="text-brand-500" /> Historial en la Nube
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Copias de seguridad almacenadas, tanto manuales como automáticas.
+          </p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
+            <thead className="bg-gray-50 dark:bg-gray-800/50 text-xs uppercase text-gray-500 dark:text-gray-400">
+              <tr>
+                <th className="px-5 py-3 font-medium">Fecha y Hora</th>
+                <th className="px-5 py-3 font-medium">Tipo</th>
+                <th className="px-5 py-3 font-medium text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+              {historial.length === 0 ? (
+                <tr>
+                  <td colSpan="3" className="px-5 py-4 text-center text-gray-500">
+                    No hay copias de seguridad registradas en la nube.
+                  </td>
+                </tr>
+              ) : (
+                historial.map((b) => (
+                  <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <td className="px-5 py-3">
+                      {new Date(b.creado_en).toLocaleString('es-BO')}
+                    </td>
+                    <td className="px-5 py-3">
+                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                        b.tipo === 'AUTOMATICO' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                      }`}>
+                        {b.tipo}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <div className="flex items-center justify-end gap-3">
+                        <a 
+                          href={b.archivo} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300"
+                          title="Descargar"
+                        >
+                          <Download size={18} />
+                        </a>
+                        <button 
+                          onClick={() => eliminarRespaldo(b.id)}
+                          className="text-red-500 hover:text-red-600"
+                          title="Eliminar"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

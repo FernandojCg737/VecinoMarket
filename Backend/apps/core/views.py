@@ -1,16 +1,20 @@
 from datetime import datetime
 
 from django.http import HttpResponse
+from django.core.files.base import ContentFile
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import generics
 
 from apps.auditoria.models import LogAuditoria
 from apps.usuarios.permissions import EsSuperAdmin
 
 from .backup import generar_backup_json, restaurar_backup_json
 from .utils import get_client_ip
+from .models import BackupLog
+from .serializers import BackupLogSerializer
 
 
 class BackupView(APIView):
@@ -27,10 +31,27 @@ class BackupView(APIView):
             usuario=request.user, accion='BACKUP_SISTEMA', ip_origen=get_client_ip(request),
             user_agent=request.META.get('HTTP_USER_AGENT', ''),
         )
+        
+        # Guardar en la base de datos y nube
+        backup_log = BackupLog(tipo=BackupLog.TipoBackup.MANUAL)
+        backup_log.archivo.save(nombre, ContentFile(contenido.encode('utf-8')))
 
         response = HttpResponse(contenido, content_type='application/json')
         response['Content-Disposition'] = f'attachment; filename="{nombre}"'
         return response
+
+
+class BackupLogListView(generics.ListAPIView):
+    """Lista el historial de respaldos (manuales y automáticos)."""
+    permission_classes = [EsSuperAdmin]
+    queryset = BackupLog.objects.all()
+    serializer_class = BackupLogSerializer
+
+
+class BackupLogDeleteView(generics.DestroyAPIView):
+    """Elimina un registro de respaldo."""
+    permission_classes = [EsSuperAdmin]
+    queryset = BackupLog.objects.all()
 
 
 class RestoreView(APIView):
