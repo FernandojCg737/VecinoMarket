@@ -265,8 +265,14 @@ HUGGINGFACE_API_TOKEN = env('HUGGINGFACE_API_TOKEN', default='')
 # verdad. BOB no es una moneda soportada por PayPal, así que el checkout
 # cobra en USD usando el tipo de cambio oficial boliviano fijo.
 # ---------------------------------------------------------------------------
-PAYPAL_CLIENT_ID = env('PAYPAL_CLIENT_ID', default='')
-PAYPAL_CLIENT_SECRET = env('PAYPAL_CLIENT_SECRET', default='')
+PAYPAL_CLIENT_ID = env(
+    'PAYPAL_CLIENT_ID',
+    default='BAAZ92cTaT22iM2HUWD7AR0Ys2281-jYGnwPWYMiEU2wr02qZtOyTWBLYVcsNsJNhDwHZB9LSJo5McJ3yM',
+)
+PAYPAL_CLIENT_SECRET = env(
+    'PAYPAL_CLIENT_SECRET',
+    default='EN9hIe0Yc2nEpEVAusTu9gO6KGwV9_a3AhpaRn9md0kqPm1f5h1_wlci5RW_QqMbT-j1N5cIh0GbtNSu',
+)
 PAYPAL_MODE = env('PAYPAL_MODE', default='sandbox')
 PAYPAL_API_BASE = (
     'https://api-m.sandbox.paypal.com' if PAYPAL_MODE == 'sandbox' else 'https://api-m.paypal.com'

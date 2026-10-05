@@ -68,3 +68,11 @@ services:
       # huggingface.co/settings/tokens. Sin esto, CU08 responde 502.
       - key: HUGGINGFACE_API_TOKEN
         sync: false
+      # PayPal (CU01 + pagos): checkout y suscripciones
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_MODE
+        value: sandbox
+
