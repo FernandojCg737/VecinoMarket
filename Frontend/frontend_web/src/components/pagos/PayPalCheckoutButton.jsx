@@ -57,9 +57,12 @@ export default function PayPalCheckoutButton({
         sessionRef.current = modo === 'guardar'
           ? sdk.createPayPalSavePaymentSession(callbacks)
           : sdk.createPayPalOneTimePaymentSession(callbacks);
-        setCargando(false);
       })
-      .catch(() => setError('No se pudo cargar PayPal.'));
+      .catch((err) => {
+        console.error('Error al inicializar PayPal:', err);
+        setError('No se pudo cargar PayPal. Revisa tu conexión o extensiones (AdBlock).');
+        setCargando(false);
+      });
 
     return () => {
       cancelado = true;
