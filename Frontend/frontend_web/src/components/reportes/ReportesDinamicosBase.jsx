@@ -160,9 +160,10 @@ export default function ReportesDinamicosBase({
       const res = await API.get(generarUrl, { params: queryParams });
       setTablaDatos(res.data);
       if (onCompletado) onCompletado(res.data);
-    } catch {
+    } catch (err) {
       setTablaDatos(null);
-      window.alert('No se pudo obtener los datos del reporte.');
+      const msg = err.response?.data?.detail || 'No se pudo obtener los datos del reporte.';
+      window.alert(msg);
     } finally {
       setCargandoTabla(false);
     }
@@ -247,12 +248,18 @@ export default function ReportesDinamicosBase({
       const fIni = data.fecha_inicio;
       const fFin = data.fecha_fin;
 
-      if (nuevoDataset && catalogo.some((c) => c.clave === nuevoDataset)) {
-        setDatasetKey(nuevoDataset);
+      // Validar que el dataset sugerido pertenezca al catálogo disponible del usuario
+      const dsEncontrado = catalogo.find((c) => c.clave === nuevoDataset);
+      const datasetFinal = dsEncontrado ? dsEncontrado.clave : (catalogo[0]?.clave || datasetKey);
+
+      let colsFinales = nuevasCols;
+      if (!Array.isArray(colsFinales) || colsFinales.length === 0 || !dsEncontrado) {
+        const itemCat = catalogo.find((c) => c.clave === datasetFinal);
+        colsFinales = itemCat ? itemCat.columnas.map((c) => c.clave) : columnas;
       }
-      if (Array.isArray(nuevasCols) && nuevasCols.length > 0) {
-        setColumnas(nuevasCols);
-      }
+
+      setDatasetKey(datasetFinal);
+      setColumnas(colsFinales);
       setFechaInicio(fIni || '');
       setFechaFin(fFin || '');
 
@@ -267,8 +274,8 @@ export default function ReportesDinamicosBase({
 
       // Cargar la tabla de datos correspondiente
       const directParams = {
-        dataset: nuevoDataset || datasetKey,
-        columnas: (nuevasCols || columnas).join(','),
+        dataset: datasetFinal,
+        columnas: colsFinales.join(','),
         formato: 'json',
         vista: 'tabla',
       };
@@ -286,7 +293,6 @@ export default function ReportesDinamicosBase({
   }
 
   function ejecutarFallbackLocal(texto) {
-    let nuevoDataset = datasetKey;
     const textoNorm = (texto || '').toLowerCase();
     const encontrado = catalogo.find((d) => {
       const k = d.clave.toLowerCase();
@@ -295,21 +301,16 @@ export default function ReportesDinamicosBase({
         textoNorm.includes(k) ||
         textoNorm.includes(nom) ||
         (k === 'pedidos' && (textoNorm.includes('venta') || textoNorm.includes('pedidos') || textoNorm.includes('ingreso') || textoNorm.includes('orden'))) ||
-        (k === 'inventario' && (textoNorm.includes('stock') || textoNorm.includes('inventario') || textoNorm.includes('sucursal'))) ||
-        (k === 'productos' && (textoNorm.includes('producto') || textoNorm.includes('articulo') || textoNorm.includes('artículo') || textoNorm.includes('catálogo') || textoNorm.includes('catalogo'))) ||
-        (k === 'clientes' && (textoNorm.includes('cliente') || textoNorm.includes('comprador') || textoNorm.includes('usuario'))) ||
+        (k === 'productos' && (textoNorm.includes('producto') || textoNorm.includes('stock') || textoNorm.includes('inventario') || textoNorm.includes('articulo') || textoNorm.includes('artículo') || textoNorm.includes('catálogo') || textoNorm.includes('catalogo'))) ||
         (k === 'facturas' && (textoNorm.includes('factura') || textoNorm.includes('facturacion') || textoNorm.includes('facturación'))) ||
         (k === 'empresas' && (textoNorm.includes('empresa') || textoNorm.includes('tienda')))
       );
-    });
+    }) || catalogo[0];
 
-    let nuevasCols = columnas;
-    if (encontrado) {
-      nuevoDataset = encontrado.clave;
-      setDatasetKey(encontrado.clave);
-      nuevasCols = encontrado.columnas.map((c) => c.clave);
-      setColumnas(nuevasCols);
-    }
+    const nuevoDataset = encontrado ? encontrado.clave : datasetKey;
+    const nuevasCols = encontrado ? encontrado.columnas.map((c) => c.clave) : columnas;
+    setDatasetKey(nuevoDataset);
+    setColumnas(nuevasCols);
 
     let fIni = fechaInicio;
     let fFin = fechaFin;

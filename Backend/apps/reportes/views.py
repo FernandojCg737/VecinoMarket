@@ -533,7 +533,8 @@ class CatalogoReportesDinamicosView(APIView):
         if user.es_empleado():
             empleado = getattr(user, 'empleado', None)
             codigos = set(empleado.permisos.values_list('permiso__codigo', flat=True)) if empleado else set()
-            datasets = [d for d in datasets if d['permiso'] in codigos]
+            if 'ver_reportes' not in codigos:
+                datasets = [d for d in datasets if d['permiso'] in codigos]
         return Response(datasets)
 
 
@@ -552,7 +553,10 @@ class GenerarReporteDinamicoView(APIView):
         user = request.user
         if user.es_empleado():
             empleado = getattr(user, 'empleado', None)
-            tiene = bool(empleado) and empleado.permisos.filter(permiso__codigo=cfg['permiso']).exists()
+            tiene = bool(empleado) and (
+                empleado.permisos.filter(permiso__codigo='ver_reportes').exists()
+                or empleado.permisos.filter(permiso__codigo=cfg['permiso']).exists()
+            )
             if not tiene:
                 return Response({'detail': 'No tienes permiso para este reporte.'}, status=status.HTTP_403_FORBIDDEN)
 
@@ -632,9 +636,7 @@ class AsistenteVozReportesView(APIView):
         user = self.request.user
         if user.is_authenticated and (user.es_admin() or user.is_staff):
             return [EsAdmin()]
-        return [TienePermisoEmpleado()]
-
-    permiso_requerido = 'ver_reportes'
+        return [EsEmpresaOEmpleado()]
 
     def post(self, request):
         pregunta = (request.data.get('pregunta') or '').strip().lower()
@@ -642,6 +644,12 @@ class AsistenteVozReportesView(APIView):
             return Response({'detail': 'La pregunta es requerida.'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = request.user
+        if user.es_empleado():
+            empleado = getattr(user, 'empleado', None)
+            codigos = set(empleado.permisos.values_list('permiso__codigo', flat=True)) if empleado else set()
+            tiene_acceso = 'ver_reportes' in codigos or any(cfg['permiso'] in codigos for cfg in reportes_dinamicos.REGISTRY.values())
+            if not tiene_acceso:
+                return Response({'detail': 'No tienes permisos para consultar reportes.'}, status=status.HTTP_403_FORBIDDEN)
         empresa = None
         if user.es_admin() or user.is_staff:
             empresa_id = request.data.get('empresa')

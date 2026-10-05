@@ -30,14 +30,19 @@ export default function Chat() {
         setError('');
         const targetId = conversacionParam ? Number(conversacionParam) : null;
         setSeleccionada((prev) => {
-          if (res.data.length === 0) return null;
-          if (targetId && res.data.some((c) => c.id === targetId)) return targetId;
-          if (!prev) return res.data[0].id;
-          const sigueExiste = res.data.some((c) => c.id === prev);
-          return sigueExiste ? prev : res.data[0].id;
+          if (res.data.length === 0) return targetId || null;
+          // Si hay un targetId en la URL, siempre tiene prioridad
+          if (targetId) {
+            // Si ya llegó en la lista, úsalo; si no, espera (mantén targetId)
+            return res.data.some((c) => c.id === targetId) ? targetId : (prev || targetId);
+          }
+          // Sin targetId: si ya hay una seleccionada y sigue existiendo, mantenla
+          if (prev) return res.data.some((c) => c.id === prev) ? prev : res.data[0].id;
+          // Primera carga sin targetId: seleccionar la primera
+          return res.data[0].id;
         });
       })
-      .catch((err) => {
+      .catch(() => {
         if (!silencioso) setError('No se pudo cargar tus conversaciones.');
       })
       .finally(() => {
@@ -101,37 +106,41 @@ export default function Chat() {
 
       {cargando ? (
         <p className="text-sm text-gray-400">Cargando...</p>
-      ) : conversaciones.length === 0 ? (
+      ) : conversaciones.length === 0 && !seleccionada ? (
         <p className="text-sm text-gray-400 dark:text-gray-500 py-8 text-center">
           Todavía no tienes conversaciones. Escríbele a una empresa desde la página de su tienda.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
-            {conversaciones.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => {
-                  setSeleccionada(c.id);
-                  setConversaciones((prev) =>
-                    prev.map((item) => (item.id === c.id ? { ...item, no_leidos: 0 } : item))
-                  );
-                }}
-                className={`w-full text-left rounded-lg border p-3 text-sm ${seleccionada === c.id ? 'border-brand-500 bg-brand-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900'}`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-medium text-gray-900 dark:text-gray-100 truncate">{c.empresa_nombre}</span>
-                  {c.no_leidos > 0 && (
-                    <span className="grid h-5 w-5 place-items-center rounded-full bg-brand-600 text-white text-[10px] font-semibold shrink-0">{c.no_leidos}</span>
+            {conversaciones.length === 0 ? (
+              <p className="text-xs text-gray-400 dark:text-gray-500 px-1">Abriendo conversación...</p>
+            ) : (
+              conversaciones.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => {
+                    setSeleccionada(c.id);
+                    setConversaciones((prev) =>
+                      prev.map((item) => (item.id === c.id ? { ...item, no_leidos: 0 } : item))
+                    );
+                  }}
+                  className={`w-full text-left rounded-lg border p-3 text-sm ${seleccionada === c.id ? 'border-brand-500 bg-brand-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900'}`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-medium text-gray-900 dark:text-gray-100 truncate">{c.empresa_nombre}</span>
+                    {c.no_leidos > 0 && (
+                      <span className="grid h-5 w-5 place-items-center rounded-full bg-brand-600 text-white text-[10px] font-semibold shrink-0">{c.no_leidos}</span>
+                    )}
+                  </div>
+                  {c.ultimo_mensaje && (
+                    <p className="text-xs text-gray-400 dark:text-gray-500 truncate mt-0.5">
+                      {c.ultimo_mensaje.tipo === 'TEXTO' ? c.ultimo_mensaje.contenido : `[${c.ultimo_mensaje.tipo.toLowerCase()}]`}
+                    </p>
                   )}
-                </div>
-                {c.ultimo_mensaje && (
-                  <p className="text-xs text-gray-400 dark:text-gray-500 truncate mt-0.5">
-                    {c.ultimo_mensaje.tipo === 'TEXTO' ? c.ultimo_mensaje.contenido : `[${c.ultimo_mensaje.tipo.toLowerCase()}]`}
-                  </p>
-                )}
-              </button>
-            ))}
+                </button>
+              ))
+            )}
           </div>
           <div className="sm:col-span-2">
             {seleccionada && (

@@ -23,14 +23,19 @@ export default function ReportesDinamicos() {
   if (!usuario) return <Navigate to="/login?next=/mi-empresa/reportes" replace />;
   if (!esEmpresaOEmpleado(usuario)) return <Navigate to="/" replace />;
 
-  const tienePermiso = tienePermisoEmpleado(usuario, 'ver_reportes') || tienePermisoEmpleado(usuario, 'gestionar_reportes');
+  const tienePermiso =
+    tienePermisoEmpleado(usuario, 'ver_reportes') ||
+    tienePermisoEmpleado(usuario, 'gestionar_reportes') ||
+    tienePermisoEmpleado(usuario, 'gestionar_pedidos') ||
+    tienePermisoEmpleado(usuario, 'gestionar_productos') ||
+    tienePermisoEmpleado(usuario, 'gestionar_facturacion');
   if (!tienePermiso) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 text-center">
         <AlertCircle className="mx-auto mb-3 text-red-500" size={40} />
         <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">Acceso restringido</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          No tienes el permiso "gestionar_reportes" asignado por el SuperAdmin o el administrador de tu empresa para ver y generar reportes personalizados.
+          No tienes permisos asignados por tu empresa para consultar reportes.
         </p>
       </div>
     );
