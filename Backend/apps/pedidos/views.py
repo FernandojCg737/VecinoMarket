@@ -1,4 +1,4 @@
-﻿from decimal import ROUND_HALF_UP, Decimal
+from decimal import ROUND_HALF_UP, Decimal
 
 from django.conf import settings
 from django.db import connection, transaction
@@ -19,7 +19,7 @@ from apps.pagos import paypal_client
 from apps.usuarios.models import Comprador, Direccion
 from apps.usuarios.permissions import EsAdmin, EsComprador, TienePermisoEmpleado
 
-from .models import Carrito, Entrega, OrdenCompra, Pago, Pedido, PedidoItem
+from .models import Carrito, CarritoItem, Entrega, OrdenCompra, Pago, Pedido, PedidoItem
 from .serializers import CarritoDetalleAdminSerializer, EntregaSerializer, PedidoSerializer
 
 
@@ -49,10 +49,13 @@ class ListaCarritosAdminView(APIView):
         estado = request.query_params.get('estado', Carrito.Estado.ABIERTO)
         if estado:
             qs = qs.filter(estado=estado)
+        if estado == Carrito.Estado.ABIERTO:
+            # CU11: Los carritos abiertos en vivo solo se muestran si tienen productos activos
+            qs = qs.filter(items__isnull=False).distinct()
 
         q = request.query_params.get('q', '').strip()
         if q:
-            qs = qs.filter(Q(comprador__usuario__nombre__icontains=q) | Q(comprador__usuario__email__icontains=q))
+            qs = qs.filter(Q(comprador__usuario__nombre__icontains=q) | Q(comprador__usuario__apellido__icontains=q) | Q(comprador__usuario__email__icontains=q))
 
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -67,7 +70,7 @@ class ListaCarritosAdminView(APIView):
             {
                 'id': c.id,
                 'comprador': c.comprador_id,
-                'comprador_nombre': c.comprador.usuario.nombre,
+                'comprador_nombre': f"{c.comprador.usuario.nombre} {c.comprador.usuario.apellido}".strip() if (c.comprador.usuario.nombre or c.comprador.usuario.apellido) else c.comprador.usuario.email,
                 'comprador_email': c.comprador.usuario.email,
                 'estado': c.estado,
                 'creado_en': c.creado_en,
@@ -85,6 +88,82 @@ class DetalleCarritoAdminView(generics.RetrieveAPIView):
     permission_classes = [EsAdmin]
     serializer_class = CarritoDetalleAdminSerializer
     queryset = Carrito.objects.select_related('comprador__usuario').prefetch_related('items__producto')
+
+
+class SincronizarMiCarritoView(APIView):
+    """CU11: el comprador sincroniza su carrito en vivo con la base de datos,
+    permitiendo que el SuperAdmin/Admin lo monitoree en tiempo real desde /admin/carritos,
+    y que el comprador conserve sus productos entre sesiones (Opción B)."""
+
+    permission_classes = [EsComprador]
+
+    def get(self, request):
+        comprador = get_object_or_404(Comprador, usuario=request.user)
+        carrito = Carrito.objects.filter(comprador=comprador, estado=Carrito.Estado.ABIERTO).order_by('-actualizado_en').first()
+        if not carrito:
+            return Response({'items': [], 'carrito_id': None})
+
+        items = []
+        for it in carrito.items.select_related('producto__empresa').prefetch_related('producto__imagenes').all():
+            first_img = it.producto.imagenes.first()
+            img_url = (first_img.archivo.url if first_img.archivo else first_img.url) if first_img else ''
+            items.append({
+                'id': it.producto.id,
+                'nombre': it.producto.nombre,
+                'precio': float(it.precio_unitario),
+                'imagen': img_url,
+                'empresa': it.producto.empresa.razon_social if it.producto.empresa else '',
+                'empresaId': it.producto.empresa_id,
+                'cantidad': it.cantidad,
+            })
+        return Response({'items': items, 'carrito_id': carrito.id})
+
+    def post(self, request):
+        comprador = get_object_or_404(Comprador, usuario=request.user)
+        items_data = request.data.get('items', [])
+        p_ids = [it.get('id') or it.get('producto_id') for it in items_data if it.get('id') or it.get('producto_id')]
+        productos_validos = {p.id: p for p in Producto.objects.filter(id__in=p_ids, estado=Producto.Estado.ACTIVO)}
+
+        with transaction.atomic():
+            if not items_data or not productos_validos:
+                # Si el comprador quitó todos los artículos (carrito vacío),
+                # se elimina el carrito abierto para que no aparezca en tiempo real en el admin
+                Carrito.objects.filter(comprador=comprador, estado=Carrito.Estado.ABIERTO).delete()
+                return Response({'detail': 'Carrito vaciado y eliminado.', 'total_items': 0, 'carrito_id': None})
+
+            carrito, _ = Carrito.objects.get_or_create(
+                comprador=comprador,
+                estado=Carrito.Estado.ABIERTO,
+                defaults={'estado': Carrito.Estado.ABIERTO}
+            )
+
+            # Reemplazar los items actuales con los sincronizados
+            carrito.items.all().delete()
+
+            nuevos_items = []
+            for it in items_data:
+                producto_id = it.get('id') or it.get('producto_id')
+                if producto_id in productos_validos:
+                    prod = productos_validos[producto_id]
+                    cantidad = int(it.get('cantidad', 1))
+                    precio = it.get('precio') or it.get('precio_unitario') or prod.precio_descuento or prod.precio
+                    if cantidad > 0:
+                        nuevos_items.append(CarritoItem(
+                            carrito=carrito,
+                            producto=prod,
+                            cantidad=cantidad,
+                            precio_unitario=Decimal(str(precio)),
+                        ))
+
+            if nuevos_items:
+                CarritoItem.objects.bulk_create(nuevos_items)
+            else:
+                carrito.delete()
+                return Response({'detail': 'Carrito sin ítems válidos eliminado.', 'total_items': 0, 'carrito_id': None})
+
+            carrito.save(update_fields=['actualizado_en'])
+
+        return Response({'detail': 'Carrito sincronizado en tiempo real.', 'total_items': len(nuevos_items), 'carrito_id': carrito.id})
 
 
 class PedidoPagination(PageNumberPagination):
@@ -448,6 +527,9 @@ class IniciarCheckoutView(APIView):
                     comprador=comprador, monto_total=monto_total,
                     metodo_pago=OrdenCompra.MetodoPago.PAYPAL,
                 )
+
+                # CU11: Marca el carrito abierto del comprador como CONVERTIDO
+                Carrito.objects.filter(comprador=comprador, estado=Carrito.Estado.ABIERTO).update(estado=Carrito.Estado.CONVERTIDO)
 
                 for empresa_id, grupo in por_empresa.items():
                     entrega_cfg = entregas.get(str(empresa_id)) or {}
