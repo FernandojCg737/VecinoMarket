@@ -57,8 +57,8 @@ export default function ProductDetail() {
       });
       navigate(`/chat?conversacion=${data.id}`);
     } catch (err) {
-      console.error(err);
-      navigate('/chat');
+      console.error('Error al iniciar chat:', err);
+      alert('No se pudo abrir el chat con el vendedor. Por favor, intenta de nuevo.');
     } finally {
       setIniciandoChat(false);
     }
