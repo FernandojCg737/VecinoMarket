@@ -3,7 +3,7 @@ import { Navigate, useParams, Link } from 'react-router-dom';
 import { Film, ArrowLeft } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
-import { esEmpresaOEmpleado } from '../../utils/roles';
+import { esEmpresaOEmpleado, planPermiteLive } from '../../utils/roles';
 import ChatLive from '../../components/live/ChatLive';
 
 export default function GrabacionLive() {
@@ -14,7 +14,7 @@ export default function GrabacionLive() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!usuario || !esEmpresaOEmpleado(usuario)) return;
+    if (!usuario || !esEmpresaOEmpleado(usuario) || !planPermiteLive(usuario)) return;
     API.get(`promociones/mis-lives/${id}/grabacion/`)
       .then((res) => setDatos(res.data))
       .catch((err) => {
@@ -26,6 +26,7 @@ export default function GrabacionLive() {
   if (cargandoAuth) return null;
   if (!usuario) return <Navigate to={`/login?next=/mi-empresa/lives/${id}/grabacion`} replace />;
   if (!esEmpresaOEmpleado(usuario)) return <Navigate to="/" replace />;
+  if (!planPermiteLive(usuario)) return <Navigate to="/mi-empresa/lives" replace />;
 
   if (sinPermiso) {
     return (

@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Radio, Users, Square, MicOff, VideoOff, ArrowLeft } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
-import { esEmpresaOEmpleado } from '../../utils/roles';
+import { esEmpresaOEmpleado, planPermiteLive } from '../../utils/roles';
 import { ICE_SERVERS, urlSenalizacion } from '../../utils/liveSignaling';
 import ChatLive from '../../components/live/ChatLive';
 
@@ -27,11 +27,12 @@ export default function TransmitirLive() {
   const grabacionGuardadaRef = useRef(false);
 
   useEffect(() => {
+    if (!usuario || !esEmpresaOEmpleado(usuario) || !planPermiteLive(usuario)) return;
     API.get(`promociones/lives/${id}/comentarios/`).then((res) => setComentarios(res.data)).catch(() => {});
-  }, [id]);
+  }, [id, usuario]);
 
   useEffect(() => {
-    if (!usuario || !esEmpresaOEmpleado(usuario)) return;
+    if (!usuario || !esEmpresaOEmpleado(usuario) || !planPermiteLive(usuario)) return;
     let cancelado = false;
 
     async function iniciar() {
@@ -225,6 +226,11 @@ export default function TransmitirLive() {
 
     navigate('/mi-empresa/lives');
   }
+
+  if (cargandoAuth) return null;
+  if (!usuario) return <Navigate to={`/login?next=/mi-empresa/lives/${id}/transmitir`} replace />;
+  if (!esEmpresaOEmpleado(usuario)) return <Navigate to="/" replace />;
+  if (!planPermiteLive(usuario)) return <Navigate to="/mi-empresa/lives" replace />;
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
