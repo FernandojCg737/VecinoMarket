@@ -24,6 +24,7 @@ export function AuthProvider({ children }) {
     // también falló (o no había refresh guardado) -- saca al usuario de la
     // UI sin recargar la página.
     function alExpirarSesion() {
+      localStorage.removeItem('vecinomarket_carrito');
       setUsuario(null);
     }
     window.addEventListener('vecinomarket:sesion-expirada', alExpirarSesion);
@@ -66,6 +67,7 @@ export function AuthProvider({ children }) {
     }
     localStorage.removeItem('vecinomarket_access');
     localStorage.removeItem('vecinomarket_refresh');
+    localStorage.removeItem('vecinomarket_carrito');
     setUsuario(null);
   }
 

@@ -24,6 +24,7 @@ export default function ReportesDinamicosAdmin() {
         catalogoUrl="reportes/admin/reportes-dinamicos/catalogo/"
         generarUrl="reportes/admin/reportes-dinamicos/generar/"
         permiteFiltrarEmpresa
+        permiteVoz
       />
     </div>
   );

@@ -16,9 +16,13 @@ from .views import (
     ListaPedidosAdminView,
     MarcarEntregadaAdminView,
     MarcarMiEntregaEntregadaView,
+    SincronizarMiCarritoView,
 )
 
 urlpatterns = [
+    # CU11: sincronización en vivo del carrito del comprador (SaaS en tiempo real)
+    path('mi-carrito/', SincronizarMiCarritoView.as_view(), name='mi-carrito'),
+
     # CU11: carritos de compra (solo lectura, SuperAdmin/Admin de soporte)
     path('admin/carritos/', ListaCarritosAdminView.as_view(), name='admin-carritos'),
     path('admin/carritos/<int:pk>/', DetalleCarritoAdminView.as_view(), name='admin-carrito-detalle'),

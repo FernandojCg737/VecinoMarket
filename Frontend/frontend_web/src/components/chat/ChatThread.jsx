@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Send, Image as ImageIcon, Mic, Video } from 'lucide-react';
 import API from '../../api/axios';
 
-const INTERVALO_MS = 5000;
+const INTERVALO_MS = 2000;
 
-export default function ChatThread({ conversacionId, mensajesUrlBase, usuarioId, soloLectura = false }) {
+export default function ChatThread({ conversacionId, mensajesUrlBase, usuarioId, soloLectura = false, onMensajeEnviado }) {
   const [mensajes, setMensajes] = useState([]);
   const [texto, setTexto] = useState('');
   const [enviando, setEnviando] = useState(false);
@@ -37,6 +37,7 @@ export default function ChatThread({ conversacionId, mensajesUrlBase, usuarioId,
       await API.post(url, { tipo: 'TEXTO', contenido: texto.trim() });
       setTexto('');
       await cargar();
+      onMensajeEnviado?.();
     } catch {
       setError('No se pudo enviar el mensaje.');
     } finally {
@@ -54,6 +55,7 @@ export default function ChatThread({ conversacionId, mensajesUrlBase, usuarioId,
     try {
       await API.post(url, formData, { headers: { 'Content-Type': undefined } });
       await cargar();
+      onMensajeEnviado?.();
     } catch {
       setError('No se pudo enviar el archivo.');
     } finally {

@@ -4,7 +4,7 @@ from .models import ChatbotFAQ, ChatbotInteraccion, ChatConversacion, ChatMensaj
 
 
 class ChatMensajeSerializer(serializers.ModelSerializer):
-    emisor_nombre = serializers.CharField(source='emisor_usuario.nombre', read_only=True)
+    emisor_nombre = serializers.SerializerMethodField()
     emisor_rol = serializers.CharField(source='emisor_usuario.rol', read_only=True)
     archivo_url = serializers.SerializerMethodField()
 
@@ -21,6 +21,13 @@ class ChatMensajeSerializer(serializers.ModelSerializer):
             'leido': {'read_only': True},
         }
 
+    def get_emisor_nombre(self, obj):
+        u = obj.emisor_usuario
+        if not u:
+            return ''
+        completo = f"{u.nombre} {u.apellido}".strip()
+        return completo or u.nombre
+
     def get_archivo_url(self, obj):
         if not obj.archivo:
             return ''
@@ -32,7 +39,9 @@ class ChatMensajeSerializer(serializers.ModelSerializer):
 
 
 class ChatConversacionSerializer(serializers.ModelSerializer):
-    comprador_nombre = serializers.CharField(source='comprador.usuario.nombre', read_only=True)
+    comprador_nombre = serializers.SerializerMethodField()
+    comprador_telefono = serializers.CharField(source='comprador.usuario.telefono', read_only=True, default='')
+    comprador_email = serializers.CharField(source='comprador.usuario.email', read_only=True, default='')
     empresa_nombre = serializers.CharField(source='empresa.razon_social', read_only=True)
     ultimo_mensaje = serializers.SerializerMethodField()
     no_leidos = serializers.SerializerMethodField()
@@ -40,10 +49,17 @@ class ChatConversacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatConversacion
         fields = [
-            'id', 'comprador', 'comprador_nombre', 'empresa', 'empresa_nombre',
-            'estado', 'ultimo_mensaje', 'no_leidos', 'creado_en', 'actualizado_en',
+            'id', 'comprador', 'comprador_nombre', 'comprador_telefono', 'comprador_email',
+            'empresa', 'empresa_nombre', 'estado', 'ultimo_mensaje', 'no_leidos', 'creado_en', 'actualizado_en',
         ]
         read_only_fields = ['id', 'comprador', 'empresa', 'creado_en', 'actualizado_en']
+
+    def get_comprador_nombre(self, obj):
+        u = getattr(obj.comprador, 'usuario', None)
+        if not u:
+            return ''
+        completo = f"{u.nombre} {u.apellido}".strip()
+        return completo or u.nombre or u.email
 
     def get_ultimo_mensaje(self, obj):
         ultimo = obj.mensajes.last()

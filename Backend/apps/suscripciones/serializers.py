@@ -70,10 +70,18 @@ class EditarSuscripcionSerializer(serializers.Serializer):
                 estado=nuevo_estado,
             )
         else:
+            suscripcion_vencida = False
+            if suscripcion.fecha_vencimiento:
+                f_venc = suscripcion.fecha_vencimiento.date() if hasattr(suscripcion.fecha_vencimiento, 'date') else suscripcion.fecha_vencimiento
+                suscripcion_vencida = f_venc < hoy
+
+            if suscripcion.plan_id != plan.id or suscripcion_vencida:
+                suscripcion.fecha_inicio = hoy
+
             suscripcion.plan = plan
             suscripcion.fecha_vencimiento = fecha_vencimiento
             suscripcion.estado = nuevo_estado
-            suscripcion.save(update_fields=['plan', 'fecha_vencimiento', 'estado'])
+            suscripcion.save(update_fields=['plan', 'fecha_inicio', 'fecha_vencimiento', 'estado'])
 
         empresa.plan = plan
         empresa.save(update_fields=['plan'])

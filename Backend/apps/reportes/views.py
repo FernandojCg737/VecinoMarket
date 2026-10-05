@@ -1,4 +1,6 @@
-﻿from django.db import connection
+import datetime
+from django.db import connection
+from django.db.models import Count, F, Q, Sum
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.dateparse import parse_date
@@ -7,9 +9,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.auditoria.models import LogAuditoria
+from apps.catalogo.models import Producto
 from apps.core.exportadores import responder_exportacion
 from apps.core.utils import get_client_ip
-from apps.pedidos.models import Pedido
+from apps.pedidos.models import Pedido, PedidoItem
 from apps.usuarios.models import Comprador, Empresa
 from apps.usuarios.permissions import EsAdmin, EsComprador, EsEmpresaOEmpleado, TienePermisoEmpleado
 
@@ -563,6 +566,9 @@ class GenerarReporteDinamicoView(APIView):
             fecha_inicio=fecha_inicio, fecha_fin=fecha_fin,
             filtros_extra=_filtros_extra_desde_query(request),
         )
+        if request.query_params.get('formato') == 'json' or request.query_params.get('vista') == 'tabla':
+            return Response({'headers': headers, 'filas': filas, 'total': len(filas), 'titulo': cfg['etiqueta']})
+
         return responder_exportacion(
             request, f'reporte_{dataset_key}_{empresa.slug}',
             f'{cfg["etiqueta"]} · {empresa.razon_social}',
@@ -606,9 +612,339 @@ class GenerarReporteDinamicoAdminView(APIView):
             filtros_extra=_filtros_extra_desde_query(request),
             incluir_admin_extra=True,
         )
+        if request.query_params.get('formato') == 'json' or request.query_params.get('vista') == 'tabla':
+            return Response({'headers': headers, 'filas': filas, 'total': len(filas), 'titulo': cfg['etiqueta']})
+
         return responder_exportacion(
             request, f'reporte_{dataset_key}_admin',
             f'{cfg["etiqueta"]} · Plataforma',
             f'VecinoMarket · Generado el {timezone.now().strftime("%d/%m/%Y %H:%M")}',
             [{'titulo': cfg['etiqueta'], 'headers': headers, 'filas': filas}],
         )
+
+
+class AsistenteVozReportesView(APIView):
+    """CU18/CU19: Procesa una consulta analítica por comando de voz o texto libre,
+    analiza métricas de ventas, productos más vendidos, stock e ingresos, y
+    devuelve una descripción natural hablada junto con la configuración de la tabla."""
+
+    def get_permissions(self):
+        user = self.request.user
+        if user.is_authenticated and (user.es_admin() or user.is_staff):
+            return [EsAdmin()]
+        return [TienePermisoEmpleado()]
+
+    permiso_requerido = 'ver_reportes'
+
+    def post(self, request):
+        pregunta = (request.data.get('pregunta') or '').strip().lower()
+        if not pregunta:
+            return Response({'detail': 'La pregunta es requerida.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+        empresa = None
+        if user.es_admin() or user.is_staff:
+            empresa_id = request.data.get('empresa')
+            if empresa_id:
+                empresa = get_object_or_404(Empresa, id=empresa_id)
+        else:
+            empresa = user.get_empresa()
+
+        hoy = timezone.now().date()
+        fecha_inicio = None
+        fecha_fin = None
+        periodo_str = ''
+
+        if 'hoy' in pregunta:
+            fecha_inicio = hoy.isoformat()
+            fecha_fin = hoy.isoformat()
+            periodo_str = 'del día de hoy'
+        elif 'semana' in pregunta:
+            hace_7 = hoy - datetime.timedelta(days=7)
+            fecha_inicio = hace_7.isoformat()
+            fecha_fin = hoy.isoformat()
+            periodo_str = 'de los últimos 7 días'
+        elif 'mes' in pregunta:
+            hace_30 = hoy - datetime.timedelta(days=30)
+            fecha_inicio = hace_30.isoformat()
+            fecha_fin = hoy.isoformat()
+            periodo_str = 'del último mes'
+        elif 'año' in pregunta or 'ano' in pregunta:
+            fecha_inicio = f'{hoy.year}-01-01'
+            fecha_fin = hoy.isoformat()
+            periodo_str = 'de este año'
+
+        p_str = f" {periodo_str}" if periodo_str else ""
+        p_norm = pregunta.replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u')
+
+        # 1. ¿Cuál es la empresa que más vende / Top empresas?
+        is_top_empresa = any(k in p_norm for k in [
+            'top empresa', 'top empresas', 'empresa que mas vende', 'empresa con mas ventas',
+            'mejor empresa', 'que tienda vende mas', 'tienda que mas vende', 'cual empresa vende mas',
+            'empresas con mas ventas', 'empresa lider', 'empresas lideres', 'cual es la empresa'
+        ]) or (
+            ('empresa' in p_norm or 'tienda' in p_norm) and any(w in p_norm for w in ['mas vend', 'mayor vent', 'top vent', 'mas venta', 'mas ingreso', 'mas gananci', 'vende mas', 'vendio mas'])
+        )
+        if is_top_empresa:
+            top_emp = (
+                Pedido.objects.filter(orden_compra__estado_pago='PAGADO')
+                .values('empresa__razon_social')
+                .annotate(total_ventas=Sum('subtotal'), total_pedidos=Count('id'))
+                .order_by('-total_ventas')
+            )
+            top = list(top_emp[:3])
+            if top:
+                t1 = top[0]
+                extra = f" En segundo lugar se encuentra **{top[1]['empresa__razon_social']}** con Bs {top[1]['total_ventas']:.2f}." if len(top) > 1 else ""
+                resp = f"La empresa con mayores ventas en la plataforma{p_str} es **{t1['empresa__razon_social']}**, con un total de Bs {t1['total_ventas']:.2f} recaudados en {t1['total_pedidos']} pedidos.{extra}"
+            else:
+                resp = f"Aún no se registran ventas de empresas en la plataforma{p_str}."
+            return Response({
+                'respuesta': resp,
+                'dataset': 'empresas' if (user.es_admin() or user.is_staff) else 'pedidos',
+                'columnas': ['razon_social', 'ciudad', 'plan', 'estado'] if (user.es_admin() or user.is_staff) else ['numero_pedido', 'fecha', 'cliente', 'estado', 'subtotal'],
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+            })
+
+        # 2. ¿Cuál es el producto más vendido?
+        is_top_vendido = (
+            any(k in p_norm for k in [
+                'mas vendido', 'mas vendida', 'mas vendidos', 'mas vendidas', 'mas vendidio',
+                'mas vendio', 'mas vende', 'se vende mas', 'se vendio mas', 'vende mas', 'vendio mas',
+                'mas venta', 'mas ventas', 'mayor venta', 'mayores ventas', 'top venta', 'top ventas',
+                'top producto', 'top productos', 'producto estrella', 'artículo estrella', 'articulo estrella',
+                'mas pedido', 'mas pedidos', 'mas popular', 'mas populares', 'mejor vendido', 'mejores productos',
+                'que producto se vende', 'cual producto se vende', 'cual se vende mas', 'lo que mas se vende'
+            ]) or (
+                'vend' in p_norm and any(w in p_norm for w in ['mas', 'mayor', 'top', 'mejor', 'estrella', 'popular'])
+                and not any(w in p_norm for w in ['cuanto', 'total vendido', 'ventas totales', 'empresa', 'tienda'])
+            )
+        ) and not any(w in p_norm for w in ['empresa', 'tienda'])
+
+        if is_top_vendido:
+            items_qs = PedidoItem.objects.all()
+            if empresa:
+                items_qs = items_qs.filter(pedido__empresa=empresa)
+            if fecha_inicio:
+                items_qs = items_qs.filter(pedido__creado_en__date__gte=fecha_inicio)
+            if fecha_fin:
+                items_qs = items_qs.filter(pedido__creado_en__date__lte=fecha_fin)
+
+            agrupados = (
+                items_qs.values('producto__nombre', 'producto__precio')
+                .annotate(
+                    total_unidades=Sum('cantidad'),
+                    total_dinero=Sum(F('cantidad') * F('precio_unitario'))
+                )
+                .order_by('-total_unidades')
+            )
+            top = list(agrupados[:3])
+            if top:
+                top1 = top[0]
+                monto_txt = f" y un total de Bs {top1['total_dinero']:.2f}" if top1.get('total_dinero') else ""
+                extra = ""
+                if len(top) > 1:
+                    extra = f" En segundo lugar se encuentra **{top[1]['producto__nombre']}** con {top[1]['total_unidades']} unidades."
+                prefijo = f"en tu tienda de **{empresa.razon_social}**" if empresa else "en toda la plataforma"
+                resp = (
+                    f"El producto más vendido {prefijo}{p_str} es **{top1['producto__nombre']}**, "
+                    f"con {top1['total_unidades']} unidades vendidas{monto_txt}.{extra}"
+                )
+            else:
+                prefijo = f"en **{empresa.razon_social}**" if empresa else "en el sistema"
+                resp = f"Aún no se registran ventas de productos {prefijo}{p_str}."
+
+            return Response({
+                'respuesta': resp,
+                'dataset': 'pedidos',
+                'columnas': ['numero_pedido', 'fecha', 'cliente', 'estado', 'subtotal'],
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+            })
+
+        # 1.6. Comisiones cobradas
+        if any(k in p_norm for k in ['comision', 'comisiones', 'comision cobrada', 'cuanto cobro la plataforma', 'ganancia de la plataforma', 'comisiones cobradas']):
+            from apps.facturacion.models import ComisionVenta
+            com_qs = ComisionVenta.objects.all()
+            if empresa:
+                com_qs = com_qs.filter(empresa=empresa)
+            if fecha_inicio:
+                com_qs = com_qs.filter(creado_en__date__gte=fecha_inicio)
+            if fecha_fin:
+                com_qs = com_qs.filter(creado_en__date__lte=fecha_fin)
+            tot_com = com_qs.aggregate(t=Sum('monto_comision'))['t'] or 0
+            pref = f"de tu tienda en **{empresa.razon_social}**" if empresa else "en toda la plataforma"
+            resp = f"Se ha registrado un total de Bs {tot_com:.2f} en comisiones por ventas {pref}{p_str}."
+            return Response({
+                'respuesta': resp,
+                'dataset': 'pedidos',
+                'columnas': ['numero_pedido', 'fecha', 'cliente', 'estado', 'subtotal'],
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+            })
+
+        # 1.7. Cantidad de empresas o usuarios registrados
+        if any(k in p_norm for k in ['cuantas empresas', 'total empresas', 'cuantos usuarios', 'usuarios activos', 'total usuarios']):
+            from apps.usuarios.models import Usuario
+            tot_emp = Empresa.objects.count()
+            tot_usr = Usuario.objects.filter(estado='ACTIVO').count()
+            resp = f"La plataforma cuenta actualmente con {tot_emp} empresas registradas y {tot_usr} usuarios activos en el sistema."
+            return Response({
+                'respuesta': resp,
+                'dataset': 'empresas' if (user.es_admin() or user.is_staff) else 'pedidos',
+                'columnas': ['razon_social', 'nit', 'ciudad', 'plan', 'estado'] if (user.es_admin() or user.is_staff) else ['numero_pedido', 'fecha', 'cliente', 'estado', 'subtotal'],
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+            })
+
+        # 2. Producto más caro / mayor precio
+        if any(k in p_norm for k in ['mas caro', 'mayor precio', 'mas costoso', 'precio mas alto', 'mas valor', 'el mas caro']):
+            prods = Producto.objects.filter(estado=Producto.Estado.ACTIVO)
+            if empresa:
+                prods = prods.filter(empresa=empresa)
+            pr = prods.order_by('-precio').first()
+            if pr:
+                prefijo = f"en tu catálogo de **{empresa.razon_social}**" if empresa else "en la plataforma"
+                resp = f"El producto con mayor precio {prefijo} es **{pr.nombre}** con un valor de Bs {pr.precio:.2f}."
+            else:
+                resp = "No hay productos registrados actualmente."
+            return Response({
+                'respuesta': resp,
+                'dataset': 'productos',
+                'columnas': ['nombre', 'categoria', 'precio', 'precio_descuento', 'estado'],
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+            })
+
+        # 3. Producto más económico / menor precio
+        if any(k in p_norm for k in ['mas barato', 'menor precio', 'mas economico', 'precio mas bajo', 'el mas barato']):
+            prods = Producto.objects.filter(estado=Producto.Estado.ACTIVO)
+            if empresa:
+                prods = prods.filter(empresa=empresa)
+            pr = prods.order_by('precio').first()
+            if pr:
+                prefijo = f"en tu tienda de **{empresa.razon_social}**" if empresa else "en la plataforma"
+                resp = f"El producto con menor precio {prefijo} es **{pr.nombre}** a Bs {pr.precio:.2f}."
+            else:
+                resp = "No hay productos registrados actualmente."
+            return Response({
+                'respuesta': resp,
+                'dataset': 'productos',
+                'columnas': ['nombre', 'categoria', 'precio', 'precio_descuento', 'estado'],
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+            })
+
+        # 4. Stock / Inventario / Menor stock disponible
+        if any(k in p_norm for k in ['menos stock', 'menor stock', 'agotando', 'por agotar', 'bajo stock', 'se esta agotando', 'quedan pocos', 'poco stock']):
+            from apps.inventario.models import InventarioSucursal
+            invs = InventarioSucursal.objects.filter(producto__estado=Producto.Estado.ACTIVO).select_related('producto')
+            if empresa:
+                invs = invs.filter(producto__empresa=empresa)
+            inv = invs.order_by('cantidad_disponible').first()
+            if inv:
+                prefijo = f"en **{empresa.razon_social}**" if empresa else "en inventario"
+                resp = (
+                    f"El producto con menor stock disponible {prefijo} es **{inv.producto.nombre}**, "
+                    f"con solo {inv.cantidad_disponible} unidades disponibles."
+                )
+            else:
+                resp = "No se encontraron registros de inventario con stock bajo."
+            return Response({
+                'respuesta': resp,
+                'dataset': 'productos',
+                'columnas': ['nombre', 'categoria', 'precio', 'estado'],
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+            })
+
+        # 5. Ventas / Ingresos totales / Cuánto vendí
+        if any(k in p_norm for k in ['cuanto vendi', 'ventas', 'ingresos', 'ganancias', 'total vendido', 'pedidos', 'cuanto hemos vendido', 'cuanto dinero', 'total de ventas', 'cuanto se vendio']):
+            pedidos_qs = Pedido.objects.all()
+            if empresa:
+                pedidos_qs = pedidos_qs.filter(empresa=empresa)
+            if fecha_inicio:
+                pedidos_qs = pedidos_qs.filter(creado_en__date__gte=fecha_inicio)
+            if fecha_fin:
+                pedidos_qs = pedidos_qs.filter(creado_en__date__lte=fecha_fin)
+
+            total_count = pedidos_qs.count()
+            pagados = pedidos_qs.filter(orden_compra__estado_pago='PAGADO')
+            total_monto = pagados.aggregate(total=Sum('subtotal'))['total'] or 0
+
+            if total_count > 0:
+                if empresa:
+                    resp = (
+                        f"Registraste un total de {total_count} pedidos en tu tienda de **{empresa.razon_social}**{p_str}, "
+                        f"con un total de ventas pagadas de Bs {total_monto:.2f}."
+                    )
+                else:
+                    resp = (
+                        f"En toda la plataforma se registra un total de {total_count} pedidos pagados{p_str}, "
+                        f"con un volumen de ventas de Bs {total_monto:.2f}."
+                    )
+            else:
+                prefijo = f"en **{empresa.razon_social}**" if empresa else "en la plataforma"
+                resp = f"No registras pedidos ni ventas {prefijo}{p_str}."
+
+            return Response({
+                'respuesta': resp,
+                'dataset': 'pedidos',
+                'columnas': ['numero_pedido', 'fecha', 'cliente', 'estado', 'subtotal'],
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+            })
+
+        # 6. Clientes
+        if any(k in p_norm for k in ['cliente', 'comprador', 'quien compra', 'quien me compra', 'mejor cliente', 'mejor comprador']):
+            pedidos_qs = Pedido.objects.filter(orden_compra__comprador__usuario__isnull=False)
+            if empresa:
+                pedidos_qs = pedidos_qs.filter(empresa=empresa)
+            cli = (
+                pedidos_qs.values('orden_compra__comprador__usuario__nombre', 'orden_compra__comprador__usuario__apellido')
+                .annotate(pedidos_count=Count('id'), total_gasto=Sum('subtotal'))
+                .order_by('-total_gasto')
+                .first()
+            )
+            if cli:
+                nom = f"{cli['orden_compra__comprador__usuario__nombre']} {cli.get('orden_compra__comprador__usuario__apellido') or ''}".strip()
+                if empresa:
+                    resp = f"Tu cliente más destacado es **{nom}**, con {cli['pedidos_count']} pedidos y un total de compras de Bs {cli['total_gasto']:.2f}."
+                else:
+                    resp = f"El comprador más destacado en toda la plataforma es **{nom}**, con {cli['pedidos_count']} pedidos realizados y un total acumulado de Bs {cli['total_gasto']:.2f}."
+            else:
+                resp = f"No se registran compras de clientes aún{p_str}."
+            return Response({
+                'respuesta': resp,
+                'dataset': 'pedidos',
+                'columnas': ['numero_pedido', 'fecha', 'cliente', 'estado', 'subtotal'],
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+            })
+
+        # Fallback genérico inteligente
+        etiqueta = 'Pedidos y ventas'
+        dataset_key = 'pedidos'
+        columnas = ['numero_pedido', 'fecha', 'cliente', 'estado', 'subtotal']
+        if any(k in p_norm for k in ['producto', 'catalogo', 'articulos', 'articulo']):
+            etiqueta = 'Productos'
+            dataset_key = 'productos'
+            columnas = ['nombre', 'categoria', 'precio', 'estado']
+        elif any(k in p_norm for k in ['inventario', 'stock']):
+            etiqueta = 'Productos'
+            dataset_key = 'productos'
+            columnas = ['nombre', 'categoria', 'precio', 'estado']
+        elif any(k in p_norm for k in ['factura', 'facturacion', 'facturas']):
+            etiqueta = 'Facturas'
+            dataset_key = 'facturas'
+            columnas = ['tipo', 'monto', 'estado_pago', 'fecha']
+
+        resp = f"Generando reporte de {etiqueta}{p_str}. Mostrando los datos en pantalla."
+        return Response({
+            'respuesta': resp,
+            'dataset': dataset_key,
+            'columnas': columnas,
+            'fecha_inicio': fecha_inicio,
+            'fecha_fin': fecha_fin,
+        })

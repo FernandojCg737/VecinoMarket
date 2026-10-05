@@ -35,3 +35,15 @@ export function tienePermisoEmpleado(usuario, codigo) {
   if (esEmpresa(usuario)) return true;
   return !!usuario && Array.isArray(usuario.permisos) && usuario.permisos.includes(codigo);
 }
+
+// CU17 / CU20: Valida si el plan activo de la empresa incluye Live Commerce (ej. Plan Premium)
+export function planPermiteLive(usuario) {
+  if (!usuario) return false;
+  return Boolean(usuario.empresa_plan?.incluye_live_commerce);
+}
+
+// CU15 / CU20: Valida si el plan activo de la empresa incluye Inteligencia Artificial (ej. Básico y Premium)
+export function planPermiteIA(usuario) {
+  if (!usuario) return false;
+  return Boolean(usuario.empresa_plan?.incluye_ia);
+}

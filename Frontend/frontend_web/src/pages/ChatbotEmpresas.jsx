@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Bot, Search, ArrowLeft, Store } from 'lucide-react';
 import API from '../api/axios';
 import ChatbotWidget from '../components/chat/ChatbotWidget';
@@ -22,9 +23,17 @@ export default function ChatbotEmpresas() {
   if (empresaSel) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-8">
-        <button onClick={() => setEmpresaSel(null)} className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 mb-4">
-          <ArrowLeft size={16} /> Volver a empresas
-        </button>
+        <div className="flex items-center justify-between mb-4">
+          <button onClick={() => setEmpresaSel(null)} className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400">
+            <ArrowLeft size={16} /> Volver a empresas
+          </button>
+          <Link
+            to={`/productos?empresa=${empresaSel.id}&empresaNombre=${encodeURIComponent(empresaSel.razon_social)}`}
+            className="flex items-center gap-1 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline"
+          >
+            <Store size={14} /> Ver productos de {empresaSel.razon_social} →
+          </Link>
+        </div>
         <ChatbotWidget empresaId={empresaSel.id} empresaNombre={empresaSel.razon_social} />
       </div>
     );

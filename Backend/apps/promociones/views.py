@@ -1,4 +1,4 @@
-﻿from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import DatabaseError, connection
 from django.shortcuts import get_object_or_404
@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from apps.auditoria.models import LogAuditoria
 from apps.core.utils import get_client_ip
 from apps.usuarios.models import Empresa
-from apps.usuarios.permissions import EsAdmin, TienePermisoEmpleado
+from apps.usuarios.permissions import EsAdmin, TienePermisoEmpleado, PlanPermiteLiveCommerce
 
 from .models import ComentarioLive, LiveCommerceSesion, Promocion
 from .serializers import (
@@ -187,9 +187,11 @@ def _es_dueno_o_empleado_autorizado(usuario, empresa_id):
     a la propia empresa una vez que el live terminó."""
     if not (usuario and usuario.is_authenticated):
         return False
+    empresa = usuario.get_empresa()
+    if not (empresa and empresa.id == empresa_id and empresa.plan and empresa.plan.incluye_live_commerce):
+        return False
     if usuario.es_empresa():
-        empresa = getattr(usuario, 'empresa', None)
-        return bool(empresa) and empresa.id == empresa_id
+        return True
     if usuario.es_empleado():
         empleado = getattr(usuario, 'empleado', None)
         return (
@@ -243,7 +245,7 @@ class ListaCrearMisLivesView(generics.ListCreateAPIView):
     """CU17: la empresa (dueño o empleado con permiso 'gestionar_promociones')
     programa y emite sus propias sesiones de live commerce."""
 
-    permission_classes = [TienePermisoEmpleado]
+    permission_classes = [TienePermisoEmpleado, PlanPermiteLiveCommerce]
     permiso_requerido = 'gestionar_promociones'
     serializer_class = LiveEmpresaSerializer
     pagination_class = None
@@ -272,7 +274,7 @@ class EditarEliminarMiLiveView(APIView):
     elimina una de SUS sesiones. Pasar a EN_VIVO falla si la empresa tiene
     una sanción activa (trg_verificar_bloqueo_live)."""
 
-    permission_classes = [TienePermisoEmpleado]
+    permission_classes = [TienePermisoEmpleado, PlanPermiteLiveCommerce]
     permiso_requerido = 'gestionar_promociones'
 
     def patch(self, request, live_id):
@@ -316,7 +318,7 @@ class SubirGrabacionMiLiveView(APIView):
     "archivo". Solo existe si terminó con el botón "Terminar transmisión"
     (todo es peer-to-peer, nadie más tuvo el video para grabarlo)."""
 
-    permission_classes = [TienePermisoEmpleado]
+    permission_classes = [TienePermisoEmpleado, PlanPermiteLiveCommerce]
     permiso_requerido = 'gestionar_promociones'
     parser_classes = [MultiPartParser, FormParser]
 

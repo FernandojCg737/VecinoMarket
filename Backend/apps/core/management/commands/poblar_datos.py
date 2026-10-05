@@ -233,7 +233,7 @@ class Command(BaseCommand):
     def _seed_empresas(self, password, plan):
         empresas = {}
         hoy = timezone.now().date()
-        for slug, razon_social, _cat, ciudad_idx in EMPRESAS:
+        for idx, (slug, razon_social, _cat, ciudad_idx) in enumerate(EMPRESAS):
             ciudad, departamento, lat, lon = CIUDADES[ciudad_idx]
             email = f'{slug}@vecinomarket.com'
             usuario, creado = Usuario.objects.get_or_create(
@@ -259,23 +259,32 @@ class Command(BaseCommand):
                     'color_marca': '#D85A30',
                 },
             )
-            Suscripcion.objects.get_or_create(
+            # CU20: Duración coherente según el plan (30 días para Básico).
+            # Distribuimos la fecha de inicio dentro de los últimos 20 días para que
+            # queden entre 10 y 25 días restantes dentro del ciclo de 30 días.
+            duracion = plan.duracion_dias or 30
+            dias_inicio = (idx * 2 + 5) % 22
+            inicio_suscripcion = hoy - timedelta(days=dias_inicio)
+            vencimiento_suscripcion = inicio_suscripcion + timedelta(days=duracion)
+
+            Suscripcion.objects.update_or_create(
                 empresa=empresa,
-                plan=plan,
                 defaults={
-                    'fecha_inicio': hoy - timedelta(days=60),
-                    'fecha_vencimiento': hoy + timedelta(days=305),
+                    'plan': plan,
+                    'fecha_inicio': inicio_suscripcion,
+                    'fecha_vencimiento': vencimiento_suscripcion,
+                    'estado': Suscripcion.Estado.ACTIVA,
                 },
             )
             Factura.objects.get_or_create(
                 empresa=empresa,
                 tipo=Factura.Tipo.SUSCRIPCION,
-                periodo_desde=hoy - timedelta(days=60),
-                periodo_hasta=hoy - timedelta(days=30),
+                periodo_desde=inicio_suscripcion,
+                periodo_hasta=vencimiento_suscripcion,
                 defaults={
                     'monto': plan.precio_mensual,
                     'estado_pago': Factura.EstadoPago.PAGADA,
-                    'fecha_pago': timezone.now() - timedelta(days=58),
+                    'fecha_pago': timezone.now() - timedelta(days=dias_inicio),
                 },
             )
             empresas[slug] = empresa

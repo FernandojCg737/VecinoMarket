@@ -5,11 +5,12 @@ from .models import Carrito, CarritoItem, Entrega, Pedido, PedidoItem
 
 class CarritoItemSerializer(serializers.ModelSerializer):
     producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+    empresa_nombre = serializers.CharField(source='producto.empresa.razon_social', read_only=True)
     subtotal = serializers.SerializerMethodField()
 
     class Meta:
         model = CarritoItem
-        fields = ['id', 'producto', 'producto_nombre', 'cantidad', 'precio_unitario', 'subtotal']
+        fields = ['id', 'producto', 'producto_nombre', 'empresa_nombre', 'cantidad', 'precio_unitario', 'subtotal']
 
     def get_subtotal(self, obj):
         return obj.cantidad * obj.precio_unitario
@@ -20,13 +21,17 @@ class CarritoDetalleAdminSerializer(serializers.ModelSerializer):
     hay create/update/delete acá (el único que modifica su carrito es el
     propio comprador, desde su sesión de compra)."""
 
-    comprador_nombre = serializers.CharField(source='comprador.usuario.nombre', read_only=True)
+    comprador_nombre = serializers.SerializerMethodField()
     comprador_email = serializers.CharField(source='comprador.usuario.email', read_only=True)
     items = CarritoItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Carrito
         fields = ['id', 'comprador', 'comprador_nombre', 'comprador_email', 'estado', 'items', 'creado_en', 'actualizado_en']
+
+    def get_comprador_nombre(self, obj):
+        u = obj.comprador.usuario
+        return f"{u.nombre} {u.apellido}".strip() if (u.nombre or u.apellido) else u.email
 
 
 class PedidoItemSerializer(serializers.ModelSerializer):

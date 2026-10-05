@@ -12,7 +12,7 @@ const ESTADOS = [
   { value: '', label: 'Todos' },
 ];
 
-const INTERVALO_MS = 8000;
+const INTERVALO_MS = 2500;
 
 export default function Carritos() {
   const { usuario, cargando: cargandoAuth } = useAuth();
@@ -27,14 +27,18 @@ export default function Carritos() {
   const [detalle, setDetalle] = useState({});
   const [cargandoDetalle, setCargandoDetalle] = useState(false);
 
+  const [actualizando, setActualizando] = useState(false);
+
   function cargarCarritos() {
+    setActualizando(true);
     return API.get('pedidos/admin/carritos/', { params: { estado: estado || undefined, q: busqueda || undefined } })
       .then((res) => {
         setCarritos(res.data);
         setUltimaActualizacion(new Date());
         setError('');
       })
-      .catch(() => setError('No se pudo cargar los carritos.'));
+      .catch(() => setError('No se pudo cargar los carritos.'))
+      .finally(() => setActualizando(false));
   }
 
   useEffect(() => {
@@ -77,13 +81,26 @@ export default function Carritos() {
         <ShoppingCart className="text-brand-600 dark:text-brand-400" size={24} />
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Carritos de compra</h1>
       </div>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-        CU11 · Solo lectura — qué está agregando cada comprador ahora mismo. Solo el comprador puede modificar su propio carrito.
-      </p>
       {ultimaActualizacion && (
-        <p className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500 mb-6">
-          <RefreshCw size={11} /> Se actualiza solo cada {INTERVALO_MS / 1000}s · última actualización {ultimaActualizacion.toLocaleTimeString()}
-        </p>
+        <div className="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500 mb-6">
+          <span className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <span className="text-emerald-700 dark:text-emerald-400 font-semibold">En tiempo real</span>
+            <span>· se actualiza cada {INTERVALO_MS / 1000}s (última: {ultimaActualizacion.toLocaleTimeString()})</span>
+          </span>
+          <button
+            type="button"
+            onClick={cargarCarritos}
+            disabled={actualizando}
+            className="flex items-center gap-1.5 text-brand-600 hover:text-brand-700 dark:text-brand-400 font-semibold px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition disabled:opacity-60"
+          >
+            <RefreshCw size={12} className={actualizando ? 'animate-spin' : ''} />
+            <span>{actualizando ? 'Actualizando...' : 'Actualizar ahora'}</span>
+          </button>
+        </div>
       )}
 
       <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -116,8 +133,21 @@ export default function Carritos() {
           <div key={c.id} className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
             <button onClick={() => toggleExpandir(c)} className="w-full flex items-center justify-between gap-3 text-left">
               <div>
-                <div className="font-semibold text-gray-900 dark:text-gray-100">{c.comprador_nombre}</div>
-                <div className="text-xs text-gray-400 dark:text-gray-500">{c.comprador_email}</div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-gray-900 dark:text-gray-100">{c.comprador_nombre}</span>
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      c.estado === 'ABIERTO'
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
+                        : c.estado === 'CONVERTIDO'
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+                        : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+                    }`}
+                  >
+                    {c.estado === 'ABIERTO' ? 'Activo en vivo' : c.estado === 'CONVERTIDO' ? 'Convertido en compra' : 'Abandonado'}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{c.comprador_email}</div>
               </div>
               <div className="flex items-center gap-4 text-sm">
                 <span className="text-gray-600 dark:text-gray-400">{c.total_items} ítems</span>
@@ -133,11 +163,19 @@ export default function Carritos() {
                 ) : (detalle[c.id] ?? []).length === 0 ? (
                   <p className="text-xs text-gray-400 dark:text-gray-500">Carrito vacío.</p>
                 ) : (
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {(detalle[c.id] ?? []).map((it) => (
-                      <div key={it.id} className="flex items-center justify-between text-xs">
-                        <span className="text-gray-700 dark:text-gray-300">{it.producto_nombre} × {it.cantidad}</span>
-                        <span className="text-gray-500 dark:text-gray-400">Bs {it.subtotal}</span>
+                      <div key={it.id} className="flex items-center justify-between text-xs py-1 border-b border-gray-50 dark:border-gray-800/50 last:border-0">
+                        <div>
+                          <span className="text-gray-800 dark:text-gray-200 font-medium">{it.producto_nombre}</span>
+                          <span className="text-gray-500 dark:text-gray-400 ml-1.5 font-semibold">× {it.cantidad}</span>
+                          {it.empresa_nombre && (
+                            <span className="text-[11px] text-brand-600 dark:text-brand-400 ml-2">
+                              ({it.empresa_nombre})
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-gray-700 dark:text-gray-300 font-semibold">Bs {it.subtotal}</span>
                       </div>
                     ))}
                   </div>

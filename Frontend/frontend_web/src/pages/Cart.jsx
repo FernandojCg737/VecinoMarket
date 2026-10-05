@@ -9,7 +9,20 @@ export default function Cart() {
   const navigate = useNavigate();
 
   function irACheckout() {
-    navigate(usuario ? '/checkout' : '/login?next=/checkout');
+    navigate('/checkout');
+  }
+
+  if (!usuario) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-20 text-center">
+        <ShoppingBag size={48} className="mx-auto text-brand-500 mb-4" />
+        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Inicia sesión para ver tu carrito</h1>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">Debes ingresar con tu cuenta de comprador para armar tu carrito de compras.</p>
+        <Link to="/login?next=/carrito" className="rounded-full bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700">
+          Iniciar sesión
+        </Link>
+      </div>
+    );
   }
 
   if (items.length === 0) {

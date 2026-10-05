@@ -6,6 +6,7 @@ import { useCart } from '../../context/CartContext';
 import { useCatalogo } from '../../context/CatalogoContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { esComprador } from '../../utils/roles';
 import ExploreMenu from './ExploreMenu';
 import DepartamentoMenu from './DepartamentoMenu';
 import AccountMenu from './AccountMenu';
@@ -17,7 +18,7 @@ export default function Header() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [logoError, setLogoError] = useState(false);
   const [logoOscuroError, setLogoOscuroError] = useState(false);
-  const { totalItems } = useCart();
+  const { totalItems, pedirLogin } = useCart();
   const { categorias } = useCatalogo();
   const { tema } = useTheme();
   const { usuario } = useAuth();
@@ -115,17 +116,25 @@ export default function Header() {
             <AccountMenu />
             {usuario && <NotificationBell />}
             <ThemeToggle />
-            <Link
-              to="/carrito"
+            <button
+              type="button"
+              onClick={() => {
+                if (!usuario || !esComprador(usuario)) {
+                  pedirLogin('Para acceder a tu carrito de compras, debes iniciar sesión con una cuenta de comprador.');
+                } else {
+                  navigate('/carrito');
+                }
+              }}
               className="relative ml-1 flex items-center gap-1.5 rounded-full p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              aria-label="Carrito de compras"
             >
               <ShoppingCart size={22} />
-              {totalItems > 0 && (
+              {usuario && esComprador(usuario) && totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-gray-900 dark:bg-brand-500 text-[11px] font-bold text-white">
                   {totalItems}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
 
           {/* Íconos compactos: solo mobile */}
@@ -141,14 +150,25 @@ export default function Header() {
             <AccountMenu />
             {usuario && <NotificationBell />}
             <ThemeToggle />
-            <Link to="/carrito" className="relative rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800">
+            <button
+              type="button"
+              onClick={() => {
+                if (!usuario || !esComprador(usuario)) {
+                  pedirLogin('Para acceder a tu carrito de compras, debes iniciar sesión con una cuenta de comprador.');
+                } else {
+                  navigate('/carrito');
+                }
+              }}
+              className="relative rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+              aria-label="Carrito de compras"
+            >
               <ShoppingCart size={22} />
-              {totalItems > 0 && (
+              {usuario && esComprador(usuario) && totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-gray-900 dark:bg-brand-500 text-[11px] font-bold text-white">
                   {totalItems}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
 

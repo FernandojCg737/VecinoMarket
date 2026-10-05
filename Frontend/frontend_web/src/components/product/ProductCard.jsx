@@ -27,9 +27,19 @@ export default function ProductCard({ producto }) {
       </Link>
 
       <div className="flex flex-1 flex-col gap-1.5 p-3">
-        <span className="text-[11px] uppercase tracking-wide text-green-600 dark:text-green-400 font-semibold">
-          {producto.empresa}
-        </span>
+        {producto.empresaId ? (
+          <Link
+            to={`/productos?empresa=${producto.empresaId}&empresaNombre=${encodeURIComponent(producto.empresa)}`}
+            className="text-[11px] uppercase tracking-wide text-green-600 dark:text-green-400 font-semibold hover:underline w-fit"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {producto.empresa}
+          </Link>
+        ) : (
+          <span className="text-[11px] uppercase tracking-wide text-green-600 dark:text-green-400 font-semibold">
+            {producto.empresa}
+          </span>
+        )}
         <Link to={`/productos/${producto.id}`} className="line-clamp-2 text-sm font-medium text-gray-800 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400">
           {producto.nombre}
         </Link>
@@ -47,7 +57,12 @@ export default function ProductCard({ producto }) {
             )}
           </div>
           <button
-            onClick={() => agregarAlCarrito(producto)}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              agregarAlCarrito(producto);
+            }}
             className="grid h-9 w-9 place-items-center rounded-full bg-brand-50 dark:bg-gray-800 text-brand-600 dark:text-brand-400 hover:bg-brand-600 hover:text-white transition-colors"
             title="Agregar al carrito"
           >

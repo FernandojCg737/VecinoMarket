@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { User, LogOut, ChevronDown, Wallet, ClipboardList, Truck, MapPin, Receipt, Star, Tag, Users, MessageCircle, Radio, Bot, LayoutDashboard, Sparkles, UserCog, Building2, Boxes, CreditCard, Sliders } from 'lucide-react';
+import { User, LogOut, ChevronDown, Wallet, ClipboardList, Truck, MapPin, Receipt, Star, Tag, Users, MessageCircle, Radio, Bot, LayoutDashboard, Sparkles, UserCog, Building2, Boxes, CreditCard, Sliders, Lock } from 'lucide-react';
 import Dropdown from '../ui/Dropdown';
 import AdminMenu from './AdminMenu';
 import { useAuth } from '../../context/AuthContext';
-import { esStaff, esEmpresaOEmpleado, esEmpresa, esComprador, tienePermisoEmpleado } from '../../utils/roles';
+import { esStaff, esEmpresaOEmpleado, esEmpresa, esComprador, tienePermisoEmpleado, planPermiteLive, planPermiteIA } from '../../utils/roles';
 
 export default function AccountMenu() {
   const { usuario, logout } = useAuth();
@@ -84,14 +84,46 @@ export default function AccountMenu() {
                 </Link>
               )}
               {tienePermisoEmpleado(usuario, 'gestionar_promociones') && (
-                <Link to="/mi-empresa/lives" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <Radio size={16} /> Live commerce
-                </Link>
+                planPermiteLive(usuario) ? (
+                  <Link to="/mi-empresa/lives" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <Radio size={16} /> Live commerce
+                  </Link>
+                ) : (
+                  <Link
+                    to="/mi-empresa/suscripcion"
+                    title="Función exclusiva del Plan Premium. Haz clic para mejorar tu suscripción."
+                    className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-400 dark:text-gray-500 group"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Radio size={16} className="text-gray-400" />
+                      <span>Live commerce</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300">
+                      <Lock size={10} /> PREMIUM
+                    </span>
+                  </Link>
+                )
               )}
               {tienePermisoEmpleado(usuario, 'gestionar_chat') && (
-                <Link to="/mi-empresa/chatbot" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <Bot size={16} /> Chatbot
-                </Link>
+                planPermiteIA(usuario) ? (
+                  <Link to="/mi-empresa/chatbot" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <Bot size={16} /> Chatbot (IA)
+                  </Link>
+                ) : (
+                  <Link
+                    to="/mi-empresa/suscripcion"
+                    title="Requiere plan con Inteligencia Artificial (Básico o Premium)."
+                    className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-400 dark:text-gray-500 group"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Bot size={16} className="text-gray-400" />
+                      <span>Chatbot</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500">
+                      <Lock size={10} /> IA
+                    </span>
+                  </Link>
+                )
               )}
               {esEmpresa(usuario) && (
                 <>

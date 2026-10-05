@@ -74,3 +74,38 @@ class TienePermisoEmpleado(BasePermission):
             empleado = getattr(user, 'empleado', None)
             return bool(empleado) and empleado.permisos.filter(permiso__codigo=codigo).exists()
         return False
+
+
+class PlanPermiteLiveCommerce(BasePermission):
+    """CU17 / CU20: Verifica que el plan activo de la empresa incluya la función de Live Commerce (ej. Premium)."""
+
+    message = 'Tu plan actual no incluye la función de Live Commerce. Mejora tu plan a Premium para transmitir en vivo.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if not (user and user.is_authenticated):
+            return False
+        if user.es_admin():
+            return True
+        empresa = user.get_empresa()
+        if not empresa or not empresa.plan:
+            return False
+        return bool(empresa.plan.incluye_live_commerce)
+
+
+class PlanPermiteIA(BasePermission):
+    """CU15 / CU20: Verifica que el plan activo de la empresa incluya funciones de Inteligencia Artificial (ej. Básico o Premium)."""
+
+    message = 'Tu plan actual no incluye funciones de Inteligencia Artificial. Mejora tu plan para acceder a esta herramienta.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if not (user and user.is_authenticated):
+            return False
+        if user.es_admin():
+            return True
+        empresa = user.get_empresa()
+        if not empresa or not empresa.plan:
+            return False
+        return bool(empresa.plan.incluye_ia)
+

@@ -135,14 +135,16 @@ class LiveSignalingConsumer(AsyncWebsocketConsumer):
         except LiveCommerceSesion.DoesNotExist:
             return False
 
+        empresa = usuario.get_empresa()
+        if not (empresa and empresa.id == sesion.empresa_id and empresa.plan and empresa.plan.incluye_live_commerce):
+            return False
+
         if usuario.es_empresa():
-            empresa = getattr(usuario, 'empresa', None)
-            return bool(empresa) and empresa.id == sesion.empresa_id
+            return True
         if usuario.es_empleado():
             empleado = getattr(usuario, 'empleado', None)
             return (
                 bool(empleado)
-                and empleado.empresa_id == sesion.empresa_id
                 and empleado.permisos.filter(permiso__codigo='gestionar_promociones').exists()
             )
         return False

@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
-import { ShoppingCart, Minus, Plus, Store, Truck, ShieldCheck, Bot } from 'lucide-react';
+import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
+import { ShoppingCart, Minus, Plus, Store, Truck, ShieldCheck, Bot, MessageCircle } from 'lucide-react';
+import API from '../api/axios';
 import { obtenerProducto } from '../api/catalogo';
 import { useCatalogo } from '../context/CatalogoContext';
+import { useAuth } from '../context/AuthContext';
+import { esComprador } from '../utils/roles';
 import StarRating from '../components/product/StarRating';
 import { useCart } from '../context/CartContext';
 import ChatbotWidget from '../components/chat/ChatbotWidget';
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { usuario } = useAuth();
   const { categorias } = useCatalogo();
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -16,6 +21,7 @@ export default function ProductDetail() {
   const [cantidad, setCantidad] = useState(1);
   const [imagenActiva, setImagenActiva] = useState(0);
   const [mostrarChatbot, setMostrarChatbot] = useState(false);
+  const [iniciandoChat, setIniciandoChat] = useState(false);
   const { agregarAlCarrito } = useCart();
 
   // Igual que en ProductListing: si cambia el id (navegar de un producto a
@@ -34,6 +40,29 @@ export default function ProductDetail() {
       .catch(() => setNoEncontrado(true))
       .finally(() => setCargando(false));
   }, [id]);
+
+  async function handleContactarVendedor() {
+    if (!usuario) {
+      navigate(`/login?next=/productos/${id}`);
+      return;
+    }
+    if (!esComprador(usuario)) {
+      alert('Debes iniciar sesión con una cuenta de comprador para chatear con los vendedores.');
+      return;
+    }
+    setIniciandoChat(true);
+    try {
+      const { data } = await API.post('comunicacion/mis-conversaciones/', {
+        empresa: producto.empresaId,
+      });
+      navigate(`/chat?conversacion=${data.id}`);
+    } catch (err) {
+      console.error(err);
+      navigate('/chat');
+    } finally {
+      setIniciandoChat(false);
+    }
+  }
 
   if (noEncontrado) return <Navigate to="/productos" replace />;
   if (cargando || !producto) {
@@ -80,7 +109,10 @@ export default function ProductDetail() {
         </div>
 
         <div>
-          <Link to={`/productos?q=${encodeURIComponent(producto.empresa)}`} className="flex items-center gap-1.5 text-sm font-semibold text-green-600 dark:text-green-400 hover:underline mb-2">
+          <Link
+            to={`/productos?empresa=${producto.empresaId}&empresaNombre=${encodeURIComponent(producto.empresa)}`}
+            className="flex items-center gap-1.5 text-sm font-semibold text-green-600 dark:text-green-400 hover:underline mb-2"
+          >
             <Store size={16} /> {producto.empresa}
           </Link>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{producto.nombre}</h1>
@@ -118,12 +150,30 @@ export default function ProductDetail() {
             <span className="text-xs text-gray-500 dark:text-gray-400">{producto.stock} disponibles</span>
           </div>
 
-          <button
-            onClick={() => agregarAlCarrito(producto, cantidad)}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-brand-600 px-8 py-3 font-semibold text-white hover:bg-brand-700 transition-colors"
-          >
-            <ShoppingCart size={18} /> Agregar al carrito
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                agregarAlCarrito(producto, cantidad);
+              }}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 rounded-full bg-brand-600 px-8 py-3 font-semibold text-white hover:bg-brand-700 transition-colors shadow-sm"
+            >
+              <ShoppingCart size={18} /> Agregar al carrito
+            </button>
+
+            {producto.empresaId && (
+              <button
+                onClick={handleContactarVendedor}
+                disabled={iniciandoChat}
+                className="flex items-center justify-center gap-2 rounded-full border-2 border-brand-600 text-brand-600 dark:text-brand-400 dark:border-brand-400 px-6 py-3 font-semibold hover:bg-brand-50 dark:hover:bg-brand-950/30 transition-colors disabled:opacity-50"
+                title="Contactar al vendedor por chat interno (CU14)"
+              >
+                <MessageCircle size={18} />
+                {iniciandoChat ? 'Abriendo chat...' : 'Contactar vendedor'}
+              </button>
+            )}
+          </div>
 
           <div className="mt-8 space-y-3 border-t border-gray-200 dark:border-gray-800 pt-6 text-sm text-gray-600 dark:text-gray-400">
             <div className="flex items-center gap-2">
@@ -135,16 +185,52 @@ export default function ProductDetail() {
           </div>
 
           {producto.empresaId && (
-            <div className="mt-6">
-              {mostrarChatbot ? (
-                <ChatbotWidget empresaId={producto.empresaId} empresaNombre={producto.empresa} />
-              ) : (
-                <button
-                  onClick={() => setMostrarChatbot(true)}
-                  className="flex items-center gap-2 rounded-full border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+            <div className="mt-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/40 p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="grid h-9 w-9 place-items-center rounded-lg bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400">
+                    <Store size={18} />
+                  </div>
+                  <div>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{producto.empresa}</span>
+                    {producto.empresaCiudad && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400 block">{producto.empresaCiudad}</span>
+                    )}
+                  </div>
+                </div>
+                <Link
+                  to={`/productos?empresa=${producto.empresaId}&empresaNombre=${encodeURIComponent(producto.empresa)}`}
+                  className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline"
                 >
-                  <Bot size={16} className="text-brand-600 dark:text-brand-400" /> Preguntarle al chatbot de {producto.empresa}
+                  Ver catálogo completo →
+                </Link>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <button
+                  onClick={handleContactarVendedor}
+                  disabled={iniciandoChat}
+                  className="flex items-center gap-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3.5 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm transition-colors"
+                >
+                  <MessageCircle size={15} className="text-brand-600 dark:text-brand-400" />
+                  {iniciandoChat ? 'Abriendo chat...' : 'Contactar vendedor'}
                 </button>
+
+                {!mostrarChatbot && (
+                  <button
+                    onClick={() => setMostrarChatbot(true)}
+                    className="flex items-center gap-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3.5 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm transition-colors"
+                  >
+                    <Bot size={15} className="text-brand-600 dark:text-brand-400" />
+                    Preguntarle al chatbot
+                  </button>
+                )}
+              </div>
+
+              {mostrarChatbot && (
+                <div className="pt-2">
+                  <ChatbotWidget empresaId={producto.empresaId} empresaNombre={producto.empresa} />
+                </div>
               )}
             </div>
           )}

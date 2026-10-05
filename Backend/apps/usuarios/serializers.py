@@ -198,11 +198,15 @@ class RegistrarUsuarioAdminSerializer(serializers.Serializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     empresa_id = serializers.SerializerMethodField()
     empresa_slug = serializers.SerializerMethodField()
+    empresa_plan = serializers.SerializerMethodField()
     permisos = serializers.SerializerMethodField()
 
     class Meta:
         model = Usuario
-        fields = ['id', 'email', 'nombre', 'apellido', 'telefono', 'rol', 'estado', 'empresa_id', 'empresa_slug', 'fecha_registro', 'permisos']
+        fields = [
+            'id', 'email', 'nombre', 'apellido', 'telefono', 'rol', 'estado',
+            'empresa_id', 'empresa_slug', 'empresa_plan', 'fecha_registro', 'permisos'
+        ]
         read_only_fields = fields
 
     def get_empresa_slug(self, obj):
@@ -212,6 +216,22 @@ class UsuarioSerializer(serializers.ModelSerializer):
     def get_empresa_id(self, obj):
         empresa = obj.get_empresa()
         return empresa.id if empresa else None
+
+    def get_empresa_plan(self, obj):
+        empresa = obj.get_empresa()
+        if not empresa or not empresa.plan:
+            return None
+        p = empresa.plan
+        return {
+            'id': p.id,
+            'nombre': p.nombre,
+            'codigo': p.codigo,
+            'duracion_dias': p.duracion_dias,
+            'incluye_ia': p.incluye_ia,
+            'incluye_live_commerce': p.incluye_live_commerce,
+            'limite_productos': p.limite_productos,
+            'porcentaje_comision': str(p.porcentaje_comision),
+        }
 
     def get_permisos(self, obj):
         """CU09: para un EMPLEADO, los codigos de permiso que la empresa le asigno
@@ -440,18 +460,37 @@ class EmpresaAdminSerializer(serializers.ModelSerializer):
     dueno_email = serializers.EmailField(source='usuario_dueno.email', read_only=True)
     dueno_nombre = serializers.CharField(source='usuario_dueno.nombre', read_only=True)
     plan_nombre = serializers.CharField(source='plan.nombre', read_only=True, default=None)
+    plan_info = serializers.SerializerMethodField()
     estado_suscripcion = serializers.SerializerMethodField()
     fecha_inicio = serializers.SerializerMethodField()
     fecha_vencimiento = serializers.SerializerMethodField()
+    tiempo_restante = serializers.SerializerMethodField()
 
     class Meta:
         model = Empresa
         fields = [
             'id', 'razon_social', 'nit', 'slug', 'ciudad', 'departamento',
             'estado', 'dueno_email', 'dueno_nombre', 'creado_en', 'plan',
-            'plan_nombre', 'estado_suscripcion', 'fecha_inicio', 'fecha_vencimiento',
+            'plan_nombre', 'plan_info', 'estado_suscripcion', 'fecha_inicio',
+            'fecha_vencimiento', 'tiempo_restante',
         ]
         read_only_fields = fields
+
+    def get_plan_info(self, empresa):
+        p = empresa.plan
+        if not p:
+            return None
+        return {
+            'id': p.id,
+            'nombre': p.nombre,
+            'codigo': p.codigo,
+            'precio_mensual': str(p.precio_mensual),
+            'duracion_dias': p.duracion_dias,
+            'limite_productos': p.limite_productos,
+            'incluye_live_commerce': p.incluye_live_commerce,
+            'incluye_ia': p.incluye_ia,
+            'porcentaje_comision': str(p.porcentaje_comision),
+        }
 
     def get_estado_suscripcion(self, empresa):
         if empresa.plan_id is None:
@@ -469,6 +508,33 @@ class EmpresaAdminSerializer(serializers.ModelSerializer):
 
     def get_fecha_vencimiento(self, empresa):
         return getattr(empresa, '_susc_vencimiento', None)
+
+    def get_tiempo_restante(self, empresa):
+        vencimiento = self.get_fecha_vencimiento(empresa)
+        if not vencimiento:
+            return None
+        ahora = timezone.now()
+        delta = vencimiento - ahora
+        dias = delta.days
+        if vencimiento < ahora:
+            dias_vencido = abs(dias)
+            return {
+                'expirado': True,
+                'dias': -dias_vencido,
+                'texto': f'Venció hace {dias_vencido} día(s)' if dias_vencido > 0 else 'Venció hoy',
+            }
+        if dias == 0:
+            horas = max(1, int(delta.total_seconds() // 3600))
+            return {
+                'expirado': False,
+                'dias': 0,
+                'texto': f'Vence hoy ({horas}h restantes)',
+            }
+        return {
+            'expirado': False,
+            'dias': dias,
+            'texto': f'{dias} días restantes',
+        }
 
 
 class PermisoSerializer(serializers.ModelSerializer):

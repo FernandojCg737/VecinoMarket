@@ -1,4 +1,4 @@
-﻿from datetime import timedelta
+from datetime import timedelta
 from decimal import ROUND_HALF_UP, Decimal
 
 from django.conf import settings
@@ -19,7 +19,7 @@ from apps.facturacion.models import Factura
 from apps.pagos import paypal_client
 from apps.pagos.paypal_client import PaypalError
 from apps.usuarios.models import Empresa
-from apps.usuarios.permissions import EsEmpresa, EsSuperAdmin
+from apps.usuarios.permissions import EsEmpresa, EsEmpresaOEmpleado, EsSuperAdmin
 
 from .models import Plan, Suscripcion
 from .serializers import EditarSuscripcionSerializer, PlanAdminSerializer, PlanSerializer
@@ -138,7 +138,7 @@ class MiSuscripcionView(APIView):
     """CU01: la empresa ve su plan y vencimiento actuales, para decidir si
     le conviene mejorar de plan."""
 
-    permission_classes = [EsEmpresa]
+    permission_classes = [EsEmpresaOEmpleado]
 
     def get(self, request):
         empresa = request.user.get_empresa()

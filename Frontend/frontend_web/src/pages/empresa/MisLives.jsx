@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { Radio, Plus, Trash2, Play, Square, Film } from 'lucide-react';
+import { Navigate, useNavigate, Link } from 'react-router-dom';
+import { Radio, Plus, Trash2, Play, Square, Film, Lock, Check, Sparkles } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
-import { esEmpresaOEmpleado } from '../../utils/roles';
+import { esEmpresaOEmpleado, planPermiteLive } from '../../utils/roles';
 
 const VACIO = { titulo: '', url_stream: '', productos: [] };
 
@@ -20,6 +20,7 @@ export default function MisLives() {
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [sinPermiso, setSinPermiso] = useState(false);
+  const [sinPermisoPlan, setSinPermisoPlan] = useState(false);
   const [error, setError] = useState('');
 
   const [mostrarForm, setMostrarForm] = useState(false);
@@ -35,24 +36,91 @@ export default function MisLives() {
         setError('');
       })
       .catch((err) => {
-        if (err?.response?.status === 403) setSinPermiso(true);
-        else setError('No se pudo cargar tus transmisiones.');
+        if (err?.response?.status === 403) {
+          const detail = (err?.response?.data?.detail || '').toLowerCase();
+          if (detail.includes('plan') || detail.includes('premium')) {
+            setSinPermisoPlan(true);
+          } else {
+            setSinPermiso(true);
+          }
+        } else {
+          setError('No se pudo cargar tus transmisiones.');
+        }
       })
       .finally(() => setCargando(false));
   }
 
   useEffect(() => {
     if (!usuario || !esEmpresaOEmpleado(usuario)) return;
-    cargarLives();
-    API.get('catalogo/productos/', { params: { empresa: usuario.empresa_id, page_size: 100 } })
-      .then((res) => setProductos(res.data.results))
-      .catch(() => {});
+    if (planPermiteLive(usuario)) {
+      cargarLives();
+      API.get('catalogo/productos/', { params: { empresa: usuario.empresa_id, page_size: 100 } })
+        .then((res) => setProductos(res.data.results))
+        .catch(() => {});
+    } else {
+      setCargando(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario]);
 
   if (cargandoAuth) return null;
   if (!usuario) return <Navigate to="/login?next=/mi-empresa/lives" replace />;
   if (!esEmpresaOEmpleado(usuario)) return <Navigate to="/" replace />;
+
+  // CU17 / CU20: Bloqueo para empresas cuyo plan no incluye Live Commerce (ej. Plan Básico)
+  if (!planPermiteLive(usuario) || sinPermisoPlan) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-purple-50 dark:bg-purple-950/60 flex items-center justify-center mb-4 text-purple-600 dark:text-purple-400">
+          <Radio size={32} />
+        </div>
+        <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 mb-3 border border-amber-200 dark:border-amber-800">
+          <Lock size={12} /> FUNCIÓN EXCLUSIVA PLAN PREMIUM
+        </span>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          Live Commerce no disponible en tu plan actual
+        </h1>
+        <p className="text-sm text-gray-600 dark:text-gray-400 max-w-lg mx-auto mb-6">
+          Tu empresa tiene activo el <strong>{usuario?.empresa_plan?.nombre ? `Plan ${usuario.empresa_plan.nombre}` : 'Plan Básico'}</strong>.
+          Este plan incluye acceso completo a herramientas de <strong>Inteligencia Artificial (IA)</strong>, pero las transmisiones de <strong>Live Commerce</strong> en video interactivo están reservadas para el <strong>Plan Premium</strong>.
+        </p>
+
+        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 text-left max-w-md mx-auto mb-6 space-y-2.5 text-xs text-gray-600 dark:text-gray-300 shadow-xs">
+          <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-gray-100 mb-1">
+            <Sparkles size={14} className="text-amber-500" />
+            <span>Beneficios del Live Commerce en Plan Premium:</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <Check size={14} className="text-green-500 shrink-0 mt-0.5" />
+            <span>Transmisión en vivo de audio y video peer-to-peer directamente con tus compradores.</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <Check size={14} className="text-green-500 shrink-0 mt-0.5" />
+            <span>Catálogo interactivo con productos fijados y venta directa al carrito durante el streaming.</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <Check size={14} className="text-green-500 shrink-0 mt-0.5" />
+            <span>Grabación automática de cada sesión para que tus clientes puedan ver la repetición.</span>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-3">
+          <Link
+            to="/mi-empresa/dashboard"
+            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          >
+            Volver a mi Dashboard
+          </Link>
+          <Link
+            to="/mi-empresa/suscripcion"
+            className="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-sm font-bold text-white shadow-xs transition"
+          >
+            Mejorar a Plan Premium (Bs 129.90)
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!cargando && sinPermiso) {
     return (

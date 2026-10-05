@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    AsistenteVozReportesView,
     CatalogoReportesDinamicosAdminView,
     CatalogoReportesDinamicosView,
     DashboardAdminExportarView,
@@ -54,4 +55,6 @@ urlpatterns = [
     path('reportes-dinamicos/generar/', GenerarReporteDinamicoView.as_view(), name='reportes-dinamicos-generar'),
     path('admin/reportes-dinamicos/catalogo/', CatalogoReportesDinamicosAdminView.as_view(), name='admin-reportes-dinamicos-catalogo'),
     path('admin/reportes-dinamicos/generar/', GenerarReporteDinamicoAdminView.as_view(), name='admin-reportes-dinamicos-generar'),
+    # CU18/CU19: Asistente analítico por comando de voz (IA)
+    path('asistente-voz/', AsistenteVozReportesView.as_view(), name='reportes-asistente-voz'),
 ]

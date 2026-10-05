@@ -1,29 +1,68 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { MessageCircle } from 'lucide-react';
+import { Navigate, useSearchParams } from 'react-router-dom';
+import { MessageCircle, RefreshCw } from 'lucide-react';
 import API from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { esComprador } from '../utils/roles';
 import ChatThread from '../components/chat/ChatThread';
 
+const INTERVALO_MS = 2500;
+
 export default function Chat() {
   const { usuario, cargando: cargandoAuth } = useAuth();
+  const [searchParams] = useSearchParams();
+  const conversacionParam = searchParams.get('conversacion');
+
   const [conversaciones, setConversaciones] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [actualizando, setActualizando] = useState(false);
   const [error, setError] = useState('');
   const [seleccionada, setSeleccionada] = useState(null);
 
-  useEffect(() => {
-    if (!usuario || !esComprador(usuario)) return;
-    setCargando(true);
-    API.get('comunicacion/mis-conversaciones/')
+  function cargarConversaciones(silencioso = false) {
+    if (!silencioso) {
+      setActualizando(true);
+      if (conversaciones.length === 0) setCargando(true);
+    }
+    return API.get('comunicacion/mis-conversaciones/')
       .then((res) => {
         setConversaciones(res.data);
-        if (res.data.length > 0) setSeleccionada(res.data[0].id);
+        setError('');
+        const targetId = conversacionParam ? Number(conversacionParam) : null;
+        setSeleccionada((prev) => {
+          if (res.data.length === 0) return null;
+          if (targetId && res.data.some((c) => c.id === targetId)) return targetId;
+          if (!prev) return res.data[0].id;
+          const sigueExiste = res.data.some((c) => c.id === prev);
+          return sigueExiste ? prev : res.data[0].id;
+        });
       })
-      .catch(() => setError('No se pudo cargar tus conversaciones.'))
-      .finally(() => setCargando(false));
-  }, [usuario]);
+      .catch((err) => {
+        if (!silencioso) setError('No se pudo cargar tus conversaciones.');
+      })
+      .finally(() => {
+        if (!silencioso) {
+          setCargando(false);
+          setActualizando(false);
+        }
+      });
+  }
+
+  useEffect(() => {
+    if (!usuario || !esComprador(usuario)) return;
+    cargarConversaciones(false);
+    const id = setInterval(() => {
+      cargarConversaciones(true);
+    }, INTERVALO_MS);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usuario, conversacionParam]);
+
+  useEffect(() => {
+    if (conversacionParam) {
+      setSeleccionada(Number(conversacionParam));
+    }
+  }, [conversacionParam]);
 
   if (cargandoAuth) return null;
   if (!usuario) return <Navigate to="/login?next=/chat" replace />;
@@ -35,7 +74,28 @@ export default function Chat() {
         <MessageCircle className="text-brand-600 dark:text-brand-400" size={24} />
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Mis chats</h1>
       </div>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">CU14 · Conversaciones con las empresas donde compraste.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
+        <p className="text-sm text-gray-500 dark:text-gray-400">CU14 · Conversaciones con las empresas donde compraste.</p>
+        <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
+          <span className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <span className="text-emerald-700 dark:text-emerald-400 font-semibold">En tiempo real</span>
+            <span>· se actualiza cada {INTERVALO_MS / 1000}s</span>
+          </span>
+          <button
+            type="button"
+            onClick={() => cargarConversaciones(false)}
+            disabled={actualizando}
+            className="flex items-center gap-1.5 text-brand-600 hover:text-brand-700 dark:text-brand-400 font-semibold px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition disabled:opacity-50"
+          >
+            <RefreshCw size={12} className={actualizando ? 'animate-spin' : ''} />
+            <span>{actualizando ? 'Actualizando...' : 'Actualizar ahora'}</span>
+          </button>
+        </div>
+      </div>
 
       {error && <p className="text-sm text-red-600 dark:text-red-400 mb-4">{error}</p>}
 
@@ -51,7 +111,12 @@ export default function Chat() {
             {conversaciones.map((c) => (
               <button
                 key={c.id}
-                onClick={() => setSeleccionada(c.id)}
+                onClick={() => {
+                  setSeleccionada(c.id);
+                  setConversaciones((prev) =>
+                    prev.map((item) => (item.id === c.id ? { ...item, no_leidos: 0 } : item))
+                  );
+                }}
                 className={`w-full text-left rounded-lg border p-3 text-sm ${seleccionada === c.id ? 'border-brand-500 bg-brand-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900'}`}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -70,7 +135,12 @@ export default function Chat() {
           </div>
           <div className="sm:col-span-2">
             {seleccionada && (
-              <ChatThread conversacionId={seleccionada} mensajesUrlBase="comunicacion/conversaciones/" usuarioId={usuario.id} />
+              <ChatThread
+                conversacionId={seleccionada}
+                mensajesUrlBase="comunicacion/conversaciones/"
+                usuarioId={usuario.id}
+                onMensajeEnviado={() => cargarConversaciones(true)}
+              />
             )}
           </div>
         </div>

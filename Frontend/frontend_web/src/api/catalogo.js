@@ -19,6 +19,8 @@ function adaptarProducto(p) {
     categoriaId: p.categoria ? String(p.categoria.id) : '',
     empresa: p.empresa?.razon_social || '',
     empresaId: p.empresa?.id ?? null,
+    empresaLogo: p.empresa?.logo_url || null,
+    empresaCiudad: p.empresa?.ciudad || '',
     precio: Number(p.precio),
     precio_descuento: p.precio_descuento != null ? Number(p.precio_descuento) : null,
     stock: p.stock ?? 0,
@@ -38,10 +40,11 @@ export async function obtenerCategorias() {
   return data.map(adaptarCategoria);
 }
 
-export async function obtenerProductos({ q = '', categoriaId = '' } = {}) {
+export async function obtenerProductos({ q = '', categoriaId = '', empresaId = '' } = {}) {
   const params = { page_size: 100 };
   if (q) params.q = q;
   if (categoriaId) params.categoria = categoriaId;
+  if (empresaId) params.empresa = empresaId;
   const { data } = await API.get('catalogo/productos/', { params });
   return data.results.map(adaptarProducto);
 }

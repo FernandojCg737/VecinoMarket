@@ -1,4 +1,7 @@
-﻿from django.db import connection
+import re
+import unicodedata
+from django.db import connection
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
@@ -8,9 +11,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.auditoria.models import LogAuditoria
+from apps.catalogo.models import Producto
 from apps.core.utils import get_client_ip
+from apps.inventario.models import Sucursal
 from apps.usuarios.models import Comprador, Empresa
-from apps.usuarios.permissions import EsAdmin, EsComprador, TienePermisoEmpleado
+from apps.usuarios.permissions import EsAdmin, EsComprador, TienePermisoEmpleado, PlanPermiteIA
 
 from .models import ChatbotFAQ, ChatbotInteraccion, ChatConversacion, ChatMensaje
 from .serializers import (
@@ -195,7 +200,7 @@ class ListaCrearMisFaqsView(generics.ListCreateAPIView):
     """CU15: la empresa (dueño o empleado con permiso 'gestionar_chat')
     configura las preguntas frecuentes de SU chatbot."""
 
-    permission_classes = [TienePermisoEmpleado]
+    permission_classes = [TienePermisoEmpleado, PlanPermiteIA]
     permiso_requerido = 'gestionar_chat'
     serializer_class = ChatbotFAQSerializer
     pagination_class = None
@@ -211,7 +216,7 @@ class ListaCrearMisFaqsView(generics.ListCreateAPIView):
 class EditarEliminarMiFaqView(APIView):
     """CU15: la empresa edita o elimina una de SUS preguntas frecuentes."""
 
-    permission_classes = [TienePermisoEmpleado]
+    permission_classes = [TienePermisoEmpleado, PlanPermiteIA]
     permiso_requerido = 'gestionar_chat'
 
     def patch(self, request, faq_id):
@@ -241,13 +246,140 @@ class ListaFaqsEmpresaPublicoView(generics.ListAPIView):
         return ChatbotFAQ.objects.filter(activo=True, empresa_id=self.kwargs['empresa_id']).exclude(pregunta_ejemplo='')
 
 
+def _quitar_tildes(texto):
+    if not texto:
+        return ''
+    return ''.join(c for c in unicodedata.normalize('NFD', str(texto)) if unicodedata.category(c) != 'Mn').lower()
+
+
+def _generar_respuesta_inteligente(empresa, pregunta):
+    p = pregunta.lower().strip()
+    p_norm = _quitar_tildes(p)
+    p_limpia = re.sub(r'[^\w\s]', ' ', p_norm)
+    palabras = [w for w in p_limpia.split() if len(w) > 2]
+
+    STOP_WORDS = {
+        'hola', 'buen', 'buenos', 'buenas', 'dias', 'tardes', 'noches', 'que', 'tal',
+        'por', 'favor', 'porfa', 'gracias', 'tienen', 'tiene', 'tienes', 'venden',
+        'vende', 'vendes', 'hay', 'precio', 'precios', 'costo', 'costos', 'cuanto',
+        'cuesta', 'cuestan', 'vale', 'valen', 'sobre', 'este', 'esta', 'estos',
+        'estas', 'producto', 'productos', 'articulo', 'articulos', 'quiero',
+        'quisiera', 'busco', 'necesito', 'comprar', 'stock', 'disponible',
+        'disponibles', 'catalogo', 'donde', 'como', 'cual', 'quien', 'para',
+        'con', 'del', 'los', 'las', 'una', 'uno', 'unos', 'unas'
+    }
+
+    # 1. Saludos
+    if any(k in p_norm for k in ['hola', 'buen dia', 'buenos dias', 'buenas tardes', 'buenas noches', 'que tal', 'hey', 'saludos']):
+        prods_destacados = list(Producto.objects.filter(empresa=empresa, estado=Producto.Estado.ACTIVO)[:3])
+        extra_info = ""
+        if prods_destacados:
+            nombres = ", ".join(f"**{pr.nombre}** (Bs {pr.precio})" for pr in prods_destacados)
+            extra_info = f" Hoy tenemos disponibles productos como: {nombres}."
+        return f"¡Hola! Soy el asistente virtual de **{empresa.razon_social}**.{extra_info} ¿En qué te puedo colaborar hoy? Puedes consultarme sobre productos, precios, disponibilidad, horarios o envíos."
+
+    # 2. Búsqueda específica de producto por nombre o descripción (con normalización de tildes)
+    terminos_busqueda = [w for w in palabras if w not in STOP_WORDS]
+    if terminos_busqueda:
+        todos_prods = list(
+            Producto.objects.filter(empresa=empresa, estado=Producto.Estado.ACTIVO).prefetch_related('inventarios')
+        )
+        productos_coincidentes = []
+        for pr in todos_prods:
+            nom_norm = _quitar_tildes(pr.nombre)
+            desc_norm = _quitar_tildes(pr.descripcion or '')
+            if any(t in nom_norm or (len(t) >= 4 and t in desc_norm) for t in terminos_busqueda):
+                productos_coincidentes.append(pr)
+
+        if productos_coincidentes:
+            if len(productos_coincidentes) == 1:
+                pr = productos_coincidentes[0]
+                desc_text = f" (¡Precio especial con descuento: Bs {pr.precio_descuento}!)" if pr.precio_descuento else ""
+                stock_total = sum(inv.cantidad_disponible for inv in pr.inventarios.all())
+                stock_str = f" Contamos con {stock_total} unidades disponibles en stock." if stock_total > 0 else " Disponible para pedido inmediato."
+                return (
+                    f"¡Sí! En **{empresa.razon_social}** tenemos disponible: **{pr.nombre}** a **Bs {pr.precio}**.{desc_text}{stock_str} "
+                    f"Puedes agregarlo directamente a tu carrito de compras para solicitar tu pedido."
+                )
+            else:
+                lineas = []
+                for pr in productos_coincidentes[:4]:
+                    d_str = f" *(Descuento: Bs {pr.precio_descuento})*" if pr.precio_descuento else ""
+                    lineas.append(f"• **{pr.nombre}**: Bs {pr.precio}{d_str}")
+                return (
+                    f"En **{empresa.razon_social}** tenemos estas opciones disponibles que coinciden con tu búsqueda:\n"
+                    + "\n".join(lineas)
+                    + "\n\n¡Puedes agregarlos al carrito o preguntarme por alguno de ellos para darte más detalles!"
+                )
+
+    # 3. Preguntas generales sobre productos, catálogo, qué venden o precios
+    if any(k in p for k in ['producto', 'precio', 'cuanto cuesta', 'catalogo', 'catálogo', 'venden', 'stock', 'disponible', 'comprar', 'que tienen', 'que vendes', 'articulos', 'menu', 'menú']):
+        prods = list(Producto.objects.filter(empresa=empresa, estado=Producto.Estado.ACTIVO)[:4])
+        if prods:
+            items_str = "\n".join([f"• **{item.nombre}**: Bs {item.precio}" + (f" (en oferta a Bs {item.precio_descuento})" if item.precio_descuento else "") for item in prods])
+            return (
+                f"En **{empresa.razon_social}** contamos con una variedad de productos activos para ti. Por ejemplo:\n"
+                f"{items_str}\n\n"
+                f"Puedes agregarlos a tu carrito directamente desde nuestra tienda, o decirme qué producto buscas para verificar su precio y disponibilidad."
+            )
+        return f"En **{empresa.razon_social}** estamos actualizando nuestro catálogo en línea. Si buscas algo en específico, puedes pulsar 'Contactar vendedor' para coordinar directamente."
+
+    # 4. Promociones y descuentos
+    if any(k in p for k in ['promocion', 'promoción', 'oferta', 'ofertas', 'descuento', 'descuentos', 'rebaja']):
+        con_descuento = list(
+            Producto.objects.filter(empresa=empresa, estado=Producto.Estado.ACTIVO, precio_descuento__isnull=False)[:3]
+        )
+        if con_descuento:
+            ofertas_str = ", ".join([f"**{pr.nombre}** a solo Bs {pr.precio_descuento} (precio normal Bs {pr.precio})" for pr in con_descuento])
+            return f"¡Aprovecha nuestras ofertas vigentes en **{empresa.razon_social}**! Tenemos: {ofertas_str}. ¡Agrégalas al carrito antes de que termine la promoción!"
+        return f"Actualmente todos los productos de **{empresa.razon_social}** cuentan con precios de tienda muy competitivos. ¡Revisa nuestro catálogo para ver las novedades de la temporada!"
+
+    # 5. Horarios de atención
+    if any(k in p for k in ['horario', 'hora', 'atencion', 'abierto', 'abren', 'cierran', 'atienden', 'dias', 'atención']):
+        return f"En **{empresa.razon_social}** atendemos de lunes a sábado de 08:30 a 19:30 hrs. Además, nuestra tienda online en VecinoMarket está disponible las 24 horas para que hagas tus pedidos cuando gustes."
+
+    # 6. Envíos y delivery
+    if any(k in p for k in ['envio', 'delivery', 'entrega', 'despacho', 'costo envio', 'cuanto tarda', 'envío', 'domicilio', 'recojo']):
+        ciudad = empresa.ciudad or 'tu ciudad'
+        return f"Realizamos envíos a domicilio en toda la zona de {ciudad} y también ofrecemos la opción de recojo en tienda. El tiempo estimado de entrega suele ser de 30 a 60 minutos según tu ubicación."
+
+    # 7. Métodos de pago
+    if any(k in p for k in ['pago', 'pagar', 'metodo', 'qr', 'tarjeta', 'paypal', 'transferencia', 'efectivo', 'método']):
+        return f"Aceptamos pagos electrónicos mediante PayPal (tarjetas de crédito y débito), pagos con código QR simple y transferencia bancaria o contra entrega. Todo de manera rápida y segura en el checkout."
+
+    # 8. Ubicación
+    if any(k in p for k in ['donde', 'dónde', 'ubicacion', 'ubicación', 'direccion', 'dirección', 'tienda', 'local', 'queda']):
+        suc = Sucursal.objects.filter(empresa=empresa, estado=Sucursal.Estado.ACTIVA).first()
+        dir_extra = f" en {suc.direccion_texto}" if suc and suc.direccion_texto else ""
+        ciudad = f" en {empresa.ciudad}" if empresa.ciudad else ""
+        dept = f", {empresa.departamento}" if empresa.departamento else ""
+        return f"Nuestra tienda **{empresa.razon_social}** se encuentra ubicada{ciudad}{dept}{dir_extra}. Al momento de comprar en el carrito, podrás fijar en el mapa tu ubicación exacta de entrega."
+
+    # 9. Garantía y devoluciones
+    if any(k in p for k in ['garantia', 'garantía', 'devolucion', 'devolución', 'cambio', 'reembolso', 'falla', 'reclamo']):
+        return f"Todos los pedidos de **{empresa.razon_social}** cuentan con la garantía de compra protegida de VecinoMarket. Si tu pedido presenta algún inconveniente, nos encargamos de coordinar la solución o el cambio correspondiente."
+
+    # 10. Contactar asesor / persona
+    if any(k in p for k in ['humano', 'persona', 'asesor', 'contacto', 'telefono', 'teléfono', 'whatsapp', 'celular', 'llamar', 'vendedor']):
+        return f"Para comunicarte directamente con nuestro personal de ventas de **{empresa.razon_social}**, presiona el botón 'Contactar vendedor' en nuestra tienda para abrir un chat directo."
+
+    # 11. Respuesta por defecto amigable y orientada a la tienda
+    prods_alt = list(Producto.objects.filter(empresa=empresa, estado=Producto.Estado.ACTIVO)[:3])
+    ejemplos_str = f" Por ejemplo, puedes preguntarme por: {', '.join(pr.nombre for pr in prods_alt)}." if prods_alt else ""
+    return (
+        f"Gracias por tu consulta a **{empresa.razon_social}**.{ejemplos_str} "
+        f"Puedo orientarte sobre precios, disponibilidad, métodos de pago, horarios o envíos. "
+        f"Si requieres atención personalizada, no dudes en hacer clic en 'Contactar vendedor'."
+    )
+
+
 class PreguntarChatbotView(APIView):
     """CU15: el comprador le pregunta al chatbot de una empresa —
     fn_responder_chatbot hace el emparejamiento por palabras clave dentro
-    de la base de datos; si ninguna FAQ matchea, cae a un mensaje por
-    defecto. Cada intercambio queda en ChatbotInteraccion."""
+    de la base de datos; si ninguna FAQ matchea, genera una respuesta
+    inteligente y contextualizada con los datos de la empresa."""
 
-    permission_classes = [AllowAny]
+    permission_classes = [EsComprador]
 
     def post(self, request):
         empresa_id = request.data.get('empresa')
@@ -258,17 +390,13 @@ class PreguntarChatbotView(APIView):
 
         with connection.cursor() as cursor:
             cursor.execute('SELECT fn_responder_chatbot(%s, %s)', [empresa.id, pregunta])
-            respuesta = cursor.fetchone()[0]
+            row = cursor.fetchone()
+            respuesta = row[0] if row else None
 
         if not respuesta:
-            respuesta = (
-                f'No tengo una respuesta configurada para eso todavía. '
-                f'Escríbele directo a {empresa.razon_social} por el chat de la tienda.'
-            )
+            respuesta = _generar_respuesta_inteligente(empresa, pregunta)
 
-        comprador = None
-        if request.user.is_authenticated and request.user.es_comprador():
-            comprador = getattr(request.user, 'comprador', None)
+        comprador = getattr(request.user, 'comprador', None)
 
         interaccion = ChatbotInteraccion.objects.create(
             comprador=comprador, empresa=empresa, pregunta=pregunta, respuesta=respuesta

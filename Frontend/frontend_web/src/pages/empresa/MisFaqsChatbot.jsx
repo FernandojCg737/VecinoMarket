@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { Bot, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Navigate, Link } from 'react-router-dom';
+import { Bot, Plus, Pencil, Trash2, Lock } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
-import { esEmpresaOEmpleado } from '../../utils/roles';
+import { esEmpresaOEmpleado, planPermiteIA } from '../../utils/roles';
 
 const VACIO = { palabras_clave: '', pregunta_ejemplo: '', respuesta: '' };
 
@@ -12,6 +12,7 @@ export default function MisFaqsChatbot() {
   const [faqs, setFaqs] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [sinPermiso, setSinPermiso] = useState(false);
+  const [sinPermisoPlan, setSinPermisoPlan] = useState(false);
   const [error, setError] = useState('');
 
   const [mostrarForm, setMostrarForm] = useState(false);
@@ -28,21 +29,68 @@ export default function MisFaqsChatbot() {
         setError('');
       })
       .catch((err) => {
-        if (err?.response?.status === 403) setSinPermiso(true);
-        else setError('No se pudo cargar tus preguntas frecuentes.');
+        if (err?.response?.status === 403) {
+          const detail = (err?.response?.data?.detail || '').toLowerCase();
+          if (detail.includes('plan') || detail.includes('inteligencia artificial') || detail.includes('ia')) {
+            setSinPermisoPlan(true);
+          } else {
+            setSinPermiso(true);
+          }
+        } else {
+          setError('No se pudo cargar tus preguntas frecuentes.');
+        }
       })
       .finally(() => setCargando(false));
   }
 
   useEffect(() => {
     if (!usuario || !esEmpresaOEmpleado(usuario)) return;
-    cargar();
+    if (planPermiteIA(usuario)) {
+      cargar();
+    } else {
+      setCargando(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario]);
 
   if (cargandoAuth) return null;
   if (!usuario) return <Navigate to="/login?next=/mi-empresa/chatbot" replace />;
   if (!esEmpresaOEmpleado(usuario)) return <Navigate to="/" replace />;
+
+  // CU15 / CU20: Bloqueo si el plan no incluye IA (ej. Plan Prueba)
+  if (!planPermiteIA(usuario) || sinPermisoPlan) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center mb-4 text-amber-600 dark:text-amber-400">
+          <Bot size={32} />
+        </div>
+        <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 mb-3 border border-amber-200 dark:border-amber-800">
+          <Lock size={12} /> FUNCIÓN EXCLUSIVA PLANES BÁSICO Y PREMIUM
+        </span>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          Chatbot con IA no disponible en tu plan
+        </h1>
+        <p className="text-sm text-gray-600 dark:text-gray-400 max-w-lg mx-auto mb-6">
+          Tu empresa tiene actualmente el <strong>{usuario?.empresa_plan?.nombre ? `Plan ${usuario.empresa_plan.nombre}` : 'Plan Prueba'}</strong>.
+          Las funciones de asistencia automatizada y Chatbot con Inteligencia Artificial requieren el <strong>Plan Básico</strong> o <strong>Plan Premium</strong>.
+        </p>
+        <div className="flex items-center justify-center gap-3">
+          <Link
+            to="/mi-empresa/dashboard"
+            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          >
+            Volver a mi Dashboard
+          </Link>
+          <Link
+            to="/mi-empresa/suscripcion"
+            className="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-sm font-bold text-white shadow-xs transition"
+          >
+            Ver Planes Disponibles
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!cargando && sinPermiso) {
     return (

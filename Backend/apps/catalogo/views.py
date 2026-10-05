@@ -1,4 +1,4 @@
-﻿from django.db import connection, models
+from django.db import connection, models
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
@@ -14,7 +14,7 @@ from decimal import Decimal
 from apps.auditoria.models import LogAuditoria
 from apps.core.utils import get_client_ip
 from apps.usuarios.models import Empresa
-from apps.usuarios.permissions import EsAdmin, TienePermisoEmpleado
+from apps.usuarios.permissions import EsAdmin, TienePermisoEmpleado, PlanPermiteIA
 
 from .ia import ServicioIANoDisponible, sugerir_categoria
 from .models import Categoria, CategorizacionIALog, Producto, ProductoImagen
@@ -63,7 +63,17 @@ class ListaProductosView(generics.ListAPIView):
         qs = _productos_queryset().order_by('-creado_en')
         q = self.request.query_params.get('q')
         if q:
-            qs = qs.filter(nombre__icontains=q)
+            qs = qs.filter(
+                models.Q(nombre__icontains=q)
+                | models.Q(descripcion__icontains=q)
+                | models.Q(empresa__razon_social__icontains=q)
+            )
+        empresa_id = self.request.query_params.get('empresa')
+        if empresa_id:
+            qs = qs.filter(empresa_id=empresa_id)
+        categoria_id = self.request.query_params.get('categoria')
+        if categoria_id:
+            qs = qs.filter(categoria_id=categoria_id)
         return qs
 
 
@@ -433,7 +443,7 @@ class SugerirCategoriaMiProductoView(APIView):
     PROPIOS productos — misma lógica que SugerirCategoriaProductoView,
     acotada a su propio producto (verificación de tenant)."""
 
-    permission_classes = [TienePermisoEmpleado]
+    permission_classes = [TienePermisoEmpleado, PlanPermiteIA]
     permiso_requerido = 'gestionar_productos'
 
     def post(self, request, producto_id):
