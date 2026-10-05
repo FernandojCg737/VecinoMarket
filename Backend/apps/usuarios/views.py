@@ -4,7 +4,7 @@ from decimal import ROUND_HALF_UP, Decimal
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.db import connection
-from django.db.models import OuterRef, Q, Subquery
+from django.db.models import F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import status
@@ -762,7 +762,7 @@ class ListaEmpresasAdminView(ListAPIView):
         with connection.cursor() as cursor:
             cursor.execute('CALL sp_expirar_suscripciones_vencidas();')
 
-        ultima_suscripcion = Suscripcion.objects.filter(empresa=OuterRef('pk')).order_by('-fecha_vencimiento')
+        ultima_suscripcion = Suscripcion.objects.filter(empresa=OuterRef('pk')).order_by('-fecha_inicio', '-id')
         queryset = (
             Empresa.objects.select_related('usuario_dueno', 'plan')
             .annotate(
@@ -770,7 +770,7 @@ class ListaEmpresasAdminView(ListAPIView):
                 _susc_inicio=Subquery(ultima_suscripcion.values('fecha_inicio')[:1]),
                 _susc_vencimiento=Subquery(ultima_suscripcion.values('fecha_vencimiento')[:1]),
             )
-            .order_by('-creado_en')
+            .order_by(F('_susc_inicio').desc(nulls_last=True), '-actualizado_en', '-creado_en')
         )
 
         estado = self.request.query_params.get('estado')

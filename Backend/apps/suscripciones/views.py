@@ -168,6 +168,18 @@ class MejorarPlanCheckoutView(APIView):
             return Response({'detail': 'No puedes cambiarte al plan de Prueba.'}, status=status.HTTP_400_BAD_REQUEST)
 
         empresa = request.user.get_empresa()
+        if empresa.plan:
+            if empresa.plan.codigo == Plan.Codigo.PREMIUM:
+                return Response(
+                    {'detail': 'Tu empresa ya cuenta con el plan más alto (Premium).'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if plan.precio_mensual <= empresa.plan.precio_mensual:
+                return Response(
+                    {'detail': f'Solo puedes mejorar a un plan superior al actual ({empresa.plan.nombre}).'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         monto_usd = (plan.precio_mensual / settings.TASA_CAMBIO_USD_BOB).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         try:
             orden = paypal_client.crear_orden(monto_usd)
@@ -245,3 +257,73 @@ class MejorarPlanConfirmarView(APIView):
         return Response({
             'detail': 'Plan actualizado.', 'plan': PlanSerializer(plan).data, 'fecha_vencimiento': vencimiento,
         })
+
+
+class CancelarSuscripcionView(APIView):
+    """CU01: la empresa cancela su suscripción de pago actual y regresa al plan Prueba."""
+
+    permission_classes = [EsEmpresa]
+
+    def post(self, request):
+        empresa = request.user.get_empresa()
+        if not empresa:
+            return Response({'detail': 'No se encontró la empresa asociada.'}, status=status.HTTP_404_NOT_FOUND)
+
+        plan_actual = empresa.plan
+        if plan_actual and plan_actual.codigo == Plan.Codigo.PRUEBA:
+            return Response(
+                {'detail': 'Tu empresa ya cuenta con el plan de Prueba.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        plan_prueba = Plan.objects.filter(codigo=Plan.Codigo.PRUEBA).first()
+        if not plan_prueba:
+            plan_prueba = Plan.objects.filter(precio_mensual=0).first()
+
+        if not plan_prueba:
+            return Response(
+                {'detail': 'No se encontró el plan de Prueba en el sistema.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        ahora = timezone.now()
+        duracion = plan_prueba.duracion_dias or 30
+        vencimiento = ahora + timedelta(days=duracion)
+
+        with transaction.atomic():
+            susc_actual = Suscripcion.objects.filter(
+                empresa=empresa, estado=Suscripcion.Estado.ACTIVA
+            ).order_by('-fecha_vencimiento').first()
+
+            if susc_actual:
+                susc_actual.estado = Suscripcion.Estado.CANCELADA
+                susc_actual.save(update_fields=['estado', 'actualizado_en'])
+
+            nueva_susc = Suscripcion.objects.create(
+                empresa=empresa,
+                plan=plan_prueba,
+                fecha_inicio=ahora,
+                fecha_vencimiento=vencimiento,
+                estado=Suscripcion.Estado.ACTIVA,
+            )
+
+            empresa.plan = plan_prueba
+            empresa.save(update_fields=['plan', 'actualizado_en'])
+
+            LogAuditoria.objects.create(
+                usuario=request.user,
+                accion='CANCELAR_SUSCRIPCION',
+                entidad_afectada='empresa',
+                entidad_id=empresa.id,
+                detalle={
+                    'plan_cancelado': plan_actual.nombre if plan_actual else 'Sin plan',
+                    'nuevo_plan': plan_prueba.nombre,
+                },
+                ip_origen=get_client_ip(request),
+            )
+
+        return Response({
+            'detail': f'Suscripción cancelada exitosamente. Tu empresa ha vuelto al plan {plan_prueba.nombre}.',
+            'plan': PlanSerializer(plan_prueba).data,
+            'fecha_vencimiento': vencimiento,
+        }, status=status.HTTP_200_OK)

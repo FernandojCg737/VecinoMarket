@@ -99,6 +99,13 @@ export default function PlanesAdmin() {
     if (!usuario || !esSuperAdmin(usuario)) return;
     cargarPlanes();
     cargarEmpresas();
+
+    function onFocus() {
+      cargarPlanes();
+      cargarEmpresas();
+    }
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario]);
 
@@ -251,9 +258,9 @@ export default function PlanesAdmin() {
     setTimeout(() => setMensajeExito(''), 4500);
   }
 
-  // Filtrado reactivo de empresas
+  // Filtrado reactivo de empresas (ordenando suscripciones y altas más recientes primero)
   const empresasFiltradas = useMemo(() => {
-    return empresas.filter((emp) => {
+    const filtradas = empresas.filter((emp) => {
       // Búsqueda de texto
       if (busqueda.trim()) {
         const q = busqueda.toLowerCase();
@@ -283,6 +290,12 @@ export default function PlanesAdmin() {
       if (filtroPrivilegio === 'LIVE' && !emp.plan_info?.incluye_live_commerce) return false;
 
       return true;
+    });
+
+    return filtradas.sort((a, b) => {
+      const fechaA = new Date(a.fecha_inicio || a.actualizado_en || a.creado_en || 0).getTime();
+      const fechaB = new Date(b.fecha_inicio || b.actualizado_en || b.creado_en || 0).getTime();
+      return fechaB - fechaA;
     });
   }, [empresas, busqueda, filtroPlan, filtroEstadoSusc, filtroPrivilegio]);
 
@@ -315,8 +328,22 @@ export default function PlanesAdmin() {
           </div>
         </div>
 
-        {/* Botón nuevo plan */}
+        {/* Acciones del encabezado */}
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              cargarPlanes();
+              cargarEmpresas();
+            }}
+            disabled={cargandoEmpresas || cargandoPlanes}
+            className="flex items-center gap-1.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 px-3.5 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm transition disabled:opacity-50"
+            title="Recargar listado de empresas y suscripciones"
+          >
+            <RefreshCw size={15} className={cargandoEmpresas || cargandoPlanes ? 'animate-spin' : ''} />
+            <span className="hidden sm:inline">Refrescar</span>
+          </button>
+
           <button
             onClick={abrirNuevoPlan}
             className="flex items-center gap-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition"
