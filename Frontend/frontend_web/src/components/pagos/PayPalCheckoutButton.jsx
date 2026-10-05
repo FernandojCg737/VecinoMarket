@@ -57,6 +57,7 @@ export default function PayPalCheckoutButton({
         sessionRef.current = modo === 'guardar'
           ? sdk.createPayPalSavePaymentSession(callbacks)
           : sdk.createPayPalOneTimePaymentSession(callbacks);
+        setCargando(false);
       })
       .catch((err) => {
         console.error('Error al inicializar PayPal:', err);
