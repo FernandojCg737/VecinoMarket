@@ -991,7 +991,7 @@ class EditarEliminarMiDireccionView(APIView):
     permission_classes = [EsComprador]
 
     def patch(self, request, direccion_id):
-        direccion = get_object_or_404(Direccion, id=direccion_id, comprador__usuario=request.user)
+        direccion = get_object_or_404(Direccion, id=direccion_id, comprador__usuario=request.user, activo=True)
         serializer = DireccionSerializer(direccion, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -999,8 +999,19 @@ class EditarEliminarMiDireccionView(APIView):
         return Response(DireccionSerializer(direccion).data)
 
     def delete(self, request, direccion_id):
-        direccion = get_object_or_404(Direccion, id=direccion_id, comprador__usuario=request.user)
+        direccion = get_object_or_404(Direccion, id=direccion_id, comprador__usuario=request.user, activo=True)
         alias = direccion.alias
-        direccion.delete()
+        if direccion.pedidos_envio.exists():
+            direccion.activo = False
+            direccion.es_predeterminada = False
+            direccion.save(update_fields=['activo', 'es_predeterminada', 'actualizado_en'])
+        else:
+            try:
+                direccion.delete()
+            except Exception:
+                direccion.activo = False
+                direccion.es_predeterminada = False
+                direccion.save(update_fields=['activo', 'es_predeterminada', 'actualizado_en'])
         _log(request, 'ELIMINAR_DIRECCION', 'direccion', direccion_id, detalle={'alias': alias})
         return Response(status=status.HTTP_204_NO_CONTENT)
+

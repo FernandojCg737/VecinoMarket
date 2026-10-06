@@ -644,4 +644,8 @@ class ConfirmarPagoCheckoutView(APIView):
         _log(request, 'CONFIRMAR_PAGO', orden.id, {'aprobado': aprobado, 'paypal_order_id': paypal_order_id}, entidad_afectada='orden_compra')
         if not aprobado:
             return Response({'detail': 'PayPal no aprobó el pago.'}, status=status.HTTP_402_PAYMENT_REQUIRED)
-        return Response({'orden_compra_id': orden.id, 'numeros_pedido': list(orden.pedidos.values_list('numero_pedido', flat=True))})
+        return Response({
+            'aprobado': True,
+            'orden_compra_id': orden.id,
+            'numeros_pedido': list(orden.pedidos.values_list('numero_pedido', flat=True)),
+        })
