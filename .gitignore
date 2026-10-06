@@ -40,3 +40,10 @@ GeneratedPluginRegistrant.java
 .idea/
 Thumbs.db
 .DS_Store
+
+# Documentación pesada y binarios (Diagramas y Word)
+Documentacion/Diagramas/
+Documentacion/*.docx
+~$*.docx
+*.ldb
+*.eap
