@@ -8,6 +8,7 @@ import '../services/catalogo_service.dart';
 import '../services/theme_service.dart';
 import 'auth_screen.dart';
 import 'cart_screen.dart';
+import 'live_commerce_screen.dart';
 import 'product_detail_screen.dart';
 import 'profile_screen.dart';
 
@@ -53,10 +54,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset(
-          esOscuro ? 'assets/images/logo-dark.png' : 'assets/images/logo.png',
-          height: 32,
-          fit: BoxFit.contain,
+        titleSpacing: 12,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              esOscuro ? 'assets/images/logo-dark.png' : 'assets/images/logo.png',
+              height: 28,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 8),
+            InkWell(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LiveCommerceScreen()),
+              ),
+              borderRadius: BorderRadius.circular(999),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDC2626),
+                  borderRadius: BorderRadius.circular(999),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x33DC2626),
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.sensors, color: Colors.white, size: 13),
+                    SizedBox(width: 4),
+                    Text(
+                      'LIVE',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
         actions: [
           IconButton(

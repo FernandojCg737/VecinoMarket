@@ -5,6 +5,13 @@ import '../services/auth_service.dart';
 import 'admin/admin_empresas_screen.dart';
 import 'admin/admin_usuarios_screen.dart';
 import 'admin/bitacora_screen.dart';
+import 'buyer/buyer_addresses_screen.dart';
+import 'buyer/buyer_cards_screen.dart';
+import 'buyer/buyer_dashboard_screen.dart';
+import 'buyer/buyer_recommendations_screen.dart';
+import 'buyer/buyer_reviews_screen.dart';
+import 'buyer/buyer_store_chatbot_screen.dart';
+import 'chat_screen.dart';
 import 'mis_pedidos_screen.dart';
 
 const _nombresRol = {
@@ -91,6 +98,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _confirmarCerrarSesion() async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('¿Cerrar sesión?'),
+        content: const Text('¿Estás seguro de que deseas salir de tu cuenta de VecinoMarket?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Cerrar sesión'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar == true && mounted) {
+      context.read<AuthService>().logout();
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final usuario = context.watch<AuthService>().usuario;
@@ -98,218 +128,345 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return const Scaffold(body: Center(child: Text('No hay sesión activa.')));
     }
     final rol = usuario['rol'] as String? ?? '';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? const Color(0xFF111827) : Colors.white;
+    final cardBg = isDark ? const Color(0xFF1F2937) : const Color(0xFFF9FAFB);
+    final borderColor = isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mi perfil')),
+      backgroundColor: bgColor,
+      appBar: AppBar(
+        title: const Text('Mi perfil', style: TextStyle(fontWeight: FontWeight.bold)),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${usuario['nombre'] ?? ''} ${usuario['apellido'] ?? ''}'.trim(),
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        if (!_editando)
-                          TextButton.icon(
-                            icon: const Icon(Icons.edit, size: 16),
-                            label: const Text('Editar'),
-                            onPressed: () => setState(() => _editando = true),
-                          ),
-                      ],
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(_nombresRol[rol] ?? rol, style: const TextStyle(fontSize: 11)),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(usuario['email'] ?? '', style: TextStyle(color: Colors.grey.shade600)),
-                    const SizedBox(height: 16),
-                    if (_editando) ...[
-                      TextField(
-                        controller: _nombreCtrl,
-                        decoration: const InputDecoration(labelText: 'Nombre', border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _apellidoCtrl,
-                        decoration: const InputDecoration(labelText: 'Apellido', border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _telefonoCtrl,
-                        keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(labelText: 'Teléfono', border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: _guardando ? null : () => setState(() => _editando = false),
-                              child: const Text('Cancelar'),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: FilledButton(
-                              onPressed: _guardando ? null : _guardarPerfil,
-                              child: _guardando
-                                  ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                                  : const Text('Guardar'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ] else ...[
-                      _filaDato('Teléfono', (usuario['telefono'] as String?)?.isNotEmpty == true ? usuario['telefono'] : 'No registrado'),
-                    ],
-                  ],
-                ),
+            // Saludo y encabezado superior (Idéntico a Captura 2)
+            Text(
+              'Hola, ${usuario['nombre'] ?? 'Usuario'}',
+              style: TextStyle(
+                fontSize: 14,
+                color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
               ),
             ),
-            if (rol == 'COMPRADOR') ...[
-              const SizedBox(height: 16),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.receipt_long_outlined),
-                  title: const Text('Mis pedidos'),
-                  subtitle: const Text('Historial de tus compras (CU26)'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MisPedidosScreen())),
-                ),
-              ),
-            ],
-            if (rol == 'ADMIN' || rol == 'SUPERADMIN') ...[
-              const SizedBox(height: 16),
-              Card(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
-                      child: Text('Administración', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    if (rol == 'SUPERADMIN')
-                      ListTile(
-                        leading: const Icon(Icons.receipt_long_outlined),
-                        title: const Text('Bitácora'),
-                        subtitle: const Text('Accesos y acciones críticas (CU22)'),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BitacoraScreen())),
-                      ),
-                    ListTile(
-                      leading: const Icon(Icons.people_outline),
-                      title: const Text('Usuarios'),
-                      subtitle: const Text('Bloquear o desbloquear cuentas'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminUsuariosScreen())),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.store_outlined),
-                      title: const Text('Empresas'),
-                      subtitle: const Text('Suspender o reactivar empresas'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminEmpresasScreen())),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ),
-              ),
-            ],
+            const SizedBox(height: 2),
+            const Text(
+              'Mi perfil',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+            ),
             const SizedBox(height: 16),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Contraseña', style: TextStyle(fontWeight: FontWeight.bold)),
-                        if (!_cambiandoPassword)
-                          TextButton(
-                            onPressed: () => setState(() => _cambiandoPassword = true),
-                            child: const Text('Cambiar'),
-                          ),
-                      ],
-                    ),
-                    if (_cambiandoPassword) ...[
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _actualCtrl,
-                        obscureText: true,
-                        decoration: const InputDecoration(labelText: 'Contraseña actual', border: OutlineInputBorder()),
+
+            // Tarjeta de información del usuario
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: borderColor),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 24,
+                        backgroundColor: const Color(0xFFD97706).withValues(alpha: 0.15),
+                        child: Text(
+                          (usuario['nombre'] as String? ?? 'U').characters.first.toUpperCase(),
+                          style: const TextStyle(color: Color(0xFFD97706), fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
                       ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _nuevaCtrl,
-                        obscureText: true,
-                        decoration: const InputDecoration(labelText: 'Contraseña nueva', border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _confirmarCtrl,
-                        obscureText: true,
-                        decoration: const InputDecoration(labelText: 'Confirmar contraseña nueva', border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: _guardando ? null : () => setState(() => _cambiandoPassword = false),
-                              child: const Text('Cancelar'),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${usuario['nombre'] ?? ''} ${usuario['apellido'] ?? ''}'.trim(),
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: FilledButton(
-                              onPressed: _guardando ? null : _guardarPassword,
-                              child: const Text('Guardar'),
+                            const SizedBox(height: 2),
+                            Text(
+                              usuario['email'] ?? '',
+                              style: TextStyle(fontSize: 12, color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280)),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFD97706).withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          _nombresRol[rol] ?? rol,
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFD97706)),
+                        ),
                       ),
                     ],
+                  ),
+                  const Divider(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Datos personales',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: isDark ? Colors.white70 : Colors.black87),
+                      ),
+                      TextButton.icon(
+                        icon: Icon(_editando ? Icons.close : Icons.edit, size: 15),
+                        label: Text(_editando ? 'Cancelar' : 'Editar'),
+                        onPressed: () => setState(() => _editando = !_editando),
+                      ),
+                    ],
+                  ),
+                  if (_editando) ...[
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _nombreCtrl,
+                      decoration: const InputDecoration(labelText: 'Nombre', border: OutlineInputBorder(), isDense: true),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _apellidoCtrl,
+                      decoration: const InputDecoration(labelText: 'Apellido', border: OutlineInputBorder(), isDense: true),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _telefonoCtrl,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(labelText: 'Teléfono', border: OutlineInputBorder(), isDense: true),
+                    ),
+                    const SizedBox(height: 12),
+                    FilledButton(
+                      style: FilledButton.styleFrom(backgroundColor: const Color(0xFFD97706)),
+                      onPressed: _guardando ? null : _guardarPerfil,
+                      child: _guardando
+                          ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Text('Guardar cambios'),
+                    ),
+                  ] else ...[
+                    _filaDato('Teléfono', (usuario['telefono'] as String?)?.isNotEmpty == true ? usuario['telefono'] : 'No registrado'),
                   ],
-                ),
+
+                  // Sección contraseña
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Seguridad y contraseña',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: isDark ? Colors.white70 : Colors.black87),
+                      ),
+                      TextButton(
+                        onPressed: () => setState(() => _cambiandoPassword = !_cambiandoPassword),
+                        child: Text(_cambiandoPassword ? 'Cancelar' : 'Cambiar'),
+                      ),
+                    ],
+                  ),
+                  if (_cambiandoPassword) ...[
+                    const SizedBox(height: 6),
+                    TextField(
+                      controller: _actualCtrl,
+                      obscureText: true,
+                      decoration: const InputDecoration(labelText: 'Contraseña actual', border: OutlineInputBorder(), isDense: true),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _nuevaCtrl,
+                      obscureText: true,
+                      decoration: const InputDecoration(labelText: 'Contraseña nueva', border: OutlineInputBorder(), isDense: true),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _confirmarCtrl,
+                      obscureText: true,
+                      decoration: const InputDecoration(labelText: 'Confirmar contraseña nueva', border: OutlineInputBorder(), isDense: true),
+                    ),
+                    const SizedBox(height: 12),
+                    FilledButton(
+                      style: FilledButton.styleFrom(backgroundColor: const Color(0xFFD97706)),
+                      onPressed: _guardando ? null : _guardarPassword,
+                      child: _guardando
+                          ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Text('Actualizar contraseña'),
+                    ),
+                  ],
+                  if (_error != null) ...[
+                    const SizedBox(height: 8),
+                    Text(_error!, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                  ],
+                  if (_mensaje != null) ...[
+                    const SizedBox(height: 8),
+                    Text(_mensaje!, style: const TextStyle(color: Colors.green, fontSize: 12)),
+                  ],
+                ],
               ),
             ),
-            if (_error != null) ...[
-              const SizedBox(height: 12),
-              Text(_error!, style: const TextStyle(color: Colors.red)),
+
+            const SizedBox(height: 20),
+
+            // SECCIÓN COMPRADOR: TODAS LAS FUNCIONALIDADES (Captura 2)
+            if (rol == 'COMPRADOR' || rol.isEmpty) ...[
+              const Text(
+                'Opciones de comprador',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+
+              _buildMenuOpcion(
+                icon: Icons.dashboard_outlined,
+                titulo: 'Mi cuenta',
+                subtitulo: 'Resumen, estadísticas y accesos directos',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerDashboardScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.auto_awesome_outlined,
+                titulo: 'Recomendado para ti',
+                subtitulo: 'Productos sugeridos con inteligencia artificial',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerRecommendationsScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.location_on_outlined,
+                titulo: 'Mis direcciones',
+                subtitulo: 'Gestiona tus direcciones de envío a domicilio',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerAddressesScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.credit_card_outlined,
+                titulo: 'Métodos de pago',
+                subtitulo: 'Tarjetas y métodos guardados seguros',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerCardsScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.receipt_long_outlined,
+                titulo: 'Mis compras',
+                subtitulo: 'Historial de pedidos y compras realizadas (CU26)',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MisPedidosScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.star_outline,
+                titulo: 'Mis reseñas',
+                subtitulo: 'Calificaciones y opiniones de tus compras (CU13)',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerReviewsScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.chat_bubble_outline,
+                titulo: 'Mis chats',
+                subtitulo: 'Mensajería directa en tiempo real con las tiendas (CU14)',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.smart_toy_outlined,
+                titulo: 'Chatbot de tiendas',
+                subtitulo: 'Pregunta a los asistentes virtuales de cada tienda (CU15)',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerStoreChatbotScreen())),
+              ),
+              const SizedBox(height: 6),
+              _buildMenuOpcion(
+                icon: Icons.logout,
+                titulo: 'Cerrar sesión',
+                subtitulo: 'Salir de tu cuenta en este dispositivo',
+                colorTexto: Colors.redAccent,
+                colorIcono: Colors.redAccent,
+                mostrarChevron: false,
+                onTap: _confirmarCerrarSesion,
+              ),
             ],
-            if (_mensaje != null) ...[
-              const SizedBox(height: 12),
-              Text(_mensaje!, style: const TextStyle(color: Colors.green)),
+
+            // SECCIÓN ADMINISTRACIÓN (Si es ADMIN o SUPERADMIN)
+            if (rol == 'ADMIN' || rol == 'SUPERADMIN') ...[
+              const SizedBox(height: 20),
+              const Text(
+                'Administración del sistema',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              if (rol == 'SUPERADMIN')
+                _buildMenuOpcion(
+                  icon: Icons.receipt_long_outlined,
+                  titulo: 'Bitácora',
+                  subtitulo: 'Accesos y acciones críticas (CU22)',
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BitacoraScreen())),
+                ),
+              _buildMenuOpcion(
+                icon: Icons.people_outline,
+                titulo: 'Usuarios',
+                subtitulo: 'Bloquear o desbloquear cuentas',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminUsuariosScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.store_outlined,
+                titulo: 'Empresas',
+                subtitulo: 'Suspender o reactivar empresas',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminEmpresasScreen())),
+              ),
+              const SizedBox(height: 6),
+              _buildMenuOpcion(
+                icon: Icons.logout,
+                titulo: 'Cerrar sesión',
+                colorTexto: Colors.redAccent,
+                colorIcono: Colors.redAccent,
+                mostrarChevron: false,
+                onTap: _confirmarCerrarSesion,
+              ),
             ],
+
             const SizedBox(height: 24),
-            OutlinedButton.icon(
-              icon: const Icon(Icons.logout, color: Colors.red),
-              label: const Text('Cerrar sesión', style: TextStyle(color: Colors.red)),
-              onPressed: () {
-                context.read<AuthService>().logout();
-                Navigator.pop(context);
-              },
-            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildMenuOpcion({
+    required IconData icon,
+    required String titulo,
+    String? subtitulo,
+    required VoidCallback onTap,
+    Color? colorTexto,
+    Color? colorIcono,
+    bool mostrarChevron = true,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1F2937) : const Color(0xFFF9FAFB);
+    final borderColor = isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: borderColor),
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: colorIcono ?? const Color(0xFFD97706), size: 22),
+        title: Text(
+          titulo,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: colorTexto ?? (isDark ? Colors.white : const Color(0xFF111827)),
+          ),
+        ),
+        subtitle: subtitulo != null
+            ? Text(
+                subtitulo,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+                ),
+              )
+            : null,
+        trailing: mostrarChevron
+            ? Icon(Icons.chevron_right, size: 20, color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280))
+            : null,
+        onTap: onTap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
     );
   }
@@ -319,8 +476,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          SizedBox(width: 90, child: Text(etiqueta, style: TextStyle(color: Colors.grey.shade600, fontSize: 13))),
-          Expanded(child: Text(valor ?? '—')),
+          SizedBox(width: 90, child: Text(etiqueta, style: const TextStyle(color: Colors.grey, fontSize: 13))),
+          Expanded(child: Text(valor ?? '—', style: const TextStyle(fontSize: 13))),
         ],
       ),
     );

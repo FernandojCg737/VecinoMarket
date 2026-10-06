@@ -95,6 +95,25 @@ class ApiClient {
     return _procesar(res);
   }
 
+  Future<dynamic> put(String path, Map<String, dynamic> body, {bool autenticado = true}) async {
+    var res = await http.put(
+      _uri(path),
+      headers: await _headers(autenticado: autenticado),
+      body: jsonEncode(body),
+    );
+    if (res.statusCode == 401 && autenticado) {
+      final refrescado = await _intentarRefrescarToken();
+      if (refrescado) {
+        res = await http.put(
+          _uri(path),
+          headers: await _headers(autenticado: true),
+          body: jsonEncode(body),
+        );
+      }
+    }
+    return _procesar(res);
+  }
+
   Future<dynamic> patch(String path, Map<String, dynamic> body, {bool autenticado = true}) async {
     var res = await http.patch(
       _uri(path),
@@ -108,6 +127,25 @@ class ApiClient {
           _uri(path),
           headers: await _headers(autenticado: true),
           body: jsonEncode(body),
+        );
+      }
+    }
+    return _procesar(res);
+  }
+
+  Future<dynamic> delete(String path, {Map<String, dynamic>? body, bool autenticado = true}) async {
+    var res = await http.delete(
+      _uri(path),
+      headers: await _headers(autenticado: autenticado),
+      body: body != null ? jsonEncode(body) : null,
+    );
+    if (res.statusCode == 401 && autenticado) {
+      final refrescado = await _intentarRefrescarToken();
+      if (refrescado) {
+        res = await http.delete(
+          _uri(path),
+          headers: await _headers(autenticado: true),
+          body: body != null ? jsonEncode(body) : null,
         );
       }
     }

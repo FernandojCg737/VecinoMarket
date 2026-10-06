@@ -12,6 +12,8 @@ class Producto {
   final String? categoriaNombre;
   final int empresaId;
   final String empresaNombre;
+  final String empresaCiudad;
+  final String? empresaLogoUrl;
   final List<String> imagenes;
 
   Producto({
@@ -24,6 +26,8 @@ class Producto {
     this.categoriaNombre,
     required this.empresaId,
     required this.empresaNombre,
+    this.empresaCiudad = 'Bolivia',
+    this.empresaLogoUrl,
     this.imagenes = const [],
   });
 
@@ -46,6 +50,8 @@ class Producto {
       categoriaNombre: json['categoria']?['nombre'] as String?,
       empresaId: json['empresa']?['id'] as int? ?? 0,
       empresaNombre: json['empresa']?['razon_social'] as String? ?? '',
+      empresaCiudad: json['empresa']?['ciudad'] as String? ?? 'Bolivia',
+      empresaLogoUrl: json['empresa']?['logo_url'] as String?,
       imagenes: imagenesJson
           .map((img) => img['url'] as String?)
           .whereType<String>()
