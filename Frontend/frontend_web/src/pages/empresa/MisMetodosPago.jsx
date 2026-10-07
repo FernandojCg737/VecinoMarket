@@ -92,13 +92,13 @@ export default function MisMetodosPago() {
     setErrorForm('');
     const formData = new FormData();
     formData.append('tipo', form.tipo);
-    formData.append('nombre', form.nombre);
+    formData.append('nombre', (form.nombre || '').trim());
     formData.append('predeterminado', form.predeterminado ? 'true' : 'false');
-    if (form.banco) formData.append('banco', form.banco);
-    if (form.numero_cuenta) formData.append('numero_cuenta', form.numero_cuenta);
-    if (form.titular) formData.append('titular', form.titular);
-    if (form.proveedor_pasarela) formData.append('proveedor_pasarela', form.proveedor_pasarela);
-    if (form.referencia_pasarela) formData.append('referencia_pasarela', form.referencia_pasarela);
+    if (form.banco) formData.append('banco', form.banco.trim());
+    if (form.numero_cuenta) formData.append('numero_cuenta', form.numero_cuenta.trim());
+    if (form.titular) formData.append('titular', form.titular.trim());
+    if (form.proveedor_pasarela) formData.append('proveedor_pasarela', form.proveedor_pasarela.trim());
+    if (form.referencia_pasarela) formData.append('referencia_pasarela', form.referencia_pasarela.trim());
     if (archivoQr) formData.append('imagen_qr', archivoQr);
 
     try {
@@ -110,13 +110,15 @@ export default function MisMetodosPago() {
       setMostrarForm(false);
       await cargarMetodos();
     } catch (err) {
+      console.error('Error al guardar método de pago:', err);
       const data = err?.response?.data || {};
       const primerError =
         data.detail ||
-        data.imagen_qr?.[0] ||
-        data.nombre?.[0] ||
-        data.tipo?.[0] ||
+        (Array.isArray(data.imagen_qr) ? data.imagen_qr[0] : null) ||
+        (Array.isArray(data.nombre) ? data.nombre[0] : null) ||
+        (Array.isArray(data.tipo) ? data.tipo[0] : null) ||
         (typeof data === 'object' && Object.values(data).flat().find((v) => typeof v === 'string')) ||
+        err?.message ||
         'No se pudo guardar el método de pago.';
       setErrorForm(primerError);
     } finally {
@@ -247,14 +249,34 @@ export default function MisMetodosPago() {
               />
 
               {form.tipo === 'QR' && (
-                <div>
-                  {editando?.imagen_qr_url && !archivoQr && (
-                    <img src={editando.imagen_qr_url} alt="" className="h-20 w-20 rounded-md object-cover border border-gray-200 dark:border-gray-700 mb-2" />
-                  )}
-                  <label className="flex items-center justify-center gap-1.5 rounded-md border border-dashed border-gray-300 dark:border-gray-600 px-2 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
-                    <Upload size={14} /> {archivoQr ? archivoQr.name : 'Subir imagen del QR'}
-                    <input type="file" accept="image/*" onChange={(e) => setArchivoQr(e.target.files?.[0] || null)} className="hidden" />
-                  </label>
+                <div className="space-y-2">
+                  <div>
+                    {editando?.imagen_qr_url && !archivoQr && (
+                      <img src={editando.imagen_qr_url} alt="" className="h-20 w-20 rounded-md object-cover border border-gray-200 dark:border-gray-700 mb-2" />
+                    )}
+                    <label className="flex items-center justify-center gap-1.5 rounded-md border border-dashed border-gray-300 dark:border-gray-600 px-2 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
+                      <Upload size={14} /> {archivoQr ? archivoQr.name : 'Subir imagen del QR'}
+                      <input type="file" accept="image/*" onChange={(e) => setArchivoQr(e.target.files?.[0] || null)} className="hidden" />
+                    </label>
+                  </div>
+                  <input
+                    value={form.banco}
+                    onChange={(e) => setForm((prev) => ({ ...prev, banco: e.target.value }))}
+                    placeholder="Banco (opcional, ej. Banco SOL)"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
+                  />
+                  <input
+                    value={form.numero_cuenta}
+                    onChange={(e) => setForm((prev) => ({ ...prev, numero_cuenta: e.target.value }))}
+                    placeholder="Número de cuenta (opcional)"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
+                  />
+                  <input
+                    value={form.titular}
+                    onChange={(e) => setForm((prev) => ({ ...prev, titular: e.target.value }))}
+                    placeholder="Titular de la cuenta (opcional)"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
+                  />
                 </div>
               )}
 

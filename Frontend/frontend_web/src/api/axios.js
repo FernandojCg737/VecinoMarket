@@ -2,9 +2,6 @@ import axios from 'axios';
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 API.interceptors.request.use((config) => {
@@ -12,8 +9,9 @@ API.interceptors.request.use((config) => {
   if (access) {
     config.headers.Authorization = `Bearer ${access}`;
   }
-  if (config.data instanceof FormData) {
+  if (config.data instanceof FormData && config.headers) {
     delete config.headers['Content-Type'];
+    delete config.headers['content-type'];
   }
   return config;
 });

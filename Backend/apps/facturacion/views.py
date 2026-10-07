@@ -2,6 +2,7 @@ from django.db import DatabaseError, connection
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -90,7 +91,10 @@ class ListaCrearMisMetodosPagoView(generics.ListCreateAPIView):
         ).order_by('-predeterminado', '-creado_en')
 
     def perform_create(self, serializer):
-        metodo = serializer.save(empresa=self.request.user.get_empresa())
+        empresa = self.request.user.get_empresa()
+        if not empresa:
+            raise ValidationError('No se encontró la empresa asociada a tu cuenta.')
+        metodo = serializer.save(empresa=empresa)
         _log(self.request, 'CREAR_METODO_PAGO', metodo.id, {'nombre': metodo.nombre})
 
 
