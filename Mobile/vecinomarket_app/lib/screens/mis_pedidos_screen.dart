@@ -155,26 +155,50 @@ class _TarjetaPedido extends StatelessWidget {
           if (pedido.estado != 'CANCELADO')
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () async {
-                    final token = await ApiClient.instance.accessToken;
-                    if (token == null) return;
-                    final url = Uri.parse('${ApiClient.baseUrl}pedidos/${pedido.id}/factura/?token=$token');
-                    if (await canLaunchUrl(url)) {
-                      await launchUrl(url, mode: LaunchMode.externalApplication);
-                    } else {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No se pudo abrir la factura')),
-                        );
-                      }
-                    }
-                  },
-                  icon: const Icon(Icons.picture_as_pdf),
-                  label: const Text('Descargar Factura PDF'),
-                ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        final token = await ApiClient.instance.accessToken;
+                        if (token == null) return;
+                        final url = Uri.parse('${ApiClient.baseUrl}pedidos/${pedido.id}/factura/?token=$token&action=view');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        } else {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No se pudo abrir la factura')),
+                            );
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.remove_red_eye),
+                      label: const Text('Ver'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        final token = await ApiClient.instance.accessToken;
+                        if (token == null) return;
+                        final url = Uri.parse('${ApiClient.baseUrl}pedidos/${pedido.id}/factura/?token=$token&action=download');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        } else {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No se pudo descargar la factura')),
+                            );
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.download),
+                      label: const Text('Descargar'),
+                    ),
+                  ),
+                ],
               ),
             ),
         ],

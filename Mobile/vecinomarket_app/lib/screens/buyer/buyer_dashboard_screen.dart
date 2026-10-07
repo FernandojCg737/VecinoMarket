@@ -345,29 +345,56 @@ class _BuyerDashboardScreenState extends State<BuyerDashboardScreen> {
                                 ),
                                 if (estado != 'CANCELADO') ...[
                                   const SizedBox(height: 12),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: OutlinedButton.icon(
-                                      onPressed: () async {
-                                        final token = await ApiClient.instance.accessToken;
-                                        if (token == null) return;
-                                        final url = Uri.parse('${ApiClient.baseUrl}pedidos/${c['id']}/factura/?token=$token');
-                                        if (await canLaunchUrl(url)) {
-                                          await launchUrl(url, mode: LaunchMode.externalApplication);
-                                        } else {
-                                          if (context.mounted) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(content: Text('No se pudo abrir la factura')),
-                                            );
-                                          }
-                                        }
-                                      },
-                                      icon: const Icon(Icons.picture_as_pdf, size: 18),
-                                      label: const Text('Descargar Factura', style: TextStyle(fontSize: 12)),
-                                      style: OutlinedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(vertical: 8),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: OutlinedButton.icon(
+                                          onPressed: () async {
+                                            final token = await ApiClient.instance.accessToken;
+                                            if (token == null) return;
+                                            final url = Uri.parse('${ApiClient.baseUrl}pedidos/${c['id']}/factura/?token=$token&action=view');
+                                            if (await canLaunchUrl(url)) {
+                                              await launchUrl(url, mode: LaunchMode.externalApplication);
+                                            } else {
+                                              if (context.mounted) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('No se pudo abrir la factura')),
+                                                );
+                                              }
+                                            }
+                                          },
+                                          icon: const Icon(Icons.remove_red_eye, size: 18),
+                                          label: const Text('Ver', style: TextStyle(fontSize: 12)),
+                                          style: OutlinedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(vertical: 8),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: OutlinedButton.icon(
+                                          onPressed: () async {
+                                            final token = await ApiClient.instance.accessToken;
+                                            if (token == null) return;
+                                            final url = Uri.parse('${ApiClient.baseUrl}pedidos/${c['id']}/factura/?token=$token&action=download');
+                                            if (await canLaunchUrl(url)) {
+                                              await launchUrl(url, mode: LaunchMode.externalApplication);
+                                            } else {
+                                              if (context.mounted) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('No se pudo descargar la factura')),
+                                                );
+                                              }
+                                            }
+                                          },
+                                          icon: const Icon(Icons.download, size: 18),
+                                          label: const Text('Descargar', style: TextStyle(fontSize: 12)),
+                                          style: OutlinedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(vertical: 8),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ],

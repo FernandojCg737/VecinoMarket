@@ -228,14 +228,22 @@ export default function MisPedidos() {
                           <span className="text-gray-800 dark:text-gray-200">Bs {p.subtotal}</span>
                         </div>
                         {p.estado !== 'CANCELADO' && (
-                          <div className="pt-2 flex justify-end">
+                          <div className="pt-2 flex justify-end gap-3">
                             <a
-                              href={`${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('access_token')}`}
+                              href={`${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('access_token')}&action=view`}
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline text-xs font-semibold"
                             >
-                              <FileText size={14} /> Descargar Factura PDF
+                              <FileText size={14} /> Ver Factura
+                            </a>
+                            <a
+                              href={`${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('access_token')}&action=download`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline text-xs font-semibold"
+                            >
+                              <FileText size={14} /> Descargar Factura
                             </a>
                           </div>
                         )}

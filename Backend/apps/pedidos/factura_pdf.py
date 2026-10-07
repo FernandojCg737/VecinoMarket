@@ -2,7 +2,7 @@ from io import BytesIO
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.pdfgen import canvas
@@ -12,6 +12,8 @@ from apps.usuarios.models import Comprador
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class DescargarFacturaView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request, pedido_id):
         user = request.user
         if not user.is_authenticated:
@@ -168,5 +170,7 @@ class DescargarFacturaView(APIView):
         buffer.seek(0)
         
         response = HttpResponse(buffer, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="factura_{pedido.numero_pedido}.pdf"'
+        action = request.GET.get('action', 'download')
+        disposition = 'inline' if action == 'view' else 'attachment'
+        response['Content-Disposition'] = f'{disposition}; filename="factura_{pedido.numero_pedido}.pdf"'
         return response

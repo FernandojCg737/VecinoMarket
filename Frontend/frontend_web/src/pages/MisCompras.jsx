@@ -109,14 +109,24 @@ export default function MisCompras() {
                     <Download size={12} /> Exportar
                   </button>
                   {c.estado !== 'CANCELADO' && (
-                    <a
-                      href={`${API.defaults.baseURL}pedidos/${c.id}/factura/?token=${localStorage.getItem('access_token')}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline"
-                    >
-                      <FileText size={12} /> Factura PDF
-                    </a>
+                    <>
+                      <a
+                        href={`${API.defaults.baseURL}pedidos/${c.id}/factura/?token=${localStorage.getItem('access_token')}&action=view`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline"
+                      >
+                        <FileText size={12} /> Ver Factura
+                      </a>
+                      <a
+                        href={`${API.defaults.baseURL}pedidos/${c.id}/factura/?token=${localStorage.getItem('access_token')}&action=download`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline"
+                      >
+                        <Download size={12} /> Descargar Factura
+                      </a>
+                    </>
                   )}
                   {c.comprobante_url && (
                     <a
