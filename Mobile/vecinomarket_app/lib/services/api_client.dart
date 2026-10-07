@@ -152,6 +152,34 @@ class ApiClient {
     return _procesar(res);
   }
 
+  Future<dynamic> postMultipart(
+    String path, {
+    Map<String, String>? fields,
+    List<http.MultipartFile>? files,
+    bool autenticado = true,
+  }) async {
+    Future<http.Response> enviar() async {
+      final request = http.MultipartRequest('POST', _uri(path));
+      if (autenticado) {
+        final token = await accessToken;
+        if (token != null) request.headers['Authorization'] = 'Bearer $token';
+      }
+      if (fields != null) request.fields.addAll(fields);
+      if (files != null) request.files.addAll(files);
+      final streamed = await request.send();
+      return http.Response.fromStream(streamed);
+    }
+
+    var res = await enviar();
+    if (res.statusCode == 401 && autenticado) {
+      final refrescado = await _intentarRefrescarToken();
+      if (refrescado) {
+        res = await enviar();
+      }
+    }
+    return _procesar(res);
+  }
+
   dynamic _procesar(http.Response res) {
     if (res.statusCode >= 200 && res.statusCode < 300) {
       if (res.body.isEmpty) return null;

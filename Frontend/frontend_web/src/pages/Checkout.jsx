@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { CheckCircle2, MapPin, Store, CreditCard } from 'lucide-react';
+import { CheckCircle2, MapPin, Store, CreditCard, QrCode, Upload, Image as ImageIcon, X } from 'lucide-react';
 import API from '../api/axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -16,8 +16,12 @@ export default function Checkout() {
   const [direcciones, setDirecciones] = useState([]);
   const [tarjetas, setTarjetas] = useState([]);
   const [sucursales, setSucursales] = useState({}); // { [empresaId]: Sucursal[] }
+  const [metodosTiendas, setMetodosTiendas] = useState({}); // { [empresaId]: MetodoPago[] }
   const [entregas, setEntregas] = useState({}); // { [empresaId]: { modalidad, direccionId, sucursalId } }
+  const [metodoSeleccionado, setMetodoSeleccionado] = useState('QR'); // 'QR' | 'PAYPAL'
   const [tarjetaSeleccionada, setTarjetaSeleccionada] = useState(null); // id de tarjeta guardada, o null = "nueva"
+  const [comprobanteFile, setComprobanteFile] = useState(null);
+  const [comprobantePreview, setComprobantePreview] = useState(null);
   const [error, setError] = useState('');
   const [enviando, setEnviando] = useState(false);
   const [resultado, setResultado] = useState(null); // { numerosPedido }
@@ -54,6 +58,15 @@ export default function Checkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [grupos]);
 
+  useEffect(() => {
+    grupos.forEach(({ empresaId }) => {
+      if (metodosTiendas[empresaId]) return;
+      API.get(`facturacion/empresas/${empresaId}/metodos-pago/`)
+        .then((res) => setMetodosTiendas((prev) => ({ ...prev, [empresaId]: res.data })))
+        .catch(() => {});
+    });
+  }, [grupos, metodosTiendas]);
+
   if (cargandoAuth) return null;
   if (!usuario) return <Navigate to="/login?next=/checkout" replace />;
   if (items.length === 0 && !resultado) return <Navigate to="/carrito" replace />;
@@ -87,12 +100,54 @@ export default function Checkout() {
     };
   }
 
+  function handleComprobanteChange(e) {
+    const file = e.target.files?.[0];
+    if (file) {
+      setComprobanteFile(file);
+      setComprobantePreview(URL.createObjectURL(file));
+      setError('');
+    }
+  }
+
+  function eliminarComprobante() {
+    setComprobanteFile(null);
+    if (comprobantePreview) {
+      URL.revokeObjectURL(comprobantePreview);
+      setComprobantePreview(null);
+    }
+  }
+
+  async function pagarConQR() {
+    if (!comprobanteFile) {
+      setError('Por favor adjunta la foto o captura de tu comprobante de pago.');
+      return;
+    }
+    setEnviando(true);
+    setError('');
+    try {
+      const p = payloadCheckout();
+      const fd = new FormData();
+      fd.append('items', JSON.stringify(p.items));
+      fd.append('entregas', JSON.stringify(p.entregas));
+      fd.append('metodo_pago', 'QR');
+      fd.append('comprobante', comprobanteFile);
+
+      const { data } = await API.post('pedidos/checkout/', fd);
+      finalizar(data.numeros_pedido || []);
+    } catch (err) {
+      setError(err?.response?.data?.detail || 'No se pudo procesar el pedido con comprobante.');
+    } finally {
+      setEnviando(false);
+    }
+  }
+
   async function pagarConTarjetaGuardada() {
     setEnviando(true);
     setError('');
     try {
       const { data: orden } = await API.post('pedidos/checkout/', {
         ...payloadCheckout(),
+        metodo_pago: 'PAYPAL',
         payment_token_id: tarjetaSeleccionada,
       });
       const { data: confirmado } = await API.post(`pedidos/checkout/${orden.orden_compra_id}/confirmar/`, {
@@ -107,7 +162,10 @@ export default function Checkout() {
   }
 
   async function crearPromesaOrdenNueva() {
-    const { data: orden } = await API.post('pedidos/checkout/', payloadCheckout());
+    const { data: orden } = await API.post('pedidos/checkout/', {
+      ...payloadCheckout(),
+      metodo_pago: 'PAYPAL',
+    });
     ordenCompraIdRef.current = orden.orden_compra_id;
     paypalOrderIdRef.current = orden.paypal_order_id;
     return { orderId: orden.paypal_order_id };
@@ -226,46 +284,213 @@ export default function Checkout() {
           <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
             <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Método de pago</h2>
             <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
-              Se cobrará <strong>${montoUsd} USD</strong> vía PayPal (Bs {subtotal.toFixed(2)} al tipo de cambio oficial).
+              Selecciona cómo deseas pagar tu pedido.
             </p>
 
-            <div className="space-y-2 mb-4">
-              {tarjetas.map((t) => (
-                <label key={t.id} className={`flex items-center gap-3 rounded-lg border p-3 text-sm cursor-pointer ${tarjetaSeleccionada === t.id ? 'border-brand-500 bg-brand-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-700'}`}>
-                  <input type="radio" name="tarjeta" checked={tarjetaSeleccionada === t.id} onChange={() => setTarjetaSeleccionada(t.id)} />
-                  <CreditCard size={16} className="text-gray-500" />
-                  <span className="text-gray-800 dark:text-gray-200">PayPal — {t.nombre || t.email || 'cuenta vinculada'}</span>
-                </label>
-              ))}
-              <label className={`flex items-center gap-3 rounded-lg border p-3 text-sm cursor-pointer ${tarjetaSeleccionada === null ? 'border-brand-500 bg-brand-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-700'}`}>
-                <input type="radio" name="tarjeta" checked={tarjetaSeleccionada === null} onChange={() => setTarjetaSeleccionada(null)} />
-                <CreditCard size={16} className="text-gray-500" />
-                <span className="text-gray-800 dark:text-gray-200">Pagar con PayPal (nuevo)</span>
-              </label>
-            </div>
-
-            {error && <p className="text-sm text-red-600 dark:text-red-400 mb-3">{error}</p>}
-
-            {tarjetaSeleccionada === null ? (
-              entregasCompletas() ? (
-                <PayPalCheckoutButton
-                  modo="pago"
-                  crearPromesaInicio={crearPromesaOrdenNueva}
-                  onApprove={onApproveOrdenNueva}
-                  textoBoton={`Pagar $${montoUsd} USD`}
-                />
-              ) : (
-                <p className="text-xs text-gray-400">Completa la entrega de cada tienda para poder pagar.</p>
-              )
-            ) : (
+            {/* Selector de modo de pago: QR vs PayPal */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
               <button
                 type="button"
-                onClick={pagarConTarjetaGuardada}
-                disabled={enviando || !entregasCompletas()}
-                className="w-full rounded-full bg-brand-600 py-3 font-semibold text-white hover:bg-brand-700 transition-colors disabled:opacity-60"
+                onClick={() => setMetodoSeleccionado('QR')}
+                className={`flex items-center justify-center gap-2 rounded-lg border p-3 text-sm font-medium transition-colors ${
+                  metodoSeleccionado === 'QR'
+                    ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 ring-2 ring-brand-500/30'
+                    : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                }`}
               >
-                {enviando ? 'Procesando...' : `Pagar $${montoUsd} USD`}
+                <QrCode size={18} />
+                <span>Pago QR / Transferencia</span>
               </button>
+              <button
+                type="button"
+                onClick={() => setMetodoSeleccionado('PAYPAL')}
+                className={`flex items-center justify-center gap-2 rounded-lg border p-3 text-sm font-medium transition-colors ${
+                  metodoSeleccionado === 'PAYPAL'
+                    ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 ring-2 ring-brand-500/30'
+                    : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                }`}
+              >
+                <CreditCard size={18} />
+                <span>PayPal</span>
+              </button>
+            </div>
+
+            {/* SECCIÓN PAGO CON QR */}
+            {metodoSeleccionado === 'QR' && (
+              <div className="space-y-5">
+                <div className="rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 p-4 text-xs text-blue-800 dark:text-blue-300">
+                  <p className="font-semibold mb-1">Instrucciones de pago por QR:</p>
+                  <p>1. Escanea el código QR desde tu app bancaria (Banco SOL, BCP, BNB, etc.) o haz la transferencia a los datos indicados.</p>
+                  <p>2. Transfiere el monto total de <strong>Bs {subtotal.toFixed(2)}</strong>.</p>
+                  <p>3. Sube la foto o captura del comprobante abajo y haz clic en confirmar para que la tienda procese tu venta.</p>
+                </div>
+
+                {grupos.map(({ empresaId, empresaNombre }) => {
+                  const metodos = metodosTiendas[empresaId] || [];
+                  const metodosQR = metodos.filter((m) => m.tipo === 'QR' || m.tipo === 'CUENTA_BANCARIA');
+                  return (
+                    <div key={empresaId} className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 bg-gray-50/50 dark:bg-gray-800/50 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{empresaNombre}</span>
+                        <span className="text-xs px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-mono">
+                          Monto: Bs {items.filter((it) => it.empresaId === empresaId).reduce((acc, it) => acc + it.precio * it.cantidad, 0).toFixed(2)}
+                        </span>
+                      </div>
+
+                      {metodosQR.length > 0 ? (
+                        <div className="space-y-4">
+                          {metodosQR.map((m) => (
+                            <div key={m.id} className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800 text-center">
+                              {m.imagen_qr_url ? (
+                                <div className="mb-3 flex flex-col items-center">
+                                  <img
+                                    src={m.imagen_qr_url}
+                                    alt={`Código QR ${m.nombre}`}
+                                    className="w-48 h-48 object-contain rounded-lg border border-gray-200 dark:border-gray-700 bg-white p-2 shadow-sm"
+                                  />
+                                  <span className="text-xs text-gray-400 dark:text-gray-500 mt-1">{m.nombre}</span>
+                                </div>
+                              ) : null}
+                              <div className="text-xs space-y-1 text-gray-600 dark:text-gray-400">
+                                {m.banco && <p><span className="font-semibold text-gray-700 dark:text-gray-300">Banco:</span> {m.banco}</p>}
+                                {m.numero_cuenta && <p><span className="font-semibold text-gray-700 dark:text-gray-300">N° Cuenta:</span> <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded font-mono">{m.numero_cuenta}</code></p>}
+                                {m.titular && <p><span className="font-semibold text-gray-700 dark:text-gray-300">Titular:</span> {m.titular}</p>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                          La tienda no tiene un QR cargado públicamente. Si coordinaste el pago directo con el vendedor, sube tu comprobante a continuación.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {/* Subir Comprobante */}
+                <div className="border-t border-gray-200 dark:border-gray-800 pt-4">
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                    Comprobante de pago (requerido)
+                  </label>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                    Sube la captura de pantalla o foto del comprobante de transferencia para verificar tu pago.
+                  </p>
+
+                  {comprobantePreview ? (
+                    <div className="relative inline-block border-2 border-dashed border-green-500/50 rounded-xl p-2 bg-green-50/20 dark:bg-green-950/20">
+                      <img
+                        src={comprobantePreview}
+                        alt="Vista previa comprobante"
+                        className="max-h-56 max-w-full rounded-lg object-contain"
+                      />
+                      <button
+                        type="button"
+                        onClick={eliminarComprobante}
+                        className="absolute top-3 right-3 rounded-full bg-red-600 text-white p-1 hover:bg-red-700 shadow"
+                        title="Quitar comprobante"
+                      >
+                        <X size={16} />
+                      </button>
+                      <p className="text-xs text-green-700 dark:text-green-400 mt-2 text-center font-medium">
+                        ✓ Comprobante cargado ({comprobanteFile?.name})
+                      </p>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-6 cursor-pointer hover:border-brand-500 hover:bg-brand-50/20 dark:hover:bg-gray-800 transition">
+                      <Upload size={32} className="text-gray-400 dark:text-gray-500 mb-2" />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Haz clic aquí para seleccionar tu comprobante
+                      </span>
+                      <span className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                        PNG, JPG o JPEG (máx. 10 MB)
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleComprobanteChange}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+
+                {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+
+                <button
+                  type="button"
+                  onClick={pagarConQR}
+                  disabled={enviando || !entregasCompletas() || !comprobanteFile}
+                  className="w-full rounded-full bg-brand-600 py-3 font-semibold text-white hover:bg-brand-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {enviando ? 'Enviando comprobante...' : `Confirmar pedido con comprobante (Bs ${subtotal.toFixed(2)})`}
+                </button>
+              </div>
+            )}
+
+            {/* SECCIÓN PAYPAL */}
+            {metodoSeleccionado === 'PAYPAL' && (
+              <div>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
+                  Se cobrará <strong>${montoUsd} USD</strong> vía PayPal (Bs {subtotal.toFixed(2)} al tipo de cambio oficial).
+                </p>
+
+                {/* Mostrar información de PayPal registrada por las tiendas si existe */}
+                {grupos.map(({ empresaId, empresaNombre }) => {
+                  const metodos = metodosTiendas[empresaId] || [];
+                  const metodosPaypal = metodos.filter((m) => m.tipo === 'PAYPAL');
+                  if (!metodosPaypal.length) return null;
+                  return (
+                    <div key={empresaId} className="mb-4 rounded-lg bg-gray-50 dark:bg-gray-800/60 p-3 border border-gray-200 dark:border-gray-700 text-xs">
+                      <span className="font-semibold text-gray-700 dark:text-gray-300">{empresaNombre}:</span>{' '}
+                      {metodosPaypal.map((m) => (
+                        <span key={m.id} className="text-gray-600 dark:text-gray-400">
+                          {m.nombre} {m.referencia_pasarela ? `(${m.referencia_pasarela})` : ''}
+                        </span>
+                      ))}
+                    </div>
+                  );
+                })}
+
+                <div className="space-y-2 mb-4">
+                  {tarjetas.map((t) => (
+                    <label key={t.id} className={`flex items-center gap-3 rounded-lg border p-3 text-sm cursor-pointer ${tarjetaSeleccionada === t.id ? 'border-brand-500 bg-brand-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-700'}`}>
+                      <input type="radio" name="tarjeta" checked={tarjetaSeleccionada === t.id} onChange={() => setTarjetaSeleccionada(t.id)} />
+                      <CreditCard size={16} className="text-gray-500" />
+                      <span className="text-gray-800 dark:text-gray-200">PayPal — {t.nombre || t.email || 'cuenta vinculada'}</span>
+                    </label>
+                  ))}
+                  <label className={`flex items-center gap-3 rounded-lg border p-3 text-sm cursor-pointer ${tarjetaSeleccionada === null ? 'border-brand-500 bg-brand-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-700'}`}>
+                    <input type="radio" name="tarjeta" checked={tarjetaSeleccionada === null} onChange={() => setTarjetaSeleccionada(null)} />
+                    <CreditCard size={16} className="text-gray-500" />
+                    <span className="text-gray-800 dark:text-gray-200">Pagar con PayPal (nuevo)</span>
+                  </label>
+                </div>
+
+                {error && <p className="text-sm text-red-600 dark:text-red-400 mb-3">{error}</p>}
+
+                {tarjetaSeleccionada === null ? (
+                  entregasCompletas() ? (
+                    <PayPalCheckoutButton
+                      modo="pago"
+                      crearPromesaInicio={crearPromesaOrdenNueva}
+                      onApprove={onApproveOrdenNueva}
+                      textoBoton={`Pagar $${montoUsd} USD`}
+                    />
+                  ) : (
+                    <p className="text-xs text-gray-400">Completa la entrega de cada tienda para poder pagar.</p>
+                  )
+                ) : (
+                  <button
+                    type="button"
+                    onClick={pagarConTarjetaGuardada}
+                    disabled={enviando || !entregasCompletas()}
+                    className="w-full rounded-full bg-brand-600 py-3 font-semibold text-white hover:bg-brand-700 transition-colors disabled:opacity-60"
+                  >
+                    {enviando ? 'Procesando...' : `Pagar $${montoUsd} USD`}
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>

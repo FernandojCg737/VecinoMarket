@@ -51,6 +51,9 @@ dependencies:
   google_sign_in: ^6.2.2
   url_launcher: ^6.3.2
   app_links: ^7.2.1
+  webview_flutter: ^4.14.1
+  geolocator: ^14.0.2
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

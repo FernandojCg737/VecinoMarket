@@ -8,6 +8,7 @@ import { esEmpresaOEmpleado } from '../../utils/roles';
 const TIPOS = [
   { value: 'QR', label: 'Código QR', icon: QrCode },
   { value: 'CUENTA_BANCARIA', label: 'Cuenta bancaria', icon: Landmark },
+  { value: 'PAYPAL', label: 'PayPal', icon: CreditCard },
   { value: 'PASARELA', label: 'Pasarela de pago', icon: CreditCard },
 ];
 
@@ -90,19 +91,34 @@ export default function MisMetodosPago() {
     setGuardando(true);
     setErrorForm('');
     const formData = new FormData();
-    Object.entries(form).forEach(([k, v]) => formData.append(k, v));
+    formData.append('tipo', form.tipo);
+    formData.append('nombre', form.nombre);
+    formData.append('predeterminado', form.predeterminado ? 'true' : 'false');
+    if (form.banco) formData.append('banco', form.banco);
+    if (form.numero_cuenta) formData.append('numero_cuenta', form.numero_cuenta);
+    if (form.titular) formData.append('titular', form.titular);
+    if (form.proveedor_pasarela) formData.append('proveedor_pasarela', form.proveedor_pasarela);
+    if (form.referencia_pasarela) formData.append('referencia_pasarela', form.referencia_pasarela);
     if (archivoQr) formData.append('imagen_qr', archivoQr);
+
     try {
       if (editando) {
-        await API.patch(`facturacion/mis-metodos-pago/${editando.id}/`, formData, { headers: { 'Content-Type': undefined } });
+        await API.patch(`facturacion/mis-metodos-pago/${editando.id}/`, formData);
       } else {
-        await API.post('facturacion/mis-metodos-pago/', formData, { headers: { 'Content-Type': undefined } });
+        await API.post('facturacion/mis-metodos-pago/', formData);
       }
       setMostrarForm(false);
       await cargarMetodos();
     } catch (err) {
       const data = err?.response?.data || {};
-      setErrorForm(data.nombre?.[0] || data.tipo?.[0] || 'No se pudo guardar el método de pago.');
+      const primerError =
+        data.detail ||
+        data.imagen_qr?.[0] ||
+        data.nombre?.[0] ||
+        data.tipo?.[0] ||
+        (typeof data === 'object' && Object.values(data).flat().find((v) => typeof v === 'string')) ||
+        'No se pudo guardar el método de pago.';
+      setErrorForm(primerError);
     } finally {
       setGuardando(false);
     }
@@ -260,6 +276,23 @@ export default function MisMetodosPago() {
                     value={form.titular}
                     onChange={(e) => setForm((prev) => ({ ...prev, titular: e.target.value }))}
                     placeholder="Titular de la cuenta"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
+                  />
+                </div>
+              )}
+
+              {form.tipo === 'PAYPAL' && (
+                <div className="space-y-2">
+                  <input
+                    value={form.titular}
+                    onChange={(e) => setForm((prev) => ({ ...prev, titular: e.target.value }))}
+                    placeholder="Correo de la cuenta PayPal (ej. pagos@empresa.com)"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
+                  />
+                  <input
+                    value={form.referencia_pasarela}
+                    onChange={(e) => setForm((prev) => ({ ...prev, referencia_pasarela: e.target.value }))}
+                    placeholder="Merchant ID / ID de comercio PayPal (opcional)"
                     className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
                   />
                 </div>

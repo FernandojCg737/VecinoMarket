@@ -1,4 +1,4 @@
-﻿from django.db import DatabaseError, connection
+from django.db import DatabaseError, connection
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
@@ -10,6 +10,8 @@ from apps.auditoria.models import LogAuditoria
 from apps.core.exportadores import responder_exportacion
 from apps.core.utils import get_client_ip
 from apps.usuarios.permissions import EsAdmin, TienePermisoEmpleado
+from apps.usuarios.models import Empresa
+from rest_framework.permissions import AllowAny
 
 from .models import Factura, MetodoPago, Referido
 from .serializers import FacturaSerializer, MetodoPagoAdminSerializer, MetodoPagoEmpresaSerializer, ReferidoSerializer
@@ -347,3 +349,14 @@ class ListaMisReferidosView(generics.ListAPIView):
         return Referido.objects.filter(
             empresa_referente=self.request.user.get_empresa()
         ).select_related('empresa_referente', 'empresa_referida').order_by('-creado_en')
+
+
+class MetodosPagoPublicosEmpresaView(APIView):
+    """Permite a los compradores ver los métodos de pago (QR, transferencia, etc.) configurados por una empresa para pagar en el checkout."""
+    permission_classes = [AllowAny]
+
+    def get(self, request, empresa_id):
+        empresa = get_object_or_404(Empresa, id=empresa_id)
+        metodos = MetodoPago.objects.filter(empresa=empresa, activo=True).order_by('-predeterminado', '-creado_en')
+        return Response(MetodoPagoAdminSerializer(metodos, many=True, context={'request': request}).data)
+

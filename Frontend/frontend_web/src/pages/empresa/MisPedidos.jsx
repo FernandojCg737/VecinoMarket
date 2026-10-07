@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { ClipboardList, ChevronDown, ChevronUp } from 'lucide-react';
+import { ClipboardList, ChevronDown, ChevronUp, Eye, X } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import { esEmpresaOEmpleado } from '../../utils/roles';
@@ -35,6 +35,7 @@ export default function MisPedidos() {
   const [sinPermiso, setSinPermiso] = useState(false);
   const [error, setError] = useState('');
   const [expandido, setExpandido] = useState(null);
+  const [modalComprobante, setModalComprobante] = useState(null);
 
   function cargarPedidos() {
     setCargando(true);
@@ -66,6 +67,20 @@ export default function MisPedidos() {
       setResultados((prev) => prev.map((p) => (p.id === pedido.id ? data : p)));
     } catch {
       setError('No se pudo actualizar el estado.');
+    }
+  }
+
+  async function aceptarComprobante(pedido) {
+    if (!window.confirm(`¿Confirmar venta del pedido "${pedido.numero_pedido}"? Se marcará el pago como PAGADO y el pedido como CONFIRMADO.`)) return;
+    try {
+      const { data } = await API.patch(`pedidos/mis-pedidos/${pedido.id}/`, {
+        estado_pago: 'PAGADO',
+        estado: 'CONFIRMADO',
+      });
+      setResultados((prev) => prev.map((p) => (p.id === pedido.id ? data : p)));
+      setModalComprobante(null);
+    } catch {
+      setError('No se pudo confirmar la venta.');
     }
   }
 
@@ -150,7 +165,20 @@ export default function MisPedidos() {
                     </button>
                   </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{p.comprador_nombre}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{p.metodo_pago}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                    <div className="flex flex-col gap-1 items-start">
+                      <span className="font-medium">{p.metodo_pago}</span>
+                      {p.comprobante_url && (
+                        <button
+                          type="button"
+                          onClick={() => setModalComprobante(p)}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 underline"
+                        >
+                          <Eye size={12} /> Comprobante
+                        </button>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3">
                     <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${badgeEstadoPago(p.estado_pago)}`}>{p.estado_pago}</span>
                   </td>
@@ -165,12 +193,24 @@ export default function MisPedidos() {
                     </select>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => eliminar(p)}
-                      className="rounded-md border border-gray-300 dark:border-gray-700 px-2.5 py-1 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    >
-                      Eliminar
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      {p.estado_pago === 'PENDIENTE' && (
+                        <button
+                          type="button"
+                          onClick={() => aceptarComprobante(p)}
+                          className="rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700 shadow-sm transition-colors whitespace-nowrap"
+                          title="Aceptar comprobante y confirmar venta"
+                        >
+                          ✓ Confirmar
+                        </button>
+                      )}
+                      <button
+                        onClick={() => eliminar(p)}
+                        className="rounded-md border border-gray-300 dark:border-gray-700 px-2 py-1 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
                   </td>
                 </tr>
                 {expandido === p.id && (
@@ -196,6 +236,55 @@ export default function MisPedidos() {
           </tbody>
         </table>
       </div>
+
+      {modalComprobante && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" onClick={() => setModalComprobante(null)}>
+          <div
+            className="w-full max-w-lg rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b pb-2 dark:border-gray-800">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                Comprobante de pago — {modalComprobante.numero_pedido}
+              </h3>
+              <button onClick={() => setModalComprobante(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="text-xs text-gray-600 dark:text-gray-300 space-y-1 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg">
+              <p><strong>Comprador:</strong> {modalComprobante.comprador_nombre} ({modalComprobante.comprador_email})</p>
+              <p><strong>Monto total:</strong> Bs {modalComprobante.subtotal}</p>
+              <p><strong>Método de pago:</strong> {modalComprobante.metodo_pago}</p>
+              <p><strong>Estado del pago:</strong> {modalComprobante.estado_pago}</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-gray-50 dark:bg-gray-950 flex justify-center p-2">
+              <img
+                src={modalComprobante.comprobante_url}
+                alt="Comprobante de pago"
+                className="max-h-96 w-auto object-contain rounded"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setModalComprobante(null)}
+                className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                Cerrar
+              </button>
+              {modalComprobante.estado_pago === 'PENDIENTE' && (
+                <button
+                  type="button"
+                  onClick={() => aceptarComprobante(modalComprobante)}
+                  className="rounded-md bg-emerald-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 shadow-sm"
+                >
+                  ✓ Aceptar comprobante y confirmar venta
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

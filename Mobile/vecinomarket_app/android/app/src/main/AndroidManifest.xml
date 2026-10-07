@@ -1,8 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Necesario para hablar con el backend (Render/localhost). -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Geolocalización GPS para detectar la ubicación en Mis Direcciones -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Permisos para subir comprobantes de pago (cámara y fotos) -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
     <application
-        android:label="vecinomarket_app"
+        android:label="VecinoMarket"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

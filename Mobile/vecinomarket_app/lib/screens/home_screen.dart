@@ -54,58 +54,65 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        titleSpacing: 12,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              esOscuro ? 'assets/images/logo-dark.png' : 'assets/images/logo.png',
-              height: 28,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(width: 8),
-            InkWell(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const LiveCommerceScreen()),
+        titleSpacing: 10,
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                esOscuro ? 'assets/images/logo-dark.png' : 'assets/images/logo.png',
+                height: 24,
+                fit: BoxFit.contain,
               ),
-              borderRadius: BorderRadius.circular(999),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFDC2626),
-                  borderRadius: BorderRadius.circular(999),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x33DC2626),
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
+              const SizedBox(width: 6),
+              InkWell(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LiveCommerceScreen()),
                 ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.sensors, color: Colors.white, size: 13),
-                    SizedBox(width: 4),
-                    Text(
-                      'LIVE',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.5,
+                borderRadius: BorderRadius.circular(999),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFDC2626),
+                    borderRadius: BorderRadius.circular(999),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x33DC2626),
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.sensors, color: Colors.white, size: 12),
+                      SizedBox(width: 3),
+                      Text(
+                        'LIVE',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         actions: [
           IconButton(
-            icon: Icon(esOscuro ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
+            icon: Icon(esOscuro ? Icons.light_mode_outlined : Icons.dark_mode_outlined, size: 21),
+            padding: const EdgeInsets.all(6),
+            constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+            visualDensity: VisualDensity.compact,
             tooltip: esOscuro ? 'Modo claro' : 'Modo noche',
             onPressed: () => tema.alternar(),
           ),
@@ -113,38 +120,43 @@ class _HomeScreenState extends State<HomeScreen> {
             alignment: Alignment.center,
             children: [
               IconButton(
-                icon: const Icon(Icons.shopping_cart_outlined),
+                icon: const Icon(Icons.shopping_cart_outlined, size: 21),
+                padding: const EdgeInsets.all(6),
+                constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                visualDensity: VisualDensity.compact,
                 onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen())),
               ),
               if (totalCarrito > 0)
                 Positioned(
-                  top: 6,
-                  right: 6,
+                  top: 3,
+                  right: 1,
                   child: Container(
-                    padding: const EdgeInsets.all(3),
+                    padding: const EdgeInsets.all(2),
                     decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                    constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                    constraints: const BoxConstraints(minWidth: 15, minHeight: 15),
                     child: Text(
                       '$totalCarrito',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
             ],
           ),
-          if (usuario != null)
-            IconButton(
-              icon: const Icon(Icons.person),
-              tooltip: 'Mi perfil (${usuario['nombre']})',
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen())),
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.person_outline),
-              tooltip: 'Ingresar',
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen())),
+          IconButton(
+            icon: Icon(usuario != null ? Icons.person : Icons.person_outline, size: 21),
+            padding: const EdgeInsets.all(6),
+            constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+            visualDensity: VisualDensity.compact,
+            tooltip: usuario != null ? 'Mi perfil (${usuario['nombre']})' : 'Ingresar',
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => usuario != null ? const ProfileScreen() : const AuthScreen(),
+              ),
             ),
+          ),
+          const SizedBox(width: 4),
         ],
       ),
       body: Column(

@@ -1,3 +1,4 @@
+import json
 from decimal import ROUND_HALF_UP, Decimal
 
 from django.conf import settings
@@ -7,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -221,6 +223,13 @@ def _aplicar_cambios_pedido(request, pedido):
             raise ValueError('Estado de pago inválido.')
         pedido.orden_compra.estado_pago = nuevo_estado_pago
         pedido.orden_compra.save(update_fields=['estado_pago'])
+        if nuevo_estado_pago == OrdenCompra.EstadoPago.PAGADO:
+            pedido.orden_compra.pagos.filter(estado=Pago.Estado.PENDIENTE).update(
+                estado=Pago.Estado.APROBADO, fecha_pago=timezone.now()
+            )
+            if pedido.estado == Pedido.Estado.PENDIENTE:
+                pedido.estado = Pedido.Estado.CONFIRMADO
+                pedido.save(update_fields=['estado'])
 
 
 class ListaPedidosAdminView(generics.ListAPIView):
@@ -439,8 +448,7 @@ class ListaMisComprasView(generics.ListAPIView):
     def get_queryset(self):
         return _pedidos_queryset().filter(
             orden_compra__comprador__usuario=self.request.user,
-            orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO,
-        )
+        ).exclude(orden_compra__estado_pago=OrdenCompra.EstadoPago.FALLIDO)
 
 
 def _numero_pedido():
@@ -483,18 +491,33 @@ def _restituir_stock_orden(orden):
 class IniciarCheckoutView(APIView):
     """CU12/CU26: crea la orden de compra real a partir del carrito
     (dividida en un Pedido por empresa, como ya documentaba
-    OrdenCompra.__doc__) y abre la orden de pago en PayPal. El comprador
-    todavía no pagó — eso lo confirma ConfirmarPagoCheckoutView una vez
-    que el frontend completa CardFields (o de una si vino payment_token_id
-    de una tarjeta ya guardada)."""
+    OrdenCompra.__doc__). Soporta pago por QR (con comprobante adjunto)
+    o pasarela de pago PayPal."""
 
     permission_classes = [EsComprador]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def post(self, request):
-        items = request.data.get('items') or []
-        entregas = request.data.get('entregas') or {}
+        items = request.data.get('items')
+        if isinstance(items, str):
+            try:
+                items = json.loads(items)
+            except Exception:
+                items = []
+        items = items or []
+
+        entregas = request.data.get('entregas')
+        if isinstance(entregas, str):
+            try:
+                entregas = json.loads(entregas)
+            except Exception:
+                entregas = {}
+        entregas = entregas or {}
+
         payment_token_id = request.data.get('payment_token_id')
         plataforma = request.data.get('plataforma')
+        metodo_pago = (request.data.get('metodo_pago') or 'PAYPAL').upper()
+        comprobante = request.FILES.get('comprobante')
 
         if not items:
             return Response({'detail': 'El carrito está vacío.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -521,11 +544,19 @@ class IniciarCheckoutView(APIView):
             for grupo in por_empresa.values() for it in grupo['items']
         )
 
+        metodo_orden = (
+            OrdenCompra.MetodoPago.QR if metodo_pago == 'QR'
+            else OrdenCompra.MetodoPago.PAYPAL
+        )
+
         try:
             with transaction.atomic():
                 orden = OrdenCompra.objects.create(
-                    comprador=comprador, monto_total=monto_total,
-                    metodo_pago=OrdenCompra.MetodoPago.PAYPAL,
+                    comprador=comprador,
+                    monto_total=monto_total,
+                    metodo_pago=metodo_orden,
+                    estado_pago=OrdenCompra.EstadoPago.PENDIENTE,
+                    comprobante=comprobante,
                 )
 
                 # CU11: Marca el carrito abierto del comprador como CONVERTIDO
@@ -549,6 +580,7 @@ class IniciarCheckoutView(APIView):
                         subtotal=subtotal, modalidad_entrega=modalidad,
                         sucursal_recojo=sucursal, direccion_envio=direccion,
                     )
+                    Entrega.objects.create(pedido=pedido, estado=Entrega.Estado.PENDIENTE)
                     PedidoItem.objects.bulk_create([
                         PedidoItem(
                             pedido=pedido, producto=it['producto'], cantidad=it['cantidad'],
@@ -559,11 +591,31 @@ class IniciarCheckoutView(APIView):
                     for it in grupo['items']:
                         if not _descontar_stock(it['producto'].id, it['cantidad'], sucursal.id if sucursal else None):
                             raise ValueError(f'"{it["producto"].nombre}" ya no tiene suficiente stock.')
+
+                if metodo_orden == OrdenCompra.MetodoPago.QR:
+                    Pago.objects.create(
+                        orden_compra=orden,
+                        monto=monto_total,
+                        metodo=Pago.Metodo.QR,
+                        comprobante=comprobante,
+                        estado=Pago.Estado.PENDIENTE,
+                        fecha_pago=timezone.now(),
+                    )
         except ValueError as exc:
             return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
-        # La llamada externa a PayPal se realiza FUERA de la transacción atómica
-        # para no retener conexiones de base de datos ni bloqueos durante la latencia de red.
+        # Si el comprador eligió QR con comprobante, se completa el pedido sin ir a PayPal
+        if metodo_orden == OrdenCompra.MetodoPago.QR:
+            _log(request, 'INICIAR_CHECKOUT_QR', orden.id, {'monto_total': str(monto_total)}, entidad_afectada='orden_compra')
+            return Response({
+                'orden_compra_id': orden.id,
+                'numeros_pedido': list(orden.pedidos.values_list('numero_pedido', flat=True)),
+                'metodo': 'QR',
+                'requiere_popup_paypal': False,
+                'mensaje': 'Pedido registrado con éxito. El vendedor verificará tu comprobante de pago.',
+            }, status=status.HTTP_201_CREATED)
+
+        # Flujo PayPal:
         monto_usd = (monto_total / settings.TASA_CAMBIO_USD_BOB).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         try:
             if plataforma == 'movil':

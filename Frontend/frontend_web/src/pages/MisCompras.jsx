@@ -78,7 +78,12 @@ export default function MisCompras() {
                     <span className="font-semibold text-gray-900 dark:text-gray-100 truncate">{c.numero_pedido} · {c.empresa_nombre}</span>
                     <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${badgeEstado(c.estado)}`}>{ESTADO_LABEL[c.estado] || c.estado}</span>
                   </div>
-                  <div className="text-xs text-gray-400 dark:text-gray-500">{new Date(c.fecha).toLocaleDateString()} · {c.metodo_pago}</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500">
+                    {new Date(c.fecha).toLocaleDateString()} · {c.metodo_pago}
+                    {c.estado_pago === 'PENDIENTE' && (
+                      <span className="ml-2 text-amber-500 font-medium">(Pago pendiente de verificación)</span>
+                    )}
+                  </div>
                 </div>
               </button>
               <span className="font-semibold text-gray-800 dark:text-gray-200 shrink-0">Bs {c.subtotal}</span>
@@ -96,13 +101,23 @@ export default function MisCompras() {
                   <span>Total</span>
                   <span>Bs {c.subtotal}</span>
                 </div>
-                <div className="flex items-center gap-3 mt-2">
+                <div className="flex items-center gap-4 mt-2 pt-1">
                   <button onClick={() => window.print()} className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700">
                     <Printer size={12} /> Imprimir
                   </button>
                   <button onClick={() => exportarCsv(c.numero_pedido, c)} className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700">
                     <Download size={12} /> Exportar
                   </button>
+                  {c.comprobante_url && (
+                    <a
+                      href={c.comprobante_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      <Receipt size={12} /> Comprobante de pago
+                    </a>
+                  )}
                 </div>
               </div>
             )}

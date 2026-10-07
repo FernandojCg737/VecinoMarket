@@ -72,6 +72,7 @@ class MetodoPago(BaseModel):
         QR = 'QR', 'Código QR'
         CUENTA_BANCARIA = 'CUENTA_BANCARIA', 'Cuenta bancaria'
         PASARELA = 'PASARELA', 'Pasarela de pago'
+        PAYPAL = 'PAYPAL', 'PayPal'
 
     empresa = models.ForeignKey('usuarios.Empresa', on_delete=models.CASCADE, related_name='+')
     tipo = models.CharField(max_length=20, choices=Tipo.choices)

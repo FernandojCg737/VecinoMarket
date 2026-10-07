@@ -56,14 +56,22 @@ class PedidoSerializer(serializers.ModelSerializer):
     estado_pago = serializers.CharField(source='orden_compra.estado_pago', read_only=True)
     fecha = serializers.DateTimeField(source='creado_en', read_only=True)
     items = PedidoItemSerializer(many=True, read_only=True)
+    comprobante_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Pedido
         fields = [
             'id', 'numero_pedido', 'empresa', 'empresa_nombre', 'comprador_nombre', 'comprador_email',
             'subtotal', 'comision_monto', 'estado', 'modalidad_entrega',
-            'metodo_pago', 'estado_pago', 'fecha', 'items',
+            'metodo_pago', 'estado_pago', 'fecha', 'items', 'comprobante_url',
         ]
+
+    def get_comprobante_url(self, obj):
+        url = obj.orden_compra.comprobante_url
+        request = self.context.get('request')
+        if request and url and url.startswith('/'):
+            return request.build_absolute_uri(url)
+        return url
 
 
 class EntregaSerializer(serializers.ModelSerializer):

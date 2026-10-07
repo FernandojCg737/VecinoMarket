@@ -55,6 +55,11 @@ class OrdenCompra(BaseModel):
     monto_total = models.DecimalField(max_digits=10, decimal_places=2)
     metodo_pago = models.CharField(max_length=20, choices=MetodoPago.choices)
     estado_pago = models.CharField(max_length=20, choices=EstadoPago.choices, default=EstadoPago.PENDIENTE)
+    comprobante = models.ImageField(upload_to='comprobantes_pago/', null=True, blank=True)
+
+    @property
+    def comprobante_url(self):
+        return self.comprobante.url if self.comprobante else ''
 
     class Meta:
         verbose_name = 'Orden de compra'
@@ -82,6 +87,7 @@ class Pago(models.Model):
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     metodo = models.CharField(max_length=20, choices=Metodo.choices)
     referencia_pasarela = models.CharField(max_length=100, blank=True)
+    comprobante = models.ImageField(upload_to='comprobantes_pago/', null=True, blank=True)
     estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.PENDIENTE)
     fecha_pago = models.DateTimeField(null=True, blank=True)
 

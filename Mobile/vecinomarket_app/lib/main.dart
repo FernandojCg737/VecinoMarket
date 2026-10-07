@@ -58,12 +58,22 @@ class VecinoMarketApp extends StatelessWidget {
               colorScheme: claro,
               scaffoldBackgroundColor: Colors.white,
               appBarTheme: const AppBarTheme(backgroundColor: Colors.white, foregroundColor: Colors.black),
+              snackBarTheme: const SnackBarThemeData(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Color(0xFF1E293B),
+                contentTextStyle: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+              ),
               useMaterial3: true,
             ),
             darkTheme: ThemeData(
               colorScheme: oscuro,
               scaffoldBackgroundColor: negro,
               appBarTheme: const AppBarTheme(backgroundColor: negro, foregroundColor: Colors.white),
+              snackBarTheme: const SnackBarThemeData(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Color(0xFF1E293B),
+                contentTextStyle: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+              ),
               useMaterial3: true,
             ),
             // El catálogo es público (igual que en la web); el login es opcional

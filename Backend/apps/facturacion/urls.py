@@ -14,9 +14,13 @@ from .views import (
     ListaMisFacturasView,
     ListaMisReferidosView,
     ListaReferidosAdminView,
+    MetodosPagoPublicosEmpresaView,
 )
 
 urlpatterns = [
+    # Métodos de pago públicos de una empresa para el checkout del comprador
+    path('empresas/<int:empresa_id>/metodos-pago/', MetodosPagoPublicosEmpresaView.as_view(), name='metodos-pago-empresa-publicos'),
+
     # CU25: métodos de pago de las empresas (SuperAdmin/Admin de soporte)
     path('admin/metodos-pago/', ListaCrearMetodoPagoAdminView.as_view(), name='admin-metodos-pago'),
     path('admin/metodos-pago/<int:metodo_id>/', EditarEliminarMetodoPagoAdminView.as_view(), name='admin-metodo-pago-detalle'),

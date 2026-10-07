@@ -69,6 +69,40 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
+  void _mostrarDialogoRequerirLogin(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.lock_outline, size: 40, color: _brandGold),
+        title: const Text(
+          'Inicia sesión para continuar',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        content: const Text(
+          'Para agregar productos a tu carrito debes iniciar sesión con tu cuenta de comprador.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 14),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          OutlinedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: _brandGold),
+            onPressed: () {
+              Navigator.pop(ctx);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
+            },
+            child: const Text('Iniciar sesión', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _preguntarAlChatbot(String preguntaTexto) async {
     final pregunta = preguntaTexto.trim();
     if (pregunta.isEmpty || _enviandoChatbot) return;
@@ -421,12 +455,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             onPressed: p.stock <= 0
                 ? null
                 : () {
+                    final auth = context.read<AuthService>();
+                    if (auth.usuario == null) {
+                      _mostrarDialogoRequerirLogin(context);
+                      return;
+                    }
                     context.read<CartService>().agregar(p, cantidad: _cantidad);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         behavior: SnackBarBehavior.floating,
-                        backgroundColor: const Color(0xFF0F172A),
-                        content: Text('¡${p.nombre} agregado al carrito!'),
+                        backgroundColor: const Color(0xFF1E293B),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        content: Row(
+                          children: [
+                            const Icon(Icons.check_circle_outline, color: Color(0xFF10B981), size: 20),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                '¡${p.nombre} agregado al carrito!',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                         duration: const Duration(seconds: 2),
                       ),
                     );
