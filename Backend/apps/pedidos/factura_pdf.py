@@ -34,12 +34,7 @@ class DescargarFacturaView(APIView):
         pedido = get_object_or_404(Pedido, pk=pedido_id)
         es_admin = user.rol in ['SUPERADMIN', 'ADMIN_SOPORTE']
         es_dueno = (pedido.empresa and pedido.empresa.usuario_dueno_id == user.id)
-        
-        comprador = None
-        es_comprador = False
-        if hasattr(user, 'comprador'):
-            comprador = user.comprador
-            es_comprador = (pedido.orden_compra and pedido.orden_compra.comprador_id == comprador.id)
+        es_comprador = (user.rol == 'COMPRADOR' and pedido.orden_compra and pedido.orden_compra.comprador.usuario_id == user.id)
         
         if not (es_admin or es_dueno or es_comprador):
             from rest_framework.exceptions import PermissionDenied
