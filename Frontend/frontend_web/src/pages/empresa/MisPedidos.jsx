@@ -230,7 +230,7 @@ export default function MisPedidos() {
                         {p.estado !== 'CANCELADO' && (
                           <div className="pt-2 flex justify-end gap-3">
                             <a
-                              href={`${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('access_token')}&action=view`}
+                              href={`${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('vecinomarket_access')}&action=view`}
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline text-xs font-semibold"
@@ -238,7 +238,7 @@ export default function MisPedidos() {
                               <FileText size={14} /> Ver Factura
                             </a>
                             <a
-                              href={`${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('access_token')}&action=download`}
+                              href={`${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('vecinomarket_access')}&action=download`}
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline text-xs font-semibold"

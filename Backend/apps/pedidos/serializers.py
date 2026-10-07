@@ -50,7 +50,7 @@ class PedidoSerializer(serializers.ModelSerializer):
     la autogestión de la empresa (queryset ya viene filtrado a la suya)."""
 
     empresa_nombre = serializers.CharField(source='empresa.razon_social', read_only=True)
-    comprador_nombre = serializers.CharField(source='orden_compra.comprador.usuario.nombre', read_only=True)
+    comprador_nombre = serializers.SerializerMethodField()
     comprador_email = serializers.CharField(source='orden_compra.comprador.usuario.email', read_only=True)
     metodo_pago = serializers.CharField(source='orden_compra.metodo_pago', read_only=True)
     estado_pago = serializers.CharField(source='orden_compra.estado_pago', read_only=True)
@@ -65,6 +65,10 @@ class PedidoSerializer(serializers.ModelSerializer):
             'subtotal', 'comision_monto', 'estado', 'modalidad_entrega',
             'metodo_pago', 'estado_pago', 'fecha', 'items', 'comprobante_url',
         ]
+
+    def get_comprador_nombre(self, obj):
+        u = obj.orden_compra.comprador.usuario
+        return f"{u.nombre} {u.apellido}".strip()
 
     def get_comprobante_url(self, obj):
         url = obj.orden_compra.comprobante_url
