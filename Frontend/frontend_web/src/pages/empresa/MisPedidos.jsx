@@ -168,15 +168,6 @@ export default function MisPedidos() {
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     <div className="flex flex-col gap-1 items-start">
                       <span className="font-medium">{p.metodo_pago}</span>
-                      {p.comprobante_url && (
-                        <button
-                          type="button"
-                          onClick={() => setModalComprobante(p)}
-                          className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 underline"
-                        >
-                          <Eye size={12} /> Comprobante
-                        </button>
-                      )}
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -229,6 +220,15 @@ export default function MisPedidos() {
                         </div>
                         {p.estado !== 'CANCELADO' && (
                           <div className="pt-2 flex justify-end gap-3">
+                            {p.metodo_pago?.toUpperCase().includes('QR') && p.comprobante_url && (
+                              <button
+                                type="button"
+                                onClick={() => setModalComprobante(p)}
+                                className="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline text-xs font-semibold"
+                              >
+                                <Eye size={14} /> Ver Comprobante
+                              </button>
+                            )}
                             <a
                               href={`${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('vecinomarket_access')}&action=view`}
                               target="_blank"
