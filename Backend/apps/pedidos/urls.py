@@ -18,6 +18,7 @@ from .views import (
     MarcarMiEntregaEntregadaView,
     SincronizarMiCarritoView,
 )
+from .factura_pdf import DescargarFacturaView
 
 urlpatterns = [
     # CU11: sincronización en vivo del carrito del comprador (SaaS en tiempo real)
@@ -47,6 +48,9 @@ urlpatterns = [
 
     # CU26: el comprador ve sus propios recibos de compra pagada
     path('mis-compras/', ListaMisComprasView.as_view(), name='mis-compras'),
+
+    # Descarga de factura en PDF (comprador o vendedor)
+    path('<int:pedido_id>/factura/', DescargarFacturaView.as_view(), name='descargar-factura'),
 
     # Checkout real (comprador): crea la orden real y abre el pago en PayPal
     path('checkout/', IniciarCheckoutView.as_view(), name='iniciar-checkout'),

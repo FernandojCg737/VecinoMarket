@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Receipt, ChevronDown, ChevronUp, Printer, Download } from 'lucide-react';
+import { Receipt, ChevronDown, ChevronUp, Printer, Download, FileText } from 'lucide-react';
 import API from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { esComprador } from '../utils/roles';
@@ -108,6 +108,16 @@ export default function MisCompras() {
                   <button onClick={() => exportarCsv(c.numero_pedido, c)} className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700">
                     <Download size={12} /> Exportar
                   </button>
+                  {c.estado !== 'CANCELADO' && (
+                    <a
+                      href={`${API.defaults.baseURL}pedidos/${c.id}/factura/?token=${localStorage.getItem('access_token')}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline"
+                    >
+                      <FileText size={12} /> Factura PDF
+                    </a>
+                  )}
                   {c.comprobante_url && (
                     <a
                       href={c.comprobante_url}

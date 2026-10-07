@@ -5,6 +5,7 @@ import '../models/producto.dart';
 import '../services/auth_service.dart';
 import '../services/cart_service.dart';
 import '../services/catalogo_service.dart';
+import '../services/notificacion_service.dart';
 import '../services/theme_service.dart';
 import 'auth_screen.dart';
 import 'cart_screen.dart';
@@ -27,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Categoria> _categorias = [];
   int? _categoriaSeleccionada;
   late Future<List<Producto>> _productosFuture;
+
+  bool _notifFetched = false;
 
   @override
   void initState() {
@@ -52,6 +55,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final totalCarrito = context.watch<CartService>().totalItems;
     final tema = context.watch<ThemeService>();
     final esOscuro = Theme.of(context).brightness == Brightness.dark;
+
+    if (usuario != null && !_notifFetched) {
+      _notifFetched = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) context.read<NotificacionService>().fetchUnreadCount();
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(

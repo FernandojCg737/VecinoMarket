@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { ClipboardList, ChevronDown, ChevronUp, Eye, X } from 'lucide-react';
+import { ClipboardList, ChevronDown, ChevronUp, Eye, X, FileText } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import { esEmpresaOEmpleado } from '../../utils/roles';
@@ -227,6 +227,18 @@ export default function MisPedidos() {
                           <span className="text-gray-700 dark:text-gray-300">Subtotal</span>
                           <span className="text-gray-800 dark:text-gray-200">Bs {p.subtotal}</span>
                         </div>
+                        {p.estado !== 'CANCELADO' && (
+                          <div className="pt-2 flex justify-end">
+                            <a
+                              href={`${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('access_token')}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline text-xs font-semibold"
+                            >
+                              <FileText size={14} /> Descargar Factura PDF
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </td>
                   </tr>

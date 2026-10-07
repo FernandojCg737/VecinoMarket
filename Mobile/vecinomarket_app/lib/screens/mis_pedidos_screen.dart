@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/pedido.dart';
+import '../services/api_client.dart';
+import '../services/auth_service.dart';
 import '../services/pedido_service.dart';
 
 const _nombresEstado = {
@@ -10,6 +14,12 @@ const _nombresEstado = {
   'ENTREGADO': 'Entregado',
   'CANCELADO': 'Cancelado',
 };
+
+String _formatearFechaBolivia(DateTime fecha) {
+  final bt = fecha.toUtc().subtract(const Duration(hours: 4));
+  final pad = (int n) => n.toString().padLeft(2, '0');
+  return '${bt.year}-${pad(bt.month)}-${pad(bt.day)} ${pad(bt.hour)}:${pad(bt.minute)}';
+}
 
 Color _colorEstado(String estado) {
   switch (estado) {
@@ -112,7 +122,7 @@ class _TarjetaPedido extends StatelessWidget {
     return Card(
       child: ExpansionTile(
         title: Text(pedido.empresaNombre, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text('${pedido.numeroPedido} · ${pedido.fecha.toLocal().toString().split('.').first}'),
+        subtitle: Text('${pedido.numeroPedido} · ${_formatearFechaBolivia(pedido.fecha)}'),
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
@@ -142,6 +152,31 @@ class _TarjetaPedido extends StatelessWidget {
               ],
             ),
           ),
+          if (pedido.estado != 'CANCELADO')
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    final token = context.read<AuthService>().token;
+                    if (token == null) return;
+                    final url = Uri.parse('${ApiClient.instance.baseUrl}pedidos/${pedido.id}/factura/?token=$token');
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('No se pudo abrir la factura')),
+                        );
+                      }
+                    }
+                  },
+                  icon: const Icon(Icons.picture_as_pdf),
+                  label: const Text('Descargar Factura PDF'),
+                ),
+              ),
+            ),
         ],
       ),
     );

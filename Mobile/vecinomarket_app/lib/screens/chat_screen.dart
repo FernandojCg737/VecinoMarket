@@ -5,6 +5,8 @@ import '../services/auth_service.dart';
 import '../services/cart_service.dart';
 import '../services/chat_service.dart';
 import '../services/theme_service.dart';
+import '../widgets/notification_badge_button.dart';
+import 'notifications_screen.dart';
 import 'auth_screen.dart';
 import 'cart_screen.dart';
 import 'live_commerce_screen.dart';
@@ -453,13 +455,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                         ),
 
-                        // Notificaciones
-                        _buildHeaderIcon(
-                          icon: Icons.notifications_none_outlined,
-                          tooltip: 'Notificaciones',
-                          isDark: isDark,
-                          onTap: () {},
-                        ),
+                        const NotificationBadgeButton(size: 20),
+                        const SizedBox(width: 4),
 
                         // Tema claro / oscuro
                         _buildHeaderIcon(

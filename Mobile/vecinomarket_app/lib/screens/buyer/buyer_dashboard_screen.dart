@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../services/api_client.dart';
 import '../../services/auth_service.dart';
 import '../chat_screen.dart';
@@ -25,6 +26,18 @@ class _BuyerDashboardScreenState extends State<BuyerDashboardScreen> {
   List<dynamic> _compras = [];
   List<dynamic> _valoraciones = [];
   List<dynamic> _notificaciones = [];
+
+  String _formatearFechaBolivia(String fechaStr) {
+    if (fechaStr.isEmpty) return '';
+    try {
+      final fecha = DateTime.parse(fechaStr);
+      final bt = fecha.toUtc().subtract(const Duration(hours: 4));
+      final pad = (int n) => n.toString().padLeft(2, '0');
+      return '${bt.year}-${pad(bt.month)}-${pad(bt.day)} ${pad(bt.hour)}:${pad(bt.minute)}';
+    } catch (_) {
+      return fechaStr.split('T').first;
+    }
+  }
 
   @override
   void initState() {
@@ -275,7 +288,7 @@ class _BuyerDashboardScreenState extends State<BuyerDashboardScreen> {
                         ..._compras.take(3).map((c) {
                           final estado = c['estado'] ?? 'PENDIENTE';
                           final total = c['subtotal'] ?? c['total'] ?? 0;
-                          final fecha = (c['fecha_creacion'] ?? '').toString().split('T').first;
+                          final fecha = _formatearFechaBolivia(c['fecha_creacion'] ?? '');
 
                           return Container(
                             margin: const EdgeInsets.only(bottom: 10),
@@ -324,10 +337,35 @@ class _BuyerDashboardScreenState extends State<BuyerDashboardScreen> {
                                         style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _colorBadgeEstado(estado)),
                                       ),
                                     ),
-                                  ],
-                                ),
                               ],
                             ),
+                            if (estado != 'CANCELADO') ...[
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  onPressed: () async {
+                                    final token = context.read<AuthService>().token;
+                                    if (token == null) return;
+                                    final url = Uri.parse('${ApiClient.instance.baseUrl}pedidos/${c['id']}/factura/?token=$token');
+                                    if (await canLaunchUrl(url)) {
+                                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                                    } else {
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('No se pudo abrir la factura')),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  icon: const Icon(Icons.picture_as_pdf, size: 18),
+                                  label: const Text('Descargar Factura', style: TextStyle(fontSize: 12)),
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                  ),
+                                ),
+                              ),
+                            ],
                           );
                         }),
                     ],

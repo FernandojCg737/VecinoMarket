@@ -6,7 +6,9 @@ import '../services/auth_service.dart';
 import '../services/cart_service.dart';
 import '../services/catalogo_service.dart';
 import '../services/chat_service.dart';
+import '../services/notificacion_service.dart';
 import '../services/theme_service.dart';
+import 'notifications_screen.dart';
 import 'auth_screen.dart';
 import 'cart_screen.dart';
 import 'chat_screen.dart';
@@ -311,13 +313,6 @@ class _CompanyCatalogScreenState extends State<CompanyCatalogScreen> {
                           },
                         ),
 
-                        // Notificaciones
-                        _buildHeaderIcon(
-                          icon: Icons.notifications_none_outlined,
-                          tooltip: 'Notificaciones',
-                          isDark: isDark,
-                          onTap: () {},
-                        ),
 
                         // Modo claro / oscuro
                         _buildHeaderIcon(
