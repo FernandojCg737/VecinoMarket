@@ -68,10 +68,19 @@ class PedidoSerializer(serializers.ModelSerializer):
 
     def get_comprobante_url(self, obj):
         url = obj.orden_compra.comprobante_url
+        if not url:
+            return ''
+        if url.startswith(('http://', 'https://')):
+            return url
         request = self.context.get('request')
-        if request and url and url.startswith('/'):
-            return request.build_absolute_uri(url)
-        return url
+        path = url if url.startswith('/') else f'/{url}'
+        if request:
+            return request.build_absolute_uri(path)
+        from django.conf import settings
+        backend_host = getattr(settings, 'RENDER_EXTERNAL_HOSTNAME', '')
+        if backend_host:
+            return f'https://{backend_host}{path}'
+        return path
 
 
 class EntregaSerializer(serializers.ModelSerializer):

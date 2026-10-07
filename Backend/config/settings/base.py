@@ -117,7 +117,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 
@@ -133,9 +133,9 @@ MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 # admin/img/sorting-icons.svg). Costó una release fallida en Render
 # encontrarlo — no las agregues de nuevo a INSTALLED_APPS.
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME', default=''),
-    'API_KEY': env('CLOUDINARY_API_KEY', default=''),
-    'API_SECRET': env('CLOUDINARY_API_SECRET', default=''),
+    'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME', default='ss5kjxlu'),
+    'API_KEY': env('CLOUDINARY_API_KEY', default='791469666359297'),
+    'API_SECRET': env('CLOUDINARY_API_SECRET', default='NXe00YIWDOD7OPkW04zXpy8B1UY'),
 }
 _cloudinary_habilitado = bool(
     CLOUDINARY_STORAGE.get('CLOUD_NAME')

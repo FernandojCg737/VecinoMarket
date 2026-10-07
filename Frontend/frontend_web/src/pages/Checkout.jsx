@@ -5,6 +5,7 @@ import API from '../api/axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import PayPalCheckoutButton from '../components/pagos/PayPalCheckoutButton';
+import { resolverUrlMedia } from '../utils/media';
 
 const TASA_CAMBIO = 6.96;
 
@@ -344,7 +345,7 @@ export default function Checkout() {
                               {m.imagen_qr_url ? (
                                 <div className="mb-3 flex flex-col items-center">
                                   <img
-                                    src={m.imagen_qr_url}
+                                    src={resolverUrlMedia(m.imagen_qr_url)}
                                     alt={`Código QR ${m.nombre}`}
                                     className="w-48 h-48 object-contain rounded-lg border border-gray-200 dark:border-gray-700 bg-white p-2 shadow-sm"
                                   />

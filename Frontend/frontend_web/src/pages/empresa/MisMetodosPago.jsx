@@ -4,6 +4,7 @@ import { Wallet, Plus, Pencil, Trash2, Star, QrCode, Landmark, CreditCard, Uploa
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import { esEmpresaOEmpleado } from '../../utils/roles';
+import { resolverUrlMedia } from '../../utils/media';
 
 const TIPOS = [
   { value: 'QR', label: 'Código QR', icon: QrCode },
@@ -185,7 +186,21 @@ export default function MisMetodosPago() {
             <div key={m.id} className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
               <div className="flex items-center gap-3 min-w-0">
                 {m.tipo === 'QR' && m.imagen_qr_url ? (
-                  <img src={m.imagen_qr_url} alt="" className="h-10 w-10 rounded-md object-cover border border-gray-200 dark:border-gray-700" />
+                  <div className="relative h-10 w-10 shrink-0">
+                    <img
+                      src={resolverUrlMedia(m.imagen_qr_url)}
+                      alt={m.nombre}
+                      className="h-10 w-10 rounded-md object-cover border border-gray-200 dark:border-gray-700"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = e.currentTarget.nextElementSibling;
+                        if (fallback) fallback.style.display = 'grid';
+                      }}
+                    />
+                    <div style={{ display: 'none' }} className="grid h-10 w-10 place-items-center rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400">
+                      <IconoTipo tipo={m.tipo} size={18} />
+                    </div>
+                  </div>
                 ) : (
                   <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400">
                     <IconoTipo tipo={m.tipo} size={18} />
@@ -258,7 +273,12 @@ export default function MisMetodosPago() {
                 <div className="space-y-2">
                   <div>
                     {editando?.imagen_qr_url && !archivoQr && (
-                      <img src={editando.imagen_qr_url} alt="" className="h-20 w-20 rounded-md object-cover border border-gray-200 dark:border-gray-700 mb-2" />
+                      <img
+                        src={resolverUrlMedia(editando.imagen_qr_url)}
+                        alt=""
+                        className="h-20 w-20 rounded-md object-cover border border-gray-200 dark:border-gray-700 mb-2"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      />
                     )}
                     <label className="flex items-center justify-center gap-1.5 rounded-md border border-dashed border-gray-300 dark:border-gray-600 px-2 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
                       <Upload size={14} /> {archivoQr ? archivoQr.name : 'Subir imagen del QR'}
