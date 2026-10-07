@@ -135,8 +135,20 @@ class ListaCrearMisMetodosPagoView(generics.ListCreateAPIView):
         try:
             metodo = serializer.save(empresa=empresa)
         except Exception as exc:
-            logger.exception("Error guardando MetodoPago: %s", exc)
-            raise ValidationError(f'No se pudo registrar el método de pago: {str(exc)}')
+            logger.exception("Error guardando MetodoPago con storage principal: %s", exc)
+            try:
+                from django.core.files.storage import FileSystemStorage
+                validated_data = dict(serializer.validated_data)
+                imagen = validated_data.pop('imagen_qr', None)
+                metodo = MetodoPago.objects.create(empresa=empresa, **validated_data)
+                if imagen:
+                    fs = FileSystemStorage()
+                    nombre_archivo = fs.save(f'metodos_pago/{imagen.name}', imagen)
+                    metodo.imagen_qr = nombre_archivo
+                    metodo.save(update_fields=['imagen_qr'])
+            except Exception as fallback_exc:
+                logger.exception("Fallback storage error: %s", fallback_exc)
+                raise ValidationError(f'No se pudo registrar el método de pago: {str(exc)}')
         _log(self.request, 'CREAR_METODO_PAGO', metodo.id, {'nombre': metodo.nombre})
 
 

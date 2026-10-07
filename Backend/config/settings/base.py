@@ -132,10 +132,27 @@ MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 # de whitenoise en collectstatic (falla con MissingFileError buscando
 # admin/img/sorting-icons.svg). Costó una release fallida en Render
 # encontrarlo — no las agregues de nuevo a INSTALLED_APPS.
+_c_name = str(env('CLOUDINARY_CLOUD_NAME', default='ss5kjxlu')).strip() or 'ss5kjxlu'
+_c_key = str(env('CLOUDINARY_API_KEY', default='791469666359297')).strip()
+_c_secret = str(env('CLOUDINARY_API_SECRET', default='NXe00YIWDOD7OPkW04zXpy8B1UY')).strip()
+
+# En Cloudinary, el API Key son 15 dígitos numéricos (ej. 791469666359297)
+# y el API Secret es una cadena alfanumérica con letras (ej. NXe00YIWDOD7OPkW04zXpy8B1UY).
+# Si en Render se invirtieron o se asignó el secret en la variable de API_KEY:
+if _c_key and not _c_key.isdigit():
+    if _c_secret and _c_secret.isdigit():
+        _c_key, _c_secret = _c_secret, _c_key
+    else:
+        _c_secret = _c_key
+        _c_key = '791469666359297'
+
+if not _c_secret or not any(c.isalpha() for c in _c_secret):
+    _c_secret = 'NXe00YIWDOD7OPkW04zXpy8B1UY'
+
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME', default='ss5kjxlu'),
-    'API_KEY': env('CLOUDINARY_API_KEY', default='791469666359297'),
-    'API_SECRET': env('CLOUDINARY_API_SECRET', default='NXe00YIWDOD7OPkW04zXpy8B1UY'),
+    'CLOUD_NAME': _c_name,
+    'API_KEY': _c_key,
+    'API_SECRET': _c_secret,
 }
 _cloudinary_habilitado = bool(
     CLOUDINARY_STORAGE.get('CLOUD_NAME')
