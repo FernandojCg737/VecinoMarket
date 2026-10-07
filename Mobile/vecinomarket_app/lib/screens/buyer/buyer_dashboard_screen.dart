@@ -298,74 +298,80 @@ class _BuyerDashboardScreenState extends State<BuyerDashboardScreen> {
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(color: borderColor),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            child: Column(
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      'Pedido #${c['id'] ?? ''}',
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Pedido #${c['id'] ?? ''}',
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          fecha,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      fecha,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
-                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          'Bs $total',
+                                          style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFD97706), fontSize: 14),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: _colorBadgeEstado(estado).withValues(alpha: 0.15),
+                                            borderRadius: BorderRadius.circular(999),
+                                          ),
+                                          child: Text(
+                                            estado,
+                                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _colorBadgeEstado(estado)),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      'Bs $total',
-                                      style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFD97706), fontSize: 14),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: _colorBadgeEstado(estado).withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(999),
+                                if (estado != 'CANCELADO') ...[
+                                  const SizedBox(height: 12),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: OutlinedButton.icon(
+                                      onPressed: () async {
+                                        final token = await ApiClient.instance.accessToken;
+                                        if (token == null) return;
+                                        final url = Uri.parse('${ApiClient.baseUrl}pedidos/${c['id']}/factura/?token=$token');
+                                        if (await canLaunchUrl(url)) {
+                                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                                        } else {
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('No se pudo abrir la factura')),
+                                            );
+                                          }
+                                        }
+                                      },
+                                      icon: const Icon(Icons.picture_as_pdf, size: 18),
+                                      label: const Text('Descargar Factura', style: TextStyle(fontSize: 12)),
+                                      style: OutlinedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(vertical: 8),
                                       ),
-                                      child: Text(
-                                        estado,
-                                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _colorBadgeEstado(estado)),
-                                      ),
                                     ),
+                                  ),
+                                ],
                               ],
                             ),
-                            if (estado != 'CANCELADO') ...[
-                              const SizedBox(height: 12),
-                              SizedBox(
-                                width: double.infinity,
-                                child: OutlinedButton.icon(
-                                  onPressed: () async {
-                                    final token = context.read<AuthService>().token;
-                                    if (token == null) return;
-                                    final url = Uri.parse('${ApiClient.instance.baseUrl}pedidos/${c['id']}/factura/?token=$token');
-                                    if (await canLaunchUrl(url)) {
-                                      await launchUrl(url, mode: LaunchMode.externalApplication);
-                                    } else {
-                                      if (context.mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('No se pudo abrir la factura')),
-                                        );
-                                      }
-                                    }
-                                  },
-                                  icon: const Icon(Icons.picture_as_pdf, size: 18),
-                                  label: const Text('Descargar Factura', style: TextStyle(fontSize: 12)),
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                  ),
-                                ),
-                              ),
-                            ],
                           );
                         }),
                     ],

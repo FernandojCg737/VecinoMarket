@@ -159,9 +159,9 @@ class _TarjetaPedido extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: () async {
-                    final token = context.read<AuthService>().token;
+                    final token = await ApiClient.instance.accessToken;
                     if (token == null) return;
-                    final url = Uri.parse('${ApiClient.instance.baseUrl}pedidos/${pedido.id}/factura/?token=$token');
+                    final url = Uri.parse('${ApiClient.baseUrl}pedidos/${pedido.id}/factura/?token=$token');
                     if (await canLaunchUrl(url)) {
                       await launchUrl(url, mode: LaunchMode.externalApplication);
                     } else {
