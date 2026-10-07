@@ -1,33 +1,40 @@
+import logging
+
 from django.db import DatabaseError, connection
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.auditoria.models import LogAuditoria
 from apps.core.exportadores import responder_exportacion
 from apps.core.utils import get_client_ip
-from apps.usuarios.permissions import EsAdmin, TienePermisoEmpleado
 from apps.usuarios.models import Empresa
-from rest_framework.permissions import AllowAny
+from apps.usuarios.permissions import EsAdmin, TienePermisoEmpleado
 
 from .models import Factura, MetodoPago, Referido
 from .serializers import FacturaSerializer, MetodoPagoAdminSerializer, MetodoPagoEmpresaSerializer, ReferidoSerializer
 
+logger = logging.getLogger(__name__)
+
 
 def _log(request, accion, entidad_id, detalle=None, entidad_afectada='metodo_pago'):
-    LogAuditoria.objects.create(
-        usuario=request.user,
-        accion=accion,
-        entidad_afectada=entidad_afectada,
-        entidad_id=entidad_id,
-        detalle=detalle or {},
-        ip_origen=get_client_ip(request),
-        user_agent=request.META.get('HTTP_USER_AGENT', ''),
-    )
+    try:
+        LogAuditoria.objects.create(
+            usuario=request.user,
+            accion=accion,
+            entidad_afectada=entidad_afectada,
+            entidad_id=entidad_id,
+            detalle=detalle or {},
+            ip_origen=get_client_ip(request),
+            user_agent=str(request.META.get('HTTP_USER_AGENT', ''))[:500],
+        )
+    except Exception as exc:
+        logger.warning('No se pudo registrar log de auditoría para %s: %s', accion, exc)
 
 
 class ListaCrearMetodoPagoAdminView(generics.ListCreateAPIView):
@@ -46,8 +53,24 @@ class ListaCrearMetodoPagoAdminView(generics.ListCreateAPIView):
             qs = qs.filter(empresa_id=empresa_id)
         return qs
 
+    def create(self, request, *args, **kwargs):
+        try:
+            return super().create(request, *args, **kwargs)
+        except ValidationError:
+            raise
+        except Exception as exc:
+            logger.exception("Error al crear método de pago admin: %s", exc)
+            return Response(
+                {'detail': f'Error al guardar método de pago: {str(exc)}'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
     def perform_create(self, serializer):
-        metodo = serializer.save()
+        try:
+            metodo = serializer.save()
+        except Exception as exc:
+            logger.exception("Error guardando MetodoPago admin: %s", exc)
+            raise ValidationError(f'No se pudo registrar el método de pago: {str(exc)}')
         _log(self.request, 'CREAR_METODO_PAGO', metodo.id, {'nombre': metodo.nombre, 'empresa_id': metodo.empresa_id})
 
 
@@ -86,15 +109,34 @@ class ListaCrearMisMetodosPagoView(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_queryset(self):
+        empresa = self.request.user.get_empresa()
+        if not empresa:
+            return MetodoPago.objects.none()
         return MetodoPago.objects.filter(
-            activo=True, empresa=self.request.user.get_empresa()
+            activo=True, empresa=empresa
         ).order_by('-predeterminado', '-creado_en')
+
+    def create(self, request, *args, **kwargs):
+        try:
+            return super().create(request, *args, **kwargs)
+        except ValidationError:
+            raise
+        except Exception as exc:
+            logger.exception("Error al crear método de pago: %s", exc)
+            return Response(
+                {'detail': f'Error al guardar método de pago: {str(exc)}'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def perform_create(self, serializer):
         empresa = self.request.user.get_empresa()
         if not empresa:
             raise ValidationError('No se encontró la empresa asociada a tu cuenta.')
-        metodo = serializer.save(empresa=empresa)
+        try:
+            metodo = serializer.save(empresa=empresa)
+        except Exception as exc:
+            logger.exception("Error guardando MetodoPago: %s", exc)
+            raise ValidationError(f'No se pudo registrar el método de pago: {str(exc)}')
         _log(self.request, 'CREAR_METODO_PAGO', metodo.id, {'nombre': metodo.nombre})
 
 
@@ -108,15 +150,25 @@ class EditarEliminarMiMetodoPagoView(APIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def patch(self, request, metodo_id):
-        metodo = get_object_or_404(MetodoPago, id=metodo_id, empresa=request.user.get_empresa())
+        empresa = request.user.get_empresa()
+        if not empresa:
+            return Response({'detail': 'No se encontró la empresa asociada a tu cuenta.'}, status=status.HTTP_400_BAD_REQUEST)
+        metodo = get_object_or_404(MetodoPago, id=metodo_id, empresa=empresa)
         serializer = MetodoPagoEmpresaSerializer(metodo, data=request.data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        try:
+            serializer.save()
+        except Exception as exc:
+            logger.exception("Error actualizando MetodoPago: %s", exc)
+            return Response({'detail': f'Error al actualizar el método de pago: {str(exc)}'}, status=status.HTTP_400_BAD_REQUEST)
         _log(request, 'EDITAR_METODO_PAGO', metodo.id, {'nombre': metodo.nombre})
         return Response(MetodoPagoEmpresaSerializer(metodo, context={'request': request}).data)
 
     def delete(self, request, metodo_id):
-        metodo = get_object_or_404(MetodoPago, id=metodo_id, empresa=request.user.get_empresa())
+        empresa = request.user.get_empresa()
+        if not empresa:
+            return Response({'detail': 'No se encontró la empresa asociada a tu cuenta.'}, status=status.HTTP_400_BAD_REQUEST)
+        metodo = get_object_or_404(MetodoPago, id=metodo_id, empresa=empresa)
         nombre = metodo.nombre
         metodo.delete()
         _log(request, 'ELIMINAR_METODO_PAGO', metodo_id, {'nombre': nombre})

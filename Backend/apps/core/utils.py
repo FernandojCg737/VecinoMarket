@@ -1,9 +1,28 @@
+import ipaddress
+
+
 def get_client_ip(request):
     """Obtiene la IP real del cliente, considerando proxies/load balancers."""
-    forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
-    if forwarded:
-        return forwarded.split(',')[0].strip()
-    return request.META.get('REMOTE_ADDR')
+    raw = request.META.get('HTTP_X_FORWARDED_FOR')
+    if raw:
+        ip_str = raw.split(',')[0].strip()
+    else:
+        ip_str = (request.META.get('REMOTE_ADDR') or '').strip()
+
+    if not ip_str:
+        return None
+
+    # Remover puerto si viene incluido (ej. 192.168.1.1:5432 o [::1]:8000)
+    if ip_str.startswith('[') and ']' in ip_str:
+        ip_str = ip_str[1:].split(']')[0]
+    elif ':' in ip_str and ip_str.count(':') == 1:
+        ip_str = ip_str.split(':')[0]
+
+    try:
+        ipaddress.ip_address(ip_str)
+        return ip_str
+    except ValueError:
+        return None
 
 
 def mostrar_debug_toolbar(request):

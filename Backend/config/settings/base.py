@@ -119,6 +119,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 
 # Imágenes subidas por el admin/las empresas (CU07): Cloudinary, no el disco
 # local — en Render el disco es efímero y se pierde en cada redeploy. Si las
@@ -136,10 +137,15 @@ CLOUDINARY_STORAGE = {
     'API_KEY': env('CLOUDINARY_API_KEY', default=''),
     'API_SECRET': env('CLOUDINARY_API_SECRET', default=''),
 }
+_cloudinary_habilitado = bool(
+    CLOUDINARY_STORAGE.get('CLOUD_NAME')
+    and CLOUDINARY_STORAGE.get('API_KEY')
+    and CLOUDINARY_STORAGE.get('API_SECRET')
+)
 STORAGES = {
     'default': {
         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage'
-        if CLOUDINARY_STORAGE['CLOUD_NAME']
+        if _cloudinary_habilitado
         else 'django.core.files.storage.FileSystemStorage'
     },
     'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},

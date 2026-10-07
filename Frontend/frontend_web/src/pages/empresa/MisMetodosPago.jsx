@@ -111,15 +111,21 @@ export default function MisMetodosPago() {
       await cargarMetodos();
     } catch (err) {
       console.error('Error al guardar método de pago:', err);
-      const data = err?.response?.data || {};
-      const primerError =
-        data.detail ||
-        (Array.isArray(data.imagen_qr) ? data.imagen_qr[0] : null) ||
-        (Array.isArray(data.nombre) ? data.nombre[0] : null) ||
-        (Array.isArray(data.tipo) ? data.tipo[0] : null) ||
-        (typeof data === 'object' && Object.values(data).flat().find((v) => typeof v === 'string')) ||
-        err?.message ||
-        'No se pudo guardar el método de pago.';
+      const data = err?.response?.data;
+      let primerError = '';
+      if (typeof data === 'string' && data.trim()) {
+        primerError = data.length > 200 ? 'Error del servidor (código 500). Verifique los datos o intente nuevamente.' : data;
+      } else if (data && typeof data === 'object') {
+        primerError =
+          data.detail ||
+          (Array.isArray(data.imagen_qr) ? data.imagen_qr[0] : null) ||
+          (Array.isArray(data.nombre) ? data.nombre[0] : null) ||
+          (Array.isArray(data.tipo) ? data.tipo[0] : null) ||
+          Object.values(data).flat().find((v) => typeof v === 'string');
+      }
+      if (!primerError) {
+        primerError = err?.message || 'No se pudo guardar el método de pago.';
+      }
       setErrorForm(primerError);
     } finally {
       setGuardando(false);

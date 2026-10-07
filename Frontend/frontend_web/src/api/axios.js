@@ -10,6 +10,10 @@ API.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${access}`;
   }
   if (config.data instanceof FormData && config.headers) {
+    if (typeof config.headers.delete === 'function') {
+      config.headers.delete('Content-Type');
+      config.headers.delete('content-type');
+    }
     delete config.headers['Content-Type'];
     delete config.headers['content-type'];
   }
