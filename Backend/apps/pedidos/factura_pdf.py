@@ -74,7 +74,7 @@ class DescargarFacturaView(APIView):
         cliente_nombre = "Consumidor Final"
         cliente_celular = ""
         if pedido.orden_compra and pedido.orden_compra.comprador:
-            cliente_nombre = f"{pedido.orden_compra.comprador.usuario.first_name} {pedido.orden_compra.comprador.usuario.last_name}"
+            cliente_nombre = f"{pedido.orden_compra.comprador.usuario.nombre} {pedido.orden_compra.comprador.usuario.apellido}"
             cliente_celular = pedido.orden_compra.comprador.telefono_celular
         c.drawString(40, height - 225, cliente_nombre)
         if cliente_celular:
