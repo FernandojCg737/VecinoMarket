@@ -102,16 +102,10 @@ export default function MisCompras() {
                   <span>Bs {c.subtotal}</span>
                 </div>
                 <div className="flex items-center gap-4 mt-2 pt-1">
-                  <button onClick={() => window.print()} className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700">
-                    <Printer size={12} /> Imprimir
-                  </button>
-                  <button onClick={() => exportarCsv(c.numero_pedido, c)} className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700">
-                    <Download size={12} /> Exportar
-                  </button>
                   {c.estado !== 'CANCELADO' && (
                     <>
                       <a
-                        href={`${API.defaults.baseURL}pedidos/${c.id}/factura/?token=${localStorage.getItem('access_token')}&action=view`}
+                        href={`${API.defaults.baseURL}pedidos/${c.id}/factura/?token=${localStorage.getItem('vecinomarket_access')}&action=view`}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline"
@@ -119,7 +113,7 @@ export default function MisCompras() {
                         <FileText size={12} /> Ver Factura
                       </a>
                       <a
-                        href={`${API.defaults.baseURL}pedidos/${c.id}/factura/?token=${localStorage.getItem('access_token')}&action=download`}
+                        href={`${API.defaults.baseURL}pedidos/${c.id}/factura/?token=${localStorage.getItem('vecinomarket_access')}&action=download`}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline"

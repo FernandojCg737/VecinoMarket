@@ -114,7 +114,7 @@ export default function MisResenas() {
   }
 
   const idsCalificados = new Set(valoraciones.map((v) => v.pedido));
-  const pendientes = compras.filter((c) => !idsCalificados.has(c.id));
+  const pendientes = compras.filter((c) => c.estado === 'ENTREGADO' && !idsCalificados.has(c.id));
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">

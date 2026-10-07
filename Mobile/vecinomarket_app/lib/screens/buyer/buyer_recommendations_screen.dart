@@ -52,7 +52,7 @@ class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen>
       _error = null;
     });
     try {
-      final res = await _api.post('reportes/mis-recomendaciones/generar/', {});
+      final res = await _api.post('reportes/mis-recomendaciones/generar/', {}, autenticado: true);
       if (mounted) {
         setState(() {
           if (res is Map && res['recomendaciones'] != null) {
@@ -195,15 +195,30 @@ class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen>
                           itemCount: _recomendaciones.length,
                           itemBuilder: (context, i) {
                             final item = _recomendaciones[i] as Map<String, dynamic>;
-                            final productoData = item['producto_detalle'] ?? item['producto'] ?? item;
-                            final nombre = productoData['nombre'] ?? item['producto_nombre'] ?? 'Producto';
-                            final precio = productoData['precio'] ?? item['precio'] ?? 0;
+                            final isDetalleMap = item['producto_detalle'] is Map<String, dynamic>;
+                            final isProductoMap = item['producto'] is Map<String, dynamic>;
+                            
+                            final Map<String, dynamic> productoData = isDetalleMap 
+                                ? item['producto_detalle'] 
+                                : (isProductoMap ? item['producto'] : <String, dynamic>{});
+
+                            final nombre = productoData['nombre'] ?? item['producto_nombre'] ?? 'Producto Recomendado';
+                            final precio = productoData['precio'] ?? item['producto_precio'] ?? item['precio'] ?? 0;
                             final imagenUrl = productoData['imagen_url'] ?? item['imagen_url'];
                             final motivo = item['motivo'] ?? item['razon'] ?? 'Sugerido por tus compras';
 
                             return InkWell(
                               onTap: () {
-                                final prod = Producto.fromJson(Map<String, dynamic>.from(productoData is Map ? productoData : item));
+                                final Map<String, dynamic> jsonForProd = productoData.isNotEmpty 
+                                    ? productoData 
+                                    : {
+                                        'id': item['producto'] is int ? item['producto'] : (item['id'] ?? 0),
+                                        'nombre': nombre,
+                                        'precio': precio,
+                                        'empresa': {'razon_social': item['empresa_nombre'] ?? ''},
+                                        'imagenes': imagenUrl != null ? [{'url': imagenUrl}] : [],
+                                      };
+                                final prod = Producto.fromJson(jsonForProd);
                                 Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailScreen(producto: prod)));
                               },
                               borderRadius: BorderRadius.circular(16),

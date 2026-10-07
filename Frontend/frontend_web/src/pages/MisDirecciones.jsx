@@ -17,14 +17,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-const LA_PAZ = { lat: -16.5, lon: -68.15 };
+const SANTA_CRUZ = { lat: -17.7833, lon: -63.1821 };
 
 const VACIO = { alias: '', direccion_texto: '', departamento: '', ciudad: '', es_predeterminada: false };
 
 function SelectorDeMapa({ posicion, onCambiar }) {
   useMapEvents({
     click(e) {
-      onCambiar({ lat: e.latlng.lat, lon: e.latlng.lng });
+      onCambiar(e.latlng.lat, e.latlng.lng);
     },
   });
   return <Marker position={[posicion.lat, posicion.lon]} />;
@@ -39,10 +39,32 @@ export default function MisDirecciones() {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [editando, setEditando] = useState(null);
   const [form, setForm] = useState(VACIO);
-  const [posicion, setPosicion] = useState(LA_PAZ);
+  const [posicion, setPosicion] = useState(SANTA_CRUZ);
   const [guardando, setGuardando] = useState(false);
   const [errorForm, setErrorForm] = useState('');
   const [buscandoGps, setBuscandoGps] = useState(false);
+
+  async function reverseGeocode(lat, lon) {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`);
+      const data = await res.json();
+      if (data && data.address) {
+        setForm(prev => ({
+          ...prev,
+          direccion_texto: prev.direccion_texto || data.display_name?.split(',')[0] || '',
+          ciudad: data.address.city || data.address.town || data.address.village || prev.ciudad,
+          departamento: data.address.state || prev.departamento
+        }));
+      }
+    } catch (e) {
+      console.error('Error reverse geocoding', e);
+    }
+  }
+
+  function handleMapClick(lat, lon) {
+    setPosicion({ lat, lon });
+    reverseGeocode(lat, lon);
+  }
 
   function cargarDirecciones() {
     setCargando(true);
@@ -68,7 +90,7 @@ export default function MisDirecciones() {
   function abrirNueva() {
     setEditando(null);
     setForm(VACIO);
-    setPosicion(LA_PAZ);
+    setPosicion(SANTA_CRUZ);
     setErrorForm('');
     setMostrarForm(true);
   }
@@ -79,7 +101,7 @@ export default function MisDirecciones() {
       alias: d.alias, direccion_texto: d.direccion_texto,
       departamento: d.departamento, ciudad: d.ciudad, es_predeterminada: d.es_predeterminada,
     });
-    setPosicion({ lat: d.latitud ?? LA_PAZ.lat, lon: d.longitud ?? LA_PAZ.lon });
+    setPosicion({ lat: d.latitud ?? SANTA_CRUZ.lat, lon: d.longitud ?? SANTA_CRUZ.lon });
     setErrorForm('');
     setMostrarForm(true);
   }
@@ -94,6 +116,7 @@ export default function MisDirecciones() {
       (pos) => {
         setPosicion({ lat: pos.coords.latitude, lon: pos.coords.longitude });
         setBuscandoGps(false);
+        reverseGeocode(pos.coords.latitude, pos.coords.longitude);
       },
       () => {
         setErrorForm('No se pudo obtener tu ubicación. Márcala en el mapa.');
@@ -251,7 +274,7 @@ export default function MisDirecciones() {
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <SelectorDeMapa posicion={posicion} onCambiar={setPosicion} />
+                    <SelectorDeMapa posicion={posicion} onCambiar={handleMapClick} />
                   </MapContainer>
                 </div>
                 <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">Haz clic en el mapa para marcar el punto exacto.</p>
