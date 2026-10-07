@@ -757,10 +757,10 @@ class IniciarCheckoutView(APIView):
                 mensaje=f'Tu comprobante para los pedidos {", ".join(numeros)} fue recibido. La tienda verificará el pago en breve.',
                 enlace='/perfil',
             )
-            for ped in orden.pedidos.select_related('empresa__usuario').all():
-                if ped.empresa and ped.empresa.usuario:
+            for ped in orden.pedidos.select_related('empresa__usuario_dueno').all():
+                if ped.empresa and ped.empresa.usuario_dueno:
                     _crear_notificacion(
-                        usuario=ped.empresa.usuario,
+                        usuario=ped.empresa.usuario_dueno,
                         tipo='NUEVO_PEDIDO_QR',
                         titulo='Nuevo comprobante QR por verificar',
                         mensaje=f'El comprador {comprador.usuario.nombre or comprador.usuario.email} envió un comprobante para el pedido #{ped.numero_pedido}.',
@@ -872,10 +872,10 @@ class ConfirmarPagoCheckoutView(APIView):
             mensaje=f'Tu pago fue aprobado exitosamente. Pedidos confirmados: {", ".join(numeros)}.',
             enlace='/perfil',
         )
-        for ped in orden.pedidos.select_related('empresa__usuario').all():
-            if ped.empresa and ped.empresa.usuario:
+        for ped in orden.pedidos.select_related('empresa__usuario_dueno').all():
+            if ped.empresa and ped.empresa.usuario_dueno:
                 _crear_notificacion(
-                    usuario=ped.empresa.usuario,
+                    usuario=ped.empresa.usuario_dueno,
                     tipo='NUEVA_VENTA',
                     titulo='Nueva venta confirmada',
                     mensaje=f'El pedido #{ped.numero_pedido} fue pagado y confirmado con éxito.',
