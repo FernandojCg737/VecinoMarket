@@ -59,7 +59,7 @@ class DescargarFacturaView(APIView):
         # Datos de la Empresa emisora
         c.setFillColor(colors.black)
         c.setFont("Helvetica-Bold", 12)
-        empresa_nombre = pedido.empresa.nombre if pedido.empresa else "VecinoMarket"
+        empresa_nombre = pedido.empresa.razon_social if pedido.empresa else "VecinoMarket"
         c.drawString(40, height - 130, empresa_nombre)
         c.setFont("Helvetica", 10)
         c.drawString(40, height - 145, "Plataforma VecinoMarket")
@@ -75,7 +75,7 @@ class DescargarFacturaView(APIView):
         cliente_celular = ""
         if pedido.orden_compra and pedido.orden_compra.comprador:
             cliente_nombre = f"{pedido.orden_compra.comprador.usuario.nombre} {pedido.orden_compra.comprador.usuario.apellido}"
-            cliente_celular = pedido.orden_compra.comprador.telefono_celular
+            cliente_celular = pedido.orden_compra.comprador.usuario.telefono
         c.drawString(40, height - 225, cliente_nombre)
         if cliente_celular:
             c.drawString(40, height - 240, f"Celular: {cliente_celular}")
@@ -117,7 +117,7 @@ class DescargarFacturaView(APIView):
         for item in pedido.items.all():
             c.drawString(55, y, str(item.cantidad))
             # Truncar descripción si es muy larga
-            desc = item.producto_nombre[:40] + "..." if len(item.producto_nombre) > 40 else item.producto_nombre
+            desc = item.producto.nombre[:40] + "..." if len(item.producto.nombre) > 40 else item.producto.nombre
             c.drawString(120, y, desc)
             c.drawString(360, y, f"Bs {item.precio_unitario}")
             c.drawString(480, y, f"Bs {item.subtotal}")
