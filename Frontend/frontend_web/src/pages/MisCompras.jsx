@@ -120,6 +120,18 @@ export default function MisCompras() {
                       >
                         <Download size={12} /> Descargar Factura
                       </a>
+                      <button
+                        onClick={() => {
+                          const url = `${API.defaults.baseURL}pedidos/${c.id}/factura/?token=${localStorage.getItem('vecinomarket_access')}&action=view`;
+                          const win = window.open(url, '_blank');
+                          if (win) {
+                            win.onload = () => win.print();
+                          }
+                        }}
+                        className="flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline"
+                      >
+                        <Printer size={12} /> Imprimir
+                      </button>
                     </>
                   )}
                   {c.comprobante_url && (

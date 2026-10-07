@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { ClipboardList, ChevronDown, ChevronUp, Eye, X, FileText } from 'lucide-react';
+import { ClipboardList, ChevronDown, ChevronUp, Eye, X, FileText, Printer } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import { esEmpresaOEmpleado } from '../../utils/roles';
@@ -189,7 +189,7 @@ export default function MisPedidos() {
                       onChange={(e) => cambiarEstado(p, e.target.value)}
                       className={`rounded-full border-0 px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-300 ${badgeEstado(p.estado)}`}
                     >
-                      {ESTADOS_PEDIDO.map((op) => <option key={op.value} value={op.value}>{op.label}</option>)}
+                      {ESTADOS_PEDIDO.map((op) => <option key={op.value} value={op.value} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">{op.label}</option>)}
                     </select>
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -245,6 +245,18 @@ export default function MisPedidos() {
                             >
                               <FileText size={14} /> Descargar Factura
                             </a>
+                            <button
+                              onClick={() => {
+                                const url = `${API.defaults.baseURL}pedidos/${p.id}/factura/?token=${localStorage.getItem('vecinomarket_access')}&action=view`;
+                                const win = window.open(url, '_blank');
+                                if (win) {
+                                  win.onload = () => win.print();
+                                }
+                              }}
+                              className="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline text-xs font-semibold"
+                            >
+                              <Printer size={14} /> Imprimir
+                            </button>
                           </div>
                         )}
                       </div>
