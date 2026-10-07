@@ -9,6 +9,7 @@ import '../services/theme_service.dart';
 import 'auth_screen.dart';
 import 'cart_screen.dart';
 import 'live_commerce_screen.dart';
+import '../widgets/notification_badge_button.dart';
 import 'product_detail_screen.dart';
 import 'profile_screen.dart';
 
@@ -104,6 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              const SizedBox(width: 4),
+              const NotificationBadgeButton(size: 21),
             ],
           ),
         ),

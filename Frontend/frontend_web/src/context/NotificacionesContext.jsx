@@ -40,8 +40,13 @@ export function NotificacionesProvider({ children }) {
     setNotificaciones((prev) => prev.map((it) => ({ ...it, leido: true })));
   }
 
+  async function eliminarNotificacion(id) {
+    await API.delete(`notificaciones/mis-notificaciones/${id}/`);
+    setNotificaciones((prev) => prev.filter((it) => it.id !== id));
+  }
+
   return (
-    <NotificacionesContext.Provider value={{ notificaciones, marcarLeida, marcarTodas }}>
+    <NotificacionesContext.Provider value={{ notificaciones, cargar, marcarLeida, marcarTodas, eliminarNotificacion }}>
       {children}
     </NotificacionesContext.Provider>
   );

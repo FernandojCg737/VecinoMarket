@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { esEmpresaOEmpleado } from '../../utils/roles';
 
 const ESTADOS_PEDIDO = [
-  { value: 'PENDIENTE', label: 'Pendiente' },
+  { value: 'PENDIENTE', label: 'Verificando pago QR' },
   { value: 'CONFIRMADO', label: 'Confirmado' },
   { value: 'EN_PREPARACION', label: 'En preparación' },
   { value: 'ENVIADO', label: 'Enviado' },

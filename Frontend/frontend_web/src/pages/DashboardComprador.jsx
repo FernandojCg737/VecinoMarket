@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { esComprador } from '../utils/roles';
 
 const ESTADO_LABEL = {
-  PENDIENTE: 'Pendiente', CONFIRMADO: 'Confirmado', EN_PREPARACION: 'En preparación',
+  PENDIENTE: 'Verificando pago (QR)', CONFIRMADO: 'Confirmado', EN_PREPARACION: 'En preparación',
   ENVIADO: 'Enviado', ENTREGADO: 'Entregado', CANCELADO: 'Cancelado',
 };
 

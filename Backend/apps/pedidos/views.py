@@ -37,6 +37,21 @@ def _log(request, accion, entidad_id, detalle=None, entidad_afectada='pedido'):
     )
 
 
+def _crear_notificacion(usuario, tipo, titulo, mensaje, enlace=''):
+    try:
+        from apps.notificaciones.models import Notificacion
+        if usuario:
+            Notificacion.objects.create(
+                usuario=usuario,
+                tipo=tipo,
+                titulo=titulo,
+                mensaje=mensaje,
+                enlace=enlace,
+            )
+    except Exception:
+        pass
+
+
 class ListaCarritosAdminView(APIView):
     """CU11: el SuperAdmin/Admin ve, en vivo (el frontend re-consulta cada
     pocos segundos), qué está agregando cada comprador a su carrito. Es de
@@ -183,13 +198,44 @@ def _pedidos_queryset():
 
 
 def _filtrar_pedidos(qs, params):
-    """CU12: 'tipo=pedido' (estado_pago PENDIENTE) vs 'tipo=venta'
-    (estado_pago PAGADO) — el criterio que separa los dos dashboards."""
+    """CU12: 'tipo=pedido' (solo órdenes QR pendientes de verificación) vs 'tipo=venta'
+    (estado_pago PAGADO con estados confirmados/en curso/entregados)."""
     tipo = params.get('tipo')
     if tipo == 'pedido':
-        qs = qs.filter(orden_compra__estado_pago=OrdenCompra.EstadoPago.PENDIENTE)
+        # Solo pedidos QR donde el comprador subió su comprobante y está por verificarse
+        qs = qs.filter(
+            orden_compra__metodo_pago=OrdenCompra.MetodoPago.QR,
+            orden_compra__estado_pago=OrdenCompra.EstadoPago.PENDIENTE,
+            estado=Pedido.Estado.PENDIENTE,
+        )
     elif tipo == 'venta':
-        qs = qs.filter(orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO)
+        qs = qs.filter(
+            orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO,
+            estado__in=[
+                Pedido.Estado.CONFIRMADO,
+                Pedido.Estado.EN_PREPARACION,
+                Pedido.Estado.ENVIADO,
+                Pedido.Estado.ENTREGADO,
+            ],
+        )
+    else:
+        # Excluir órdenes de pasarelas de pago no concluidas o abandonadas
+        qs = qs.filter(
+            Q(
+                orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO,
+                estado__in=[
+                    Pedido.Estado.CONFIRMADO,
+                    Pedido.Estado.EN_PREPARACION,
+                    Pedido.Estado.ENVIADO,
+                    Pedido.Estado.ENTREGADO,
+                ],
+            ) |
+            Q(
+                orden_compra__metodo_pago=OrdenCompra.MetodoPago.QR,
+                orden_compra__estado_pago=OrdenCompra.EstadoPago.PENDIENTE,
+                estado=Pedido.Estado.PENDIENTE,
+            )
+        )
 
     estado = params.get('estado')
     if estado:
@@ -209,18 +255,70 @@ def _filtrar_pedidos(qs, params):
 def _aplicar_cambios_pedido(request, pedido):
     """Escribe estado (Pedido, ciclo de vida operativo) y/o estado_pago
     (OrdenCompra, lo que decide si es "Pedido" o "Venta") — ambos opcionales
-    e independientes entre sí en el mismo PATCH."""
+    e independientes entre sí en el mismo PATCH. Además, emite notificaciones
+    al comprador sobre el avance del pedido y confirmación del pago."""
+    comprador_usuario = (
+        pedido.orden_compra.comprador.usuario
+        if (pedido.orden_compra and pedido.orden_compra.comprador)
+        else None
+    )
+    empresa_nombre = pedido.empresa.razon_social if pedido.empresa else 'la tienda'
+
     nuevo_estado = request.data.get('estado')
     if nuevo_estado:
         if nuevo_estado not in Pedido.Estado.values:
             raise ValueError('Estado de pedido inválido.')
+        estado_ant = pedido.estado
         pedido.estado = nuevo_estado
         pedido.save(update_fields=['estado'])
+
+        if estado_ant != nuevo_estado and comprador_usuario:
+            if nuevo_estado == Pedido.Estado.CONFIRMADO:
+                _crear_notificacion(
+                    usuario=comprador_usuario,
+                    tipo='PEDIDO_CONFIRMADO',
+                    titulo='¡Pedido confirmado!',
+                    mensaje=f'Tu pedido #{pedido.numero_pedido} de {empresa_nombre} fue confirmado.',
+                    enlace='/perfil',
+                )
+            elif nuevo_estado == Pedido.Estado.EN_PREPARACION:
+                _crear_notificacion(
+                    usuario=comprador_usuario,
+                    tipo='PEDIDO_EN_PREPARACION',
+                    titulo='Pedido en preparación',
+                    mensaje=f'{empresa_nombre} está preparando tu pedido #{pedido.numero_pedido}.',
+                    enlace='/perfil',
+                )
+            elif nuevo_estado == Pedido.Estado.ENVIADO:
+                _crear_notificacion(
+                    usuario=comprador_usuario,
+                    tipo='PEDIDO_ENVIADO',
+                    titulo='Pedido en camino / Listo para entrega',
+                    mensaje=f'Tu pedido #{pedido.numero_pedido} de {empresa_nombre} ha sido enviado o está listo para recojo.',
+                    enlace='/perfil',
+                )
+            elif nuevo_estado == Pedido.Estado.ENTREGADO:
+                _crear_notificacion(
+                    usuario=comprador_usuario,
+                    tipo='PEDIDO_ENTREGADO',
+                    titulo='¡Pedido entregado!',
+                    mensaje=f'Tu pedido #{pedido.numero_pedido} ha sido entregado exitosamente. ¡Gracias por tu compra!',
+                    enlace='/perfil',
+                )
+            elif nuevo_estado == Pedido.Estado.CANCELADO:
+                _crear_notificacion(
+                    usuario=comprador_usuario,
+                    tipo='PEDIDO_CANCELADO',
+                    titulo='Pedido cancelado',
+                    mensaje=f'Tu pedido #{pedido.numero_pedido} de {empresa_nombre} fue cancelado.',
+                    enlace='/perfil',
+                )
 
     nuevo_estado_pago = request.data.get('estado_pago')
     if nuevo_estado_pago:
         if nuevo_estado_pago not in OrdenCompra.EstadoPago.values:
             raise ValueError('Estado de pago inválido.')
+        estado_pago_ant = pedido.orden_compra.estado_pago
         pedido.orden_compra.estado_pago = nuevo_estado_pago
         pedido.orden_compra.save(update_fields=['estado_pago'])
         if nuevo_estado_pago == OrdenCompra.EstadoPago.PAGADO:
@@ -230,6 +328,27 @@ def _aplicar_cambios_pedido(request, pedido):
             if pedido.estado == Pedido.Estado.PENDIENTE:
                 pedido.estado = Pedido.Estado.CONFIRMADO
                 pedido.save(update_fields=['estado'])
+
+            if estado_pago_ant != OrdenCompra.EstadoPago.PAGADO and comprador_usuario:
+                _crear_notificacion(
+                    usuario=comprador_usuario,
+                    tipo='PAGO_CONFIRMADO',
+                    titulo='¡Pago confirmado!',
+                    mensaje=f'El pago de tu pedido #{pedido.numero_pedido} fue verificado y confirmado por {empresa_nombre}.',
+                    enlace='/perfil',
+                )
+        elif nuevo_estado_pago == OrdenCompra.EstadoPago.FALLIDO:
+            pedido.orden_compra.pagos.filter(estado=Pago.Estado.PENDIENTE).update(
+                estado=Pago.Estado.RECHAZADO
+            )
+            if estado_pago_ant != OrdenCompra.EstadoPago.FALLIDO and comprador_usuario:
+                _crear_notificacion(
+                    usuario=comprador_usuario,
+                    tipo='PAGO_RECHAZADO',
+                    titulo='Comprobante de pago rechazado',
+                    mensaje=f'El comprobante del pedido #{pedido.numero_pedido} no pudo ser verificado por {empresa_nombre}.',
+                    enlace='/perfil',
+                )
 
 
 class ListaPedidosAdminView(generics.ListAPIView):
@@ -323,6 +442,15 @@ def _marcar_entregada(entrega):
     with connection.cursor() as cursor:
         cursor.execute('SELECT fn_marcar_entregada(%s)', [entrega.pedido_id])
     entrega.refresh_from_db()
+    if entrega.pedido and entrega.pedido.orden_compra and entrega.pedido.orden_compra.comprador:
+        comprador_usuario = entrega.pedido.orden_compra.comprador.usuario
+        _crear_notificacion(
+            usuario=comprador_usuario,
+            tipo='PEDIDO_ENTREGADO',
+            titulo='¡Pedido entregado!',
+            mensaje=f'Tu entrega del pedido #{entrega.pedido.numero_pedido} fue completada.',
+            enlace='/perfil',
+        )
 
 
 class ListaEntregasAdminView(generics.ListAPIView):
@@ -448,7 +576,22 @@ class ListaMisComprasView(generics.ListAPIView):
     def get_queryset(self):
         return _pedidos_queryset().filter(
             orden_compra__comprador__usuario=self.request.user,
-        ).exclude(orden_compra__estado_pago=OrdenCompra.EstadoPago.FALLIDO)
+        ).filter(
+            Q(
+                orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO,
+                estado__in=[
+                    Pedido.Estado.CONFIRMADO,
+                    Pedido.Estado.EN_PREPARACION,
+                    Pedido.Estado.ENVIADO,
+                    Pedido.Estado.ENTREGADO,
+                ],
+            ) |
+            Q(
+                orden_compra__metodo_pago=OrdenCompra.MetodoPago.QR,
+                orden_compra__estado_pago=OrdenCompra.EstadoPago.PENDIENTE,
+                estado=Pedido.Estado.PENDIENTE,
+            )
+        )
 
 
 def _numero_pedido():
@@ -606,10 +749,27 @@ class IniciarCheckoutView(APIView):
 
         # Si el comprador eligió QR con comprobante, se completa el pedido sin ir a PayPal
         if metodo_orden == OrdenCompra.MetodoPago.QR:
+            numeros = list(orden.pedidos.values_list('numero_pedido', flat=True))
+            _crear_notificacion(
+                usuario=request.user,
+                tipo='PAGO_QR_PENDIENTE',
+                titulo='Comprobante QR recibido',
+                mensaje=f'Tu comprobante para los pedidos {", ".join(numeros)} fue recibido. La tienda verificará el pago en breve.',
+                enlace='/perfil',
+            )
+            for ped in orden.pedidos.select_related('empresa__usuario').all():
+                if ped.empresa and ped.empresa.usuario:
+                    _crear_notificacion(
+                        usuario=ped.empresa.usuario,
+                        tipo='NUEVO_PEDIDO_QR',
+                        titulo='Nuevo comprobante QR por verificar',
+                        mensaje=f'El comprador {comprador.usuario.nombre or comprador.usuario.email} envió un comprobante para el pedido #{ped.numero_pedido}.',
+                        enlace='/empresa/pedidos',
+                    )
             _log(request, 'INICIAR_CHECKOUT_QR', orden.id, {'monto_total': str(monto_total)}, entidad_afectada='orden_compra')
             return Response({
                 'orden_compra_id': orden.id,
-                'numeros_pedido': list(orden.pedidos.values_list('numero_pedido', flat=True)),
+                'numeros_pedido': numeros,
                 'metodo': 'QR',
                 'requiere_popup_paypal': False,
                 'mensaje': 'Pedido registrado con éxito. El vendedor verificará tu comprobante de pago.',
@@ -695,9 +855,35 @@ class ConfirmarPagoCheckoutView(APIView):
 
         _log(request, 'CONFIRMAR_PAGO', orden.id, {'aprobado': aprobado, 'paypal_order_id': paypal_order_id}, entidad_afectada='orden_compra')
         if not aprobado:
+            _crear_notificacion(
+                usuario=request.user,
+                tipo='PAGO_RECHAZADO',
+                titulo='Pago no completado',
+                mensaje='El pago con PayPal no pudo ser procesado o fue rechazado.',
+                enlace='/perfil',
+            )
             return Response({'detail': 'PayPal no aprobó el pago.'}, status=status.HTTP_402_PAYMENT_REQUIRED)
+
+        numeros = list(orden.pedidos.values_list('numero_pedido', flat=True))
+        _crear_notificacion(
+            usuario=request.user,
+            tipo='PAGO_CONFIRMADO',
+            titulo='¡Pago confirmado!',
+            mensaje=f'Tu pago fue aprobado exitosamente. Pedidos confirmados: {", ".join(numeros)}.',
+            enlace='/perfil',
+        )
+        for ped in orden.pedidos.select_related('empresa__usuario').all():
+            if ped.empresa and ped.empresa.usuario:
+                _crear_notificacion(
+                    usuario=ped.empresa.usuario,
+                    tipo='NUEVA_VENTA',
+                    titulo='Nueva venta confirmada',
+                    mensaje=f'El pedido #{ped.numero_pedido} fue pagado y confirmado con éxito.',
+                    enlace='/empresa/pedidos',
+                )
+
         return Response({
             'aprobado': True,
             'orden_compra_id': orden.id,
-            'numeros_pedido': list(orden.pedidos.values_list('numero_pedido', flat=True)),
+            'numeros_pedido': numeros,
         })

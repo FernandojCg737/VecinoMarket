@@ -13,6 +13,7 @@ import 'buyer/buyer_reviews_screen.dart';
 import 'buyer/buyer_store_chatbot_screen.dart';
 import 'chat_screen.dart';
 import 'mis_pedidos_screen.dart';
+import 'notifications_screen.dart';
 
 const _nombresRol = {
   'SUPERADMIN': 'Super administrador',
@@ -309,6 +310,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
 
             const SizedBox(height: 20),
+
+            _buildMenuOpcion(
+              icon: Icons.notifications_active_outlined,
+              titulo: 'Mis notificaciones',
+              subtitulo: 'Revisa pagos QR, confirmaciones y actualizaciones de pedidos',
+              colorIcono: const Color(0xFFD97706),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+              ),
+            ),
+
+            const SizedBox(height: 8),
 
             // SECCIÓN COMPRADOR: TODAS LAS FUNCIONALIDADES (Captura 2)
             if (rol == 'COMPRADOR' || rol.isEmpty) ...[

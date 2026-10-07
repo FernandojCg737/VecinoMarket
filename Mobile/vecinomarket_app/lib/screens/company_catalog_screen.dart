@@ -11,6 +11,7 @@ import 'auth_screen.dart';
 import 'cart_screen.dart';
 import 'chat_screen.dart';
 import 'live_commerce_screen.dart';
+import '../widgets/notification_badge_button.dart';
 import 'product_detail_screen.dart';
 import 'profile_screen.dart';
 
@@ -284,6 +285,8 @@ class _CompanyCatalogScreenState extends State<CompanyCatalogScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(width: 4),
+                        const NotificationBadgeButton(size: 20),
                         const SizedBox(width: 2),
 
                         // Ubicación

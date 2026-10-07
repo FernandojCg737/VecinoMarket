@@ -3,7 +3,7 @@ import '../models/pedido.dart';
 import '../services/pedido_service.dart';
 
 const _nombresEstado = {
-  'PENDIENTE': 'Pendiente',
+  'PENDIENTE': 'Verificando pago (QR)',
   'CONFIRMADO': 'Confirmado',
   'EN_PREPARACION': 'En preparación',
   'ENVIADO': 'Enviado',
@@ -15,11 +15,16 @@ Color _colorEstado(String estado) {
   switch (estado) {
     case 'ENTREGADO':
       return Colors.green;
-    case 'CANCELADO':
-      return Colors.red;
+    case 'CONFIRMADO':
+      return const Color(0xFF10B981);
     case 'EN_PREPARACION':
+      return const Color(0xFF3B82F6);
     case 'ENVIADO':
       return Colors.orange;
+    case 'PENDIENTE':
+      return const Color(0xFFD97706);
+    case 'CANCELADO':
+      return Colors.red;
     default:
       return Colors.grey;
   }
@@ -67,12 +72,21 @@ class _MisPedidosScreenState extends State<MisPedidosScreen> {
                 ],
               );
             }
-            final pedidos = snapshot.data ?? [];
+            final todos = snapshot.data ?? [];
+            final pedidos = todos
+                .where((p) => const {
+                      'CONFIRMADO',
+                      'EN_PREPARACION',
+                      'ENVIADO',
+                      'ENTREGADO',
+                      'PENDIENTE',
+                    }.contains(p.estado))
+                .toList();
             if (pedidos.isEmpty) {
               return ListView(
                 children: const [
                   SizedBox(height: 80),
-                  Center(child: Text('Todavía no tienes compras.')),
+                  Center(child: Text('Todavía no tienes compras o pedidos confirmados.')),
                 ],
               );
             }

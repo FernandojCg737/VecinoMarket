@@ -7,7 +7,7 @@ import { esStaff } from '../../utils/roles';
 
 const ESTADOS_PEDIDO = [
   { value: '', label: 'Todos los estados' },
-  { value: 'PENDIENTE', label: 'Pendiente' },
+  { value: 'PENDIENTE', label: 'Verificando pago QR' },
   { value: 'CONFIRMADO', label: 'Confirmado' },
   { value: 'EN_PREPARACION', label: 'En preparación' },
   { value: 'ENVIADO', label: 'Enviado' },

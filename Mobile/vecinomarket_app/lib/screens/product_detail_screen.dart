@@ -10,6 +10,7 @@ import 'cart_screen.dart';
 import 'chat_screen.dart';
 import 'company_catalog_screen.dart';
 import 'live_commerce_screen.dart';
+import '../widgets/notification_badge_button.dart';
 import 'profile_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -1090,6 +1091,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(width: 4),
+                        const NotificationBadgeButton(size: 20),
                         const SizedBox(width: 2),
 
                         // Ubicación
