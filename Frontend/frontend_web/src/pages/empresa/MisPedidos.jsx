@@ -220,7 +220,7 @@ export default function MisPedidos() {
                         </div>
                         {p.estado !== 'CANCELADO' && (
                           <div className="pt-2 flex justify-end gap-3">
-                            {p.metodo_pago?.toUpperCase().includes('QR') && p.comprobante_url && (
+                            {p.metodo_pago?.toUpperCase().includes('QR') && (
                               <button
                                 type="button"
                                 onClick={() => setModalComprobante(p)}
@@ -289,12 +289,16 @@ export default function MisPedidos() {
               <p><strong>Método de pago:</strong> {modalComprobante.metodo_pago}</p>
               <p><strong>Estado del pago:</strong> {modalComprobante.estado_pago}</p>
             </div>
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-gray-50 dark:bg-gray-950 flex justify-center p-2">
-              <img
-                src={modalComprobante.comprobante_url}
-                alt="Comprobante de pago"
-                className="max-h-96 w-auto object-contain rounded"
-              />
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-gray-50 dark:bg-gray-950 flex justify-center p-2 min-h-[150px] items-center text-center">
+              {modalComprobante.comprobante_url ? (
+                <img
+                  src={modalComprobante.comprobante_url}
+                  alt="Comprobante de pago"
+                  className="max-h-96 w-auto object-contain rounded"
+                />
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-gray-400">El comprador aún no ha subido el comprobante de pago.</p>
+              )}
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <button
