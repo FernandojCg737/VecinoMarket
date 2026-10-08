@@ -37,6 +37,8 @@ def generar_backup_json():
     return buffer.getvalue()
 
 
+from django.db import transaction
+
 def restaurar_backup_json(archivo_subido):
     """archivo_subido: un UploadedFile de Django (request.FILES['archivo'])."""
     tmp = tempfile.NamedTemporaryFile(suffix='.json', delete=False)
@@ -44,6 +46,11 @@ def restaurar_backup_json(archivo_subido):
         for chunk in archivo_subido.chunks():
             tmp.write(chunk)
         tmp.close()
-        management.call_command('loaddata', tmp.name)
+        
+        with transaction.atomic():
+            # Limpiamos la base de datos primero para evitar choques de PKs
+            # o UniqueConstraints al restaurar el backup.
+            management.call_command('flush', interactive=False, allow_cascade=True)
+            management.call_command('loaddata', tmp.name)
     finally:
         os.unlink(tmp.name)
