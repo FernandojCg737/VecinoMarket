@@ -254,6 +254,25 @@ class MejorarPlanConfirmarView(APIView):
             detalle={'plan_nuevo': plan.nombre, 'fecha_vencimiento': str(vencimiento)},
             ip_origen=get_client_ip(request),
         )
+
+        try:
+            from django.core.mail import send_mail
+            destinatario = request.user.correo_recuperacion or request.user.email
+            send_mail(
+                'Has adquirido una nueva suscripción en VecinoMarket',
+                (
+                    f'Hola {request.user.nombre},\n\n'
+                    f'Tu cuenta de empresa "{empresa.razon_social}" ha cambiado exitosamente al plan {plan.nombre}.\n'
+                    f'Esta suscripción es válida hasta el {vencimiento.strftime("%d/%m/%Y")}.\n\n'
+                    f'Ingresa aquí a tu panel: {settings.FRONTEND_URL}/login'
+                ),
+                settings.DEFAULT_FROM_EMAIL,
+                [destinatario],
+                fail_silently=False,
+            )
+        except Exception as e:
+            pass
+
         return Response({
             'detail': 'Plan actualizado.', 'plan': PlanSerializer(plan).data, 'fecha_vencimiento': vencimiento,
         })
