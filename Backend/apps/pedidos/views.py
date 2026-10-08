@@ -740,7 +740,6 @@ class IniciarCheckoutView(APIView):
                         orden_compra=orden,
                         monto=monto_total,
                         metodo=Pago.Metodo.QR,
-                        comprobante=comprobante,
                         estado=Pago.Estado.PENDIENTE,
                         fecha_pago=timezone.now(),
                     )
