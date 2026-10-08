@@ -189,6 +189,8 @@ class ListaCrearProductoAdminView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         producto = serializer.save()
+        if producto.precio_descuento is not None and producto.estado == 'ACTIVO':
+            _notificar_descuento_a_compradores(producto)
         _log(self.request, 'CREAR_PRODUCTO', producto.id, {'nombre': producto.nombre}, entidad_afectada='producto')
 
 
@@ -199,11 +201,20 @@ class EditarEliminarProductoAdminView(APIView):
 
     def patch(self, request, producto_id):
         producto = get_object_or_404(Producto, id=producto_id)
+        precio_descuento_anterior = producto.precio_descuento
+        estado_anterior = producto.estado
+
         serializer = ProductoAdminSerializer(producto, data=request.data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+        if producto.precio_descuento is not None and producto.estado == 'ACTIVO':
+            if estado_anterior != 'ACTIVO' or precio_descuento_anterior != producto.precio_descuento:
+                _notificar_descuento_a_compradores(producto)
+
         _log(request, 'EDITAR_PRODUCTO', producto.id, {'nombre': producto.nombre}, entidad_afectada='producto')
-        return Response(ProductoAdminSerializer(producto, context={'request': request}).data)
+        producto_actualizado = _productos_admin_queryset().get(id=producto.id)
+        return Response(ProductoAdminSerializer(producto_actualizado, context={'request': request}).data)
 
     def delete(self, request, producto_id):
         producto = get_object_or_404(Producto, id=producto_id)
@@ -289,7 +300,33 @@ class ListaCrearMisProductosView(generics.ListCreateAPIView):
                 )
             InventarioSucursal.objects.create(producto=producto, sucursal=sucursal, cantidad_disponible=stock_editable)
 
+        # Enviar notificación a todos los compradores si se crea con descuento y está activo
+        if producto.precio_descuento is not None and producto.estado == 'ACTIVO':
+            _notificar_descuento_a_compradores(producto)
+
         _log(self.request, 'CREAR_PRODUCTO', producto.id, {'nombre': producto.nombre}, entidad_afectada='producto')
+
+
+def _notificar_descuento_a_compradores(producto):
+    from apps.usuarios.models import Usuario
+    from apps.notificaciones.models import Notificacion
+    
+    compradores = Usuario.objects.filter(rol=Usuario.Rol.COMPRADOR, activo=True)
+    notificaciones = []
+    
+    for comprador in compradores.iterator(chunk_size=1000):
+        notificaciones.append(
+            Notificacion(
+                usuario=comprador,
+                tipo='OFERTA_NUEVA',
+                titulo=f'¡Oferta de {producto.empresa.razon_social}!',
+                mensaje=f'{producto.nombre} bajó a Bs. {producto.precio_descuento}. ¡Aprovecha la oferta!',
+                enlace=f'/productos/{producto.id}'
+            )
+        )
+    
+    if notificaciones:
+        Notificacion.objects.bulk_create(notificaciones, batch_size=1000)
 
 
 class EditarEliminarMiProductoView(APIView):
@@ -304,12 +341,18 @@ class EditarEliminarMiProductoView(APIView):
     def patch(self, request, producto_id):
         empresa = request.user.get_empresa()
         producto = get_object_or_404(Producto, id=producto_id, empresa=empresa)
+        
+        # Guardar estado anterior para saber si disparamos notificación de oferta
+        precio_descuento_anterior = producto.precio_descuento
+        estado_anterior = producto.estado
+
         serializer = ProductoEmpresaSerializer(producto, data=request.data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
         
         stock_editable = serializer.validated_data.pop('stock_editable', None)
         serializer.save()
 
+        # Actualizar stock si fue provisto
         if stock_editable is not None:
             from apps.inventario.models import Sucursal, InventarioSucursal
             from django.db import connection
@@ -326,6 +369,11 @@ class EditarEliminarMiProductoView(APIView):
                 if delta != 0:
                     with connection.cursor() as cursor:
                         cursor.execute('SELECT fn_ajustar_stock(%s, %s)', [inventario.id, delta])
+
+        # Enviar notificación si se aplicó un descuento nuevo o el producto se reactivó con descuento
+        if producto.precio_descuento is not None and producto.estado == 'ACTIVO':
+            if estado_anterior != 'ACTIVO' or precio_descuento_anterior != producto.precio_descuento:
+                _notificar_descuento_a_compradores(producto)
 
         _log(request, 'EDITAR_PRODUCTO', producto.id, {'nombre': producto.nombre}, entidad_afectada='producto')
         producto_actualizado = _productos_admin_queryset().get(id=producto.id)
