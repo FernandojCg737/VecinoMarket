@@ -117,11 +117,13 @@ export default function Backup() {
       const formData = new FormData();
       formData.append('archivo', archivo);
       const res = await API.post('core/restore/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 120000,
       });
       setMensaje(res.data?.detail || 'Respaldo restaurado correctamente.');
+      cargarHistorial();
     } catch (err) {
-      setError(err?.response?.data?.detail || 'No se pudo restaurar el respaldo.');
+      setError(err?.response?.data?.detail ||
+        'No se pudo confirmar la restauración. Revisa la bitácora antes de volver a cargar el archivo.');
     } finally {
       setRestaurando(false);
       if (inputRef.current) inputRef.current.value = '';
@@ -158,7 +160,7 @@ export default function Backup() {
         </p>
         <button
           onClick={descargarBackup}
-          disabled={descargando}
+          disabled={descargando || restaurando}
           className="flex items-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
         >
           <Download size={16} /> {descargando ? 'Generando...' : 'Descargar backup'}
@@ -179,9 +181,9 @@ export default function Backup() {
           <input
             ref={inputRef}
             type="file"
-            accept="application/json"
+            accept=".json,application/json"
             className="hidden"
-            disabled={restaurando}
+            disabled={restaurando || descargando}
             onChange={restaurarBackup}
           />
         </label>
