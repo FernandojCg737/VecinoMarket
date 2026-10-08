@@ -48,9 +48,9 @@ def restaurar_backup_json(archivo_subido):
         tmp.close()
         
         with transaction.atomic():
-            # Limpiamos la base de datos primero para evitar choques de PKs
-            # o UniqueConstraints al restaurar el backup.
-            management.call_command('flush', interactive=False, allow_cascade=True)
+            # Quitamos el 'flush' porque TRUNCATE bloquea la base de datos entera
+            # (provoca deadlocks y se queda "Restaurando..." para siempre en Supabase).
+            # Loaddata hará un upsert (actualizar/insertar) seguro.
             management.call_command('loaddata', tmp.name)
     finally:
         os.unlink(tmp.name)
