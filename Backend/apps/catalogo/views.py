@@ -276,7 +276,19 @@ class ListaCrearMisProductosView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         empleado = getattr(self.request.user, 'empleado', None)
-        producto = serializer.save(empresa=self.request.user.get_empresa(), creado_por_empleado=empleado)
+        empresa = self.request.user.get_empresa()
+        stock_editable = serializer.validated_data.pop('stock_editable', None)
+        producto = serializer.save(empresa=empresa, creado_por_empleado=empleado)
+        
+        if stock_editable is not None:
+            from apps.inventario.models import Sucursal, InventarioSucursal
+            sucursal = Sucursal.objects.filter(empresa=empresa, activo=True).first()
+            if not sucursal:
+                sucursal = Sucursal.objects.create(
+                    empresa=empresa, nombre='Sucursal Principal', estado=Sucursal.Estado.ACTIVA
+                )
+            InventarioSucursal.objects.create(producto=producto, sucursal=sucursal, cantidad_disponible=stock_editable)
+
         _log(self.request, 'CREAR_PRODUCTO', producto.id, {'nombre': producto.nombre}, entidad_afectada='producto')
 
 
@@ -290,12 +302,34 @@ class EditarEliminarMiProductoView(APIView):
     permiso_requerido = 'gestionar_productos'
 
     def patch(self, request, producto_id):
-        producto = get_object_or_404(Producto, id=producto_id, empresa=request.user.get_empresa())
+        empresa = request.user.get_empresa()
+        producto = get_object_or_404(Producto, id=producto_id, empresa=empresa)
         serializer = ProductoEmpresaSerializer(producto, data=request.data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
+        
+        stock_editable = serializer.validated_data.pop('stock_editable', None)
         serializer.save()
+
+        if stock_editable is not None:
+            from apps.inventario.models import Sucursal, InventarioSucursal
+            from django.db import connection
+            sucursal = Sucursal.objects.filter(empresa=empresa, activo=True).first()
+            if not sucursal:
+                sucursal = Sucursal.objects.create(
+                    empresa=empresa, nombre='Sucursal Principal', estado=Sucursal.Estado.ACTIVA
+                )
+            inventario, created = InventarioSucursal.objects.get_or_create(
+                producto=producto, sucursal=sucursal, defaults={'cantidad_disponible': stock_editable}
+            )
+            if not created:
+                delta = stock_editable - inventario.cantidad_disponible
+                if delta != 0:
+                    with connection.cursor() as cursor:
+                        cursor.execute('SELECT fn_ajustar_stock(%s, %s)', [inventario.id, delta])
+
         _log(request, 'EDITAR_PRODUCTO', producto.id, {'nombre': producto.nombre}, entidad_afectada='producto')
-        return Response(ProductoEmpresaSerializer(producto, context={'request': request}).data)
+        producto_actualizado = _productos_admin_queryset().get(id=producto.id)
+        return Response(ProductoEmpresaSerializer(producto_actualizado, context={'request': request}).data)
 
     def delete(self, request, producto_id):
         producto = get_object_or_404(Producto, id=producto_id, empresa=request.user.get_empresa())

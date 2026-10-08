@@ -104,12 +104,13 @@ class ProductoEmpresaSerializer(serializers.ModelSerializer):
     categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True, default=None)
     imagenes = ProductoImagenSerializer(many=True, read_only=True)
     stock = serializers.IntegerField(read_only=True, default=0)
+    stock_editable = serializers.IntegerField(write_only=True, required=False, allow_null=True)
 
     class Meta:
         model = Producto
         fields = [
             'id', 'nombre', 'descripcion', 'sku', 'precio', 'precio_descuento',
-            'estado', 'categoria', 'categoria_nombre', 'imagenes', 'stock', 'creado_en',
+            'estado', 'categoria', 'categoria_nombre', 'imagenes', 'stock', 'stock_editable', 'creado_en',
         ]
         read_only_fields = ['id', 'categoria_nombre', 'imagenes', 'stock', 'creado_en']
 

@@ -13,7 +13,7 @@ const ESTADOS = [
   { value: 'AGOTADO', label: 'Agotado' },
 ];
 
-const VACIO = { nombre: '', descripcion: '', sku: '', precio: '', precio_descuento: '', estado: 'ACTIVO', categoria: '' };
+const VACIO = { nombre: '', descripcion: '', sku: '', precio: '', precio_descuento: '', estado: 'ACTIVO', categoria: '', stock_editable: '' };
 
 function badgeEstado(estado) {
   if (estado === 'ACTIVO') return 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400';
@@ -116,6 +116,7 @@ export default function MisProductos() {
       precio_descuento: p.precio_descuento ?? '',
       estado: p.estado,
       categoria: p.categoria ?? '',
+      stock_editable: p.stock ?? '',
     });
     setErrorForm('');
     setNuevaImagenUrl('');
@@ -131,6 +132,7 @@ export default function MisProductos() {
       ...form,
       categoria: form.categoria || null,
       precio_descuento: form.precio_descuento === '' ? null : form.precio_descuento,
+      stock_editable: form.stock_editable === '' ? null : form.stock_editable,
     };
     try {
       if (editando) {
@@ -380,7 +382,7 @@ export default function MisProductos() {
                 />
               )}
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <input
                   required
                   type="number"
@@ -400,10 +402,20 @@ export default function MisProductos() {
                   placeholder="Precio oferta"
                   className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
                 />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
                 <input
                   value={form.sku}
                   onChange={(e) => setForm((prev) => ({ ...prev, sku: e.target.value }))}
                   placeholder="SKU"
+                  className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
+                />
+                <input
+                  type="number"
+                  min="0"
+                  value={form.stock_editable}
+                  onChange={(e) => setForm((prev) => ({ ...prev, stock_editable: e.target.value }))}
+                  placeholder="Stock (opcional)"
                   className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
                 />
               </div>
