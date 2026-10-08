@@ -55,3 +55,24 @@ class BackupLog(BaseModel):
 
     def __str__(self):
         return f"Backup {self.tipo} - {self.creado_en.strftime('%Y-%m-%d %H:%M')}"
+
+
+import datetime
+
+class ConfiguracionSistema(BaseModel):
+    """Configuraciones globales del sistema (Singleton)."""
+    hora_backup = models.TimeField(default=datetime.time(3, 0), verbose_name='Hora de Backup Automático')
+
+    class Meta:
+        verbose_name = 'Configuración del Sistema'
+        verbose_name_plural = 'Configuraciones del Sistema'
+
+    def save(self, *args, **kwargs):
+        self.pk = 1  # Forzar singleton
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get_config(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+

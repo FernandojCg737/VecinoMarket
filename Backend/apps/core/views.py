@@ -13,8 +13,8 @@ from apps.usuarios.permissions import EsSuperAdmin
 
 from .backup import generar_backup_json, restaurar_backup_json
 from .utils import get_client_ip
-from .models import BackupLog
-from .serializers import BackupLogSerializer
+from .models import BackupLog, ConfiguracionSistema
+from .serializers import BackupLogSerializer, ConfiguracionSistemaSerializer
 
 
 class BackupView(APIView):
@@ -78,3 +78,21 @@ class RestoreView(APIView):
             user_agent=request.META.get('HTTP_USER_AGENT', ''),
         )
         return Response({'detail': 'Respaldo restaurado correctamente.'})
+
+class ConfiguracionSistemaView(APIView):
+    """Obtiene y actualiza la configuración global del sistema (hora de backups automáticos)."""
+    permission_classes = [EsSuperAdmin]
+
+    def get(self, request):
+        config = ConfiguracionSistema.get_config()
+        serializer = ConfiguracionSistemaSerializer(config)
+        return Response(serializer.data)
+
+    def post(self, request):
+        config = ConfiguracionSistema.get_config()
+        serializer = ConfiguracionSistemaSerializer(config, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

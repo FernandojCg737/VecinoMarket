@@ -5,3 +5,11 @@ class BackupLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = BackupLog
         fields = ['id', 'tipo', 'archivo', 'creado_en']
+
+from .models import ConfiguracionSistema
+
+class ConfiguracionSistemaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConfiguracionSistema
+        fields = ['hora_backup']
+

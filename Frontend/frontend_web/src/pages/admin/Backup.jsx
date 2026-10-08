@@ -17,11 +17,14 @@ export default function Backup() {
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
   const [historial, setHistorial] = useState([]);
+  const [horaBackup, setHoraBackup] = useState('');
+  const [guardandoHora, setGuardandoHora] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
     if (usuario && esSuperAdmin(usuario)) {
       cargarHistorial();
+      cargarConfiguracion();
     }
   }, [usuario]);
 
@@ -31,6 +34,33 @@ export default function Backup() {
       setHistorial(res.data);
     } catch (err) {
       console.error('Error al cargar historial', err);
+    }
+  }
+
+  async function cargarConfiguracion() {
+    try {
+      const res = await API.get('core/backup/config/');
+      if (res.data && res.data.hora_backup) {
+        // backend devuelve "HH:MM:SS"
+        setHoraBackup(res.data.hora_backup.slice(0, 5));
+      }
+    } catch (err) {
+      console.error('Error al cargar configuración', err);
+    }
+  }
+
+  async function guardarConfiguracion() {
+    if (!horaBackup) return;
+    setGuardandoHora(true);
+    setMensaje('');
+    setError('');
+    try {
+      await API.post('core/backup/config/', { hora_backup: horaBackup });
+      setMensaje('Hora de backup automático actualizada.');
+    } catch (err) {
+      setError('Error al guardar la hora del backup.');
+    } finally {
+      setGuardandoHora(false);
     }
   }
 
@@ -155,6 +185,28 @@ export default function Backup() {
             onChange={restaurarBackup}
           />
         </label>
+      </div>
+
+      <div className="mt-6 rounded-xl border border-gray-200 dark:border-gray-800 p-5 mb-4">
+        <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Configuración de Backups Automáticos</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+          Establece la hora a la que se realizarán los respaldos diarios automáticos.
+        </p>
+        <div className="flex items-center gap-3">
+          <input 
+            type="time" 
+            value={horaBackup}
+            onChange={(e) => setHoraBackup(e.target.value)}
+            className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          />
+          <button
+            onClick={guardarConfiguracion}
+            disabled={guardandoHora}
+            className="rounded-md bg-gray-900 dark:bg-white px-4 py-2 text-sm font-semibold text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-60"
+          >
+            {guardandoHora ? 'Guardando...' : 'Guardar hora'}
+          </button>
+        </div>
       </div>
 
       {/* Panel de Historial */}
