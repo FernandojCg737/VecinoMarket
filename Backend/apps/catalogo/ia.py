@@ -1,84 +1,50 @@
-"""CU08: sugerencia de categoría por visión artificial.
+"""CU08: comparar la foto con las categorías activas mediante CLIP en Replicate.
 
-Nota de implementación (importante para quien retome esto): originalmente
-esto usaba el modelo CLIP en modo "zero-shot-image-classification" (le
-mandas la imagen + los nombres de tus categorías, y te dice cuál encaja
-mejor, sin mapeos manuales). Al probarlo en vivo, Hugging Face ya no tiene
-ningún proveedor gratuito sirviendo esa tarea — devuelve
-inferenceProviderMapping vacío para todos los modelos CLIP/SigLIP conocidos.
-Sí queda disponible gratis la tarea "image-classification" clásica (ImageNet,
-1000 clases fijas en inglés), así que el enfoque es: clasificar la imagen con
-ese modelo, y traducir la etiqueta ganadora a una de nuestras categorías con
-un diccionario de palabras clave por dominio (ver DOMINIOS abajo). Si algún
-día HF vuelve a ofrecer zero-shot gratis, ese enfoque es estrictamente mejor
-y este mapeo dejaría de hacer falta.
+Los porcentajes son afinidades relativas entre las opciones enviadas, no una
+probabilidad de acierto. La sugerencia nunca modifica el producto por sí sola.
 """
 
+import hashlib
+import json
+import math
 import re
+import time
+import unicodedata
+from urllib.parse import urlsplit
 
 import requests
 from django.conf import settings
+from django.core.cache import cache
 
-MODELO_HF = 'google/vit-base-patch16-224'
-API_URL = f'https://router.huggingface.co/hf-inference/models/{MODELO_HF}'
+MODELO_CLIP = 'cjwbw/clip-vit-large-patch14'
+VERSION_CLIP = '566ab1f111e526640c5154e712d4d54961414278f89d36590f1425badc763ecb'
+API_URL = 'https://api.replicate.com/v1/predictions'
+ESPERA_MAXIMA = 60
+CACHE_SEGUNDOS = 3600
 
-# Palabras clave en inglés (así vienen las 1000 clases de ImageNet) agrupadas
-# por dominio, y qué palabras clave en español buscar dentro del nombre de la
-# categoría para saber a cuál corresponde ese dominio. No depende de una
-# categoría con id/nombre fijo — funciona con cualquier catálogo de
-# categorías siempre que su nombre incluya la palabra correspondiente
-# ("Ferretería", "Herramientas", etc. matchean el mismo dominio).
-DOMINIOS = [
-    (
-        ['padlock', 'lock', 'screw', 'screwdriver', 'hammer', 'wrench', 'nail', 'drill',
-         'nut', 'bolt', 'plier', 'hand saw', 'chain', 'hatchet', 'toolbox', 'ladder'],
-        ['ferret', 'herramient'],
-    ),
-    (
-        ['bread', 'loaf', 'pretzel', 'bagel', 'bun', 'cake', 'pastry', 'muffin',
-         'baguette', 'croissant', 'pie', 'dough', 'trifle', 'pizza'],
-        ['panader', 'reposter', 'pastel'],
-    ),
-    (
-        ['rice', 'grain', 'oil', 'bottle', 'coffee', 'wine', 'can', 'soup',
-         'jar', 'beverage', 'drink', 'tea', 'sugar', 'flour', 'grocery', 'pretzel', 'banana'],
-        ['abarrote', 'comestible', 'aliment'],
-    ),
-    (
-        ['shirt', 'jersey', 'sweater', 'jean', 'dress', 'shoe', 'sandal', 'sock',
-         'hat', 'cap', 'scarf', 'trouser', 'coat', 'jacket', 'suit', 'sneaker', 'boot'],
-        ['ropa', 'accesorio', 'prenda', 'vestimenta'],
-    ),
-    (
-        ['toy', 'doll', 'teddy', 'puzzle', 'balloon', 'lego', 'kite', 'yo-yo',
-         'toyshop', 'rubik'],
-        ['jugueter'],
-    ),
-    (
-        ['dog', 'cat', 'pet', 'collar', 'leash', 'kennel', 'aquarium', 'birdcage',
-         'hamster', 'kitten', 'puppy'],
-        ['mascota', 'animal'],
-    ),
-    (
-        ['lipstick', 'perfume', 'soap', 'lotion', 'cosmetic', 'shampoo', 'cream',
-         'hairbrush', 'comb', 'hair spray', 'sunscreen'],
-        ['belleza', 'cuidado personal', 'cosmet'],
-    ),
-    (
-        ['vase', 'lamp', 'pillow', 'curtain', 'rug', 'candle', 'picture frame',
-         'wall clock', 'flowerpot', 'chandelier', 'quilt'],
-        ['decoraci', 'hogar'],
-    ),
-    (
-        ['pottery', 'basket', 'pot', 'wickerwork', 'handicraft', 'sculpture',
-         'earthenware', 'weave'],
-        ['artesan'],
-    ),
-    (
-        ['laptop', 'computer', 'cellular telephone', 'phone', 'headphone', 'camera',
-         'television', 'keyboard', 'mouse', 'monitor', 'speaker', 'remote control', 'joystick'],
-        ['tecnolog', 'electr'],
-    ),
+# Este CLIP trabaja con texto en inglés. Los nombres visibles siguen en español;
+# los descriptores se seleccionan por nombre, nunca por ID de la base de datos.
+DESCRIPTORES = [
+    (('ferret', 'herramient'),
+     'A photo of hardware tools and supplies, such as a padlock, screwdriver, hammer or drill.'),
+    (('panader', 'reposter', 'pastel'),
+     'A photo of bakery products, such as bread, pastries, empanadas or cakes.'),
+    (('abarrote', 'comestible', 'aliment'),
+     'A photo of groceries and packaged food, such as rice, coffee, cooking oil or canned food.'),
+    (('tecnolog', 'electr', 'informat'),
+     'A photo of consumer electronics and computer accessories, such as headphones, phones, laptops or laptop cases.'),
+    (('ropa', 'prenda', 'vestimenta', 'moda', 'accesorio'),
+     'A photo of clothes and fashion accessories, such as shirts, sweaters, hats or shoes.'),
+    (('juguet', 'juego'),
+     'A photo of toys and games, such as puzzles, dolls or toy blocks.'),
+    (('mascota', 'animal'),
+     'A photo of pet supplies, such as dog beds, cat food, collars or pet toys.'),
+    (('belleza', 'cuidado personal', 'cosmet'),
+     'A photo of beauty and personal care products, such as soap, shampoo, cosmetics or perfume.'),
+    (('decoraci', 'hogar'),
+     'A photo of home decor and household items, such as flower pots, candles, vases or lamps.'),
+    (('artesan',),
+     'A photo of traditional handmade crafts, such as woven textiles and decorative handicrafts.'),
 ]
 
 
@@ -86,87 +52,146 @@ class ServicioIANoDisponible(Exception):
     pass
 
 
-def _descargar_bytes(url):
-    resp = requests.get(url, timeout=10)
-    resp.raise_for_status()
-    return resp.content, resp.headers.get('Content-Type', 'image/jpeg').split(';')[0]
+def _descripcion_categoria(categoria):
+    nombre = unicodedata.normalize('NFKD', categoria.nombre.casefold())
+    nombre = ''.join(c for c in nombre if not unicodedata.combining(c))
+    for palabras, descripcion in DESCRIPTORES:
+        if any(palabra in nombre for palabra in palabras):
+            return descripcion
+    # Para categorías nuevas conviene escribir una descripción breve en inglés.
+    # Limitar el texto y quitar el separador evita crear candidatos adicionales.
+    texto = f'{categoria.nombre}. {getattr(categoria, "descripcion", "") or ""}'
+    texto = ' '.join(texto.replace('|', ' ').split())[:200]
+    return f'A photo of {texto}'
 
 
-def _clasificar_imagen(imagen_url):
-    """Etiquetas de ImageNet (inglés) ordenadas de mayor a menor confianza:
-    [{'label': 'padlock', 'score': 0.96}, ...]"""
-    if not settings.HUGGINGFACE_API_TOKEN:
-        raise ServicioIANoDisponible('No hay un token de Hugging Face configurado.')
-
+def _leer_prediccion(respuesta):
+    if not respuesta.ok:
+        if respuesta.status_code in (401, 403):
+            mensaje = 'Replicate no aceptó el token del servidor. Contacta al administrador.'
+        elif respuesta.status_code == 402:
+            mensaje = 'No hay saldo disponible en Replicate. Contacta al administrador.'
+        elif respuesta.status_code == 429:
+            mensaje = 'Replicate alcanzó su límite de solicitudes. Espera unos segundos antes de volver a intentar.'
+        else:
+            mensaje = 'Replicate no pudo analizar la imagen. Intenta más tarde.'
+        raise ServicioIANoDisponible(mensaje)
     try:
-        contenido, tipo = _descargar_bytes(imagen_url)
-    except requests.RequestException as exc:
-        raise ServicioIANoDisponible(f'No se pudo descargar la imagen del producto: {exc}') from exc
+        prediccion = respuesta.json()
+    except ValueError as exc:
+        raise ServicioIANoDisponible('Replicate devolvió una respuesta inválida.') from exc
+    if not isinstance(prediccion, dict):
+        raise ServicioIANoDisponible('Replicate devolvió una respuesta inválida.')
+    return prediccion
 
+
+def _validar_puntuaciones(puntuaciones, cantidad):
+    if (
+        not isinstance(puntuaciones, list)
+        or len(puntuaciones) != cantidad
+        or any(type(p) not in (int, float) or not math.isfinite(p) or not 0 <= p <= 1 for p in puntuaciones)
+        or sum(puntuaciones) <= 0
+    ):
+        raise ServicioIANoDisponible('CLIP no devolvió puntuaciones válidas para las categorías.')
+    return puntuaciones
+
+
+def _clasificar_imagen(imagen_url, descripciones):
+    token = str(getattr(settings, 'REPLICATE_API_TOKEN', '')).strip()
+    if not token:
+        raise ServicioIANoDisponible('No hay un token de Replicate configurado en el servidor.')
+    headers = {'Authorization': f'Bearer {token}'}
+    limite = time.monotonic() + ESPERA_MAXIMA
+    prediccion_url = None
+    terminada = False
     try:
-        resp = requests.post(
+        # Una sola creación: nunca reintentar automáticamente un POST facturable.
+        respuesta = requests.post(
             API_URL,
-            headers={'Authorization': f'Bearer {settings.HUGGINGFACE_API_TOKEN}', 'Content-Type': tipo},
-            data=contenido,
-            timeout=25,
+            headers={**headers, 'Prefer': 'wait=10', 'Cancel-After': f'{ESPERA_MAXIMA}s'},
+            json={'version': VERSION_CLIP, 'input': {'image': imagen_url, 'text': '|'.join(descripciones)}},
+            timeout=(5, 15),
+            allow_redirects=False,
         )
+        prediccion = _leer_prediccion(respuesta)
+        # Construir la URL nosotros: no enviar el token a una URL de la respuesta.
+        identificador = prediccion.get('id')
+        if isinstance(identificador, str) and re.fullmatch(r'[a-zA-Z0-9_-]{1,100}', identificador):
+            prediccion_url = f'{API_URL}/{identificador}'
+
+        while True:
+            estado = prediccion.get('status')
+            if estado == 'succeeded':
+                terminada = True
+                return _validar_puntuaciones(prediccion.get('output'), len(descripciones))
+            if estado in ('failed', 'canceled'):
+                terminada = True
+                raise ServicioIANoDisponible('CLIP no pudo analizar la imagen. Verifica que la foto sea accesible y vuelve a intentar.')
+            if estado not in ('starting', 'processing') or not prediccion_url:
+                raise ServicioIANoDisponible('Replicate devolvió un estado de análisis inválido.')
+            restante = limite - time.monotonic()
+            if restante <= 0:
+                raise ServicioIANoDisponible('El análisis tardó demasiado. Intenta nuevamente más tarde.')
+            time.sleep(min(1, restante))
+            restante = limite - time.monotonic()
+            if restante <= 0:
+                raise ServicioIANoDisponible('El análisis tardó demasiado. Intenta nuevamente más tarde.')
+            respuesta = requests.get(
+                prediccion_url, headers=headers, timeout=(5, min(15, restante)), allow_redirects=False,
+            )
+            prediccion = _leer_prediccion(respuesta)
     except requests.RequestException as exc:
-        raise ServicioIANoDisponible(f'No se pudo contactar el servicio de IA: {exc}') from exc
-
-    if resp.status_code == 503:
-        raise ServicioIANoDisponible('El modelo de IA se está iniciando, intenta de nuevo en unos segundos.')
-    if not resp.ok:
-        raise ServicioIANoDisponible(f'El servicio de IA respondió con error {resp.status_code}: {resp.text[:200]}')
-
-    resultados = resp.json()
-    if not isinstance(resultados, list):
-        raise ServicioIANoDisponible(f'Respuesta inesperada del servicio de IA: {resultados}')
-
-    return sorted(resultados, key=lambda r: r.get('score', 0), reverse=True)
-
-
-def _dominio_de_etiqueta(label):
-    label_norm = label.lower()
-    for palabras_en, _ in DOMINIOS:
-        if any(p in label_norm for p in palabras_en):
-            return _
-    return None
-
-
-def _categoria_por_dominio(categorias, palabras_es):
-    for categoria in categorias:
-        nombre_norm = categoria.nombre.lower()
-        if any(re.search(p, nombre_norm) for p in palabras_es):
-            return categoria
-    return None
+        raise ServicioIANoDisponible('No se pudo completar la comunicación con Replicate. Intenta más tarde.') from exc
+    finally:
+        # Cancel-After también protege la tarea si la conexión se perdió antes de
+        # recibir su ID. Si ya lo conocemos, pedir la cancelación de forma explícita.
+        if prediccion_url and not terminada:
+            try:
+                requests.post(f'{prediccion_url}/cancel', headers=headers, timeout=(3, 3), allow_redirects=False)
+            except requests.RequestException:
+                pass
 
 
 def sugerir_categoria(imagen_url, categorias):
-    """`categorias`: queryset/lista de instancias Categoria (activas).
-    Devuelve {'categoria': Categoria|None, 'confianza': float 0-100,
-    'etiquetas': [{'nombre': label, 'confianza': float}, ...] (top 5, en inglés,
-    tal cual las devuelve el modelo — se muestran como referencia aunque no
-    hayan mapeado a ninguna categoría)}."""
-    etiquetas = _clasificar_imagen(imagen_url)
-    if not etiquetas:
-        raise ServicioIANoDisponible('El modelo no devolvió resultados.')
+    """Devolver la categoría de mayor afinidad y las cinco mejores alternativas.
 
-    categoria_sugerida = None
-    confianza = 0.0
-    for etiqueta in etiquetas:
-        palabras_es = _dominio_de_etiqueta(etiqueta.get('label', ''))
-        if not palabras_es:
-            continue
-        categoria_sugerida = _categoria_por_dominio(categorias, palabras_es)
-        if categoria_sugerida:
-            confianza = round(float(etiqueta.get('score', 0)) * 100, 2)
-            break
+    Se conservan las claves confianza/etiquetas para la API y su bitácora.
+    Las alternativas son nombres de categorías reales, ordenadas por afinidad.
+    """
+    categorias = list(categorias)
+    if not categorias:
+        raise ServicioIANoDisponible('No hay categorías disponibles para analizar.')
+    try:
+        url = urlsplit(imagen_url)
+        valida = url.scheme in ('http', 'https') and url.hostname and not url.username and not url.password
+    except (TypeError, ValueError):
+        valida = False
+    if not valida:
+        raise ServicioIANoDisponible('La imagen debe tener una URL pública HTTP o HTTPS.')
 
+    descripciones = [_descripcion_categoria(c) for c in categorias]
+    contenido = json.dumps(
+        [VERSION_CLIP, imagen_url, [(str(c.pk), c.nombre, d) for c, d in zip(categorias, descripciones)]],
+        ensure_ascii=False,
+    )
+    clave = 'clip-categoria:' + hashlib.sha256(contenido.encode()).hexdigest()
+    puntuaciones = cache.get(clave)
+    if puntuaciones is None:
+        # Evitar dos cobros simultáneos para la misma imagen en este caché.
+        if not cache.add(clave + ':pendiente', True, timeout=ESPERA_MAXIMA + 30):
+            raise ServicioIANoDisponible('Esta imagen ya se está analizando. Espera unos segundos y vuelve a consultar.')
+        try:
+            puntuaciones = _clasificar_imagen(imagen_url, descripciones)
+            cache.set(clave, puntuaciones, timeout=CACHE_SEGUNDOS)
+        finally:
+            cache.delete(clave + ':pendiente')
+    puntuaciones = _validar_puntuaciones(puntuaciones, len(categorias))
+    orden = sorted(range(len(categorias)), key=lambda i: puntuaciones[i], reverse=True)
     return {
-        'categoria': categoria_sugerida,
-        'confianza': confianza,
+        'categoria': categorias[orden[0]],
+        'confianza': round(puntuaciones[orden[0]] * 100, 2),
         'etiquetas': [
-            {'nombre': e.get('label', ''), 'confianza': round(float(e.get('score', 0)) * 100, 2)}
-            for e in etiquetas[:5]
+            {'nombre': categorias[i].nombre, 'confianza': round(puntuaciones[i] * 100, 2)}
+            for i in orden[:5]
         ],
     }

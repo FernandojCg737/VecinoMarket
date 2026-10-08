@@ -12,10 +12,18 @@ export default function SugerenciaCategoriaIA({ productoId, tieneImagenes, onApl
     setError('');
     setResultado(null);
     try {
-      const { data } = await API.post(url || `catalogo/admin/productos/${productoId}/sugerir-categoria/`);
+      const { data } = await API.post(
+        url || `catalogo/admin/productos/${productoId}/sugerir-categoria/`,
+        null,
+        { timeout: 90000 },
+      );
       setResultado(data);
     } catch (err) {
-      setError(err?.response?.data?.detail || 'No se pudo obtener una sugerencia.');
+      setError(err?.response?.data?.detail || (
+        err?.code === 'ECONNABORTED'
+          ? 'El análisis tardó demasiado. Intenta nuevamente más tarde.'
+          : 'No se pudo obtener una sugerencia.'
+      ));
     } finally {
       setCargando(false);
     }
@@ -45,7 +53,7 @@ export default function SugerenciaCategoriaIA({ productoId, tieneImagenes, onApl
           {resultado.categoria_sugerida ? (
             <div className="flex items-center justify-between gap-2">
               <span className="text-gray-700 dark:text-gray-300">
-                Sugerencia: <strong>{resultado.categoria_sugerida.nombre}</strong> ({resultado.confianza}% de confianza)
+                Sugerencia: <strong>{resultado.categoria_sugerida.nombre}</strong> ({resultado.confianza}% de afinidad)
               </span>
               <button
                 type="button"
@@ -57,7 +65,12 @@ export default function SugerenciaCategoriaIA({ productoId, tieneImagenes, onApl
             </div>
           ) : (
             <p className="text-gray-500 dark:text-gray-400">
-              La IA detectó "{resultado.alternativas?.[0]?.nombre}" en la imagen, pero no encontró una categoría de tu catálogo que corresponda.
+              No se encontró una categoría para esta imagen. Puedes seleccionarla manualmente.
+            </p>
+          )}
+          {resultado.categoria_sugerida && (
+            <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
+              Compara la imagen con las categorías disponibles. Revisa la sugerencia antes de usarla.
             </p>
           )}
         </div>

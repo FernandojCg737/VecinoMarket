@@ -18,7 +18,7 @@
 - **Nube y Datos**: [Supabase](https://supabase.com/) (PostgreSQL en la nube sincronizado)
 - **WebSockets / Async**: Django Channels + Daphne (Chat interno, Carritos en tiempo real, Notificaciones, Señalización WebRTC)
 - **Autenticación**: JWT (`djangorestframework-simplejwt`), OAuth2 Google Login, recuperación segura de contraseñas
-- **Inteligencia Artificial**: Hugging Face Inference API (visión computacional para sugerencia de categorías) y Chatbot FAQ con búsqueda semántica
+- **Inteligencia Artificial**: CLIP en Replicate (visión computacional para sugerencia de categorías) y Chatbot FAQ con búsqueda semántica. [Configuración y pruebas de CLIP](Documentacion/REPLICATE_CLIP.md).
 - **Almacenamiento Multimedia**: Cloudinary API
 - **Pagos**: Integración con pasarela PayPal Sandbox (checkout directo y tarjetas guardadas)
 

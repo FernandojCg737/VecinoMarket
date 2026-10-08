@@ -102,12 +102,12 @@ Este documento detalla la ubicación exacta (carpeta y línea) de cada caso de u
 ### 📂 Backend
 | Archivo | Línea | Descripción |
 |---------|-------|-------------|
-| `Backend/apps/catalogo/ia.py` | 1+ | Módulo IA - Integración Hugging Face (clasificación zero-shot) |
+| `Backend/apps/catalogo/ia.py` | 1+ | Módulo IA - CLIP de Replicate (comparación de imagen y categorías) |
 | `Backend/apps/catalogo/models.py` | 83+ | Modelo `CategorizacionIALog` (trazabilidad) |
 | `Backend/apps/catalogo/views.py` | 401-415 | `SugerenciaCategoriaIAView` - POST con imagen |
 | `Backend/apps/catalogo/urls.py` | 47 | Endpoint `/sugerir-categoria/` |
-| `Backend/config/settings/base.py` | 237 | Config Hugging Face API |
-| `Backend/.env` | 24 | Variable `HUGGINGFACE_API_KEY` |
+| `Backend/config/settings/base.py` | — | Configuración `REPLICATE_API_TOKEN` |
+| `Backend/.env.example` | — | Ejemplo de variable `REPLICATE_API_TOKEN` (el token real va en `.env` o Render) |
 
 ### 🎨 Frontend
 | Archivo | Línea | Descripción |
@@ -202,7 +202,7 @@ Backend/
 │   ├── auditoria/      → CU22
 │   └── core/           → CU22 (triggers y funciones)
 ├── config/
-│   └── settings/       → Config Cloudinary (CU07), Hugging Face (CU08)
+│   └── settings/       → Config Cloudinary (CU07), Replicate CLIP (CU08)
 └── basedatos/
     └── *.sql           → Diseño DB y triggers
 ```
@@ -243,7 +243,7 @@ Mobile/vecinomarket_app/lib/
 - `CLOUDINARY_CLOUD_NAME` - Para CU07 (imágenes de productos)
 - `CLOUDINARY_API_KEY` - Para CU07
 - `CLOUDINARY_API_SECRET` - Para CU07
-- `HUGGINGFACE_API_KEY` - Para CU08 (visión artificial)
+- `REPLICATE_API_TOKEN` - Para CU08 (CLIP de Replicate; solo backend)
 
 ### `.env` Frontend
 - `VITE_RECAPTCHA_SITE_KEY` - Para CAPTCHA (desactivado actualmente)

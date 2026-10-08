@@ -426,8 +426,8 @@ def _sugerir_categoria_response(request, producto):
 
 class SugerirCategoriaProductoView(APIView):
     """CU08: analiza la primera imagen del producto con un modelo de visión
-    artificial (clasificación + mapeo por dominio a las categorías
-    existentes, ver apps/catalogo/ia.py) y sugiere a cuál pertenece. No
+    artificial (CLIP de Replicate compara las categorías existentes,
+    ver apps/catalogo/ia.py) y sugiere a cuál pertenece. No
     cambia el producto — el admin decide si aplicar la sugerencia
     editándolo (CU07)."""
 

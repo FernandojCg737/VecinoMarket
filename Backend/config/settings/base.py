@@ -274,11 +274,10 @@ GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID', default='')
 DEVELOPER_KEY = env('DEVELOPER_KEY', default='')
 
 # ---------------------------------------------------------------------------
-# Hugging Face Inference API (CU08): clasificación zero-shot de la imagen de
-# un producto contra los nombres de las categorías existentes, para sugerir
-# a cuál pertenece. Token gratuito de solo lectura, ver apps/catalogo/ia.py.
+# Replicate CLIP (CU08): compara la imagen con las categorías existentes.
+# Requiere un token del servidor y saldo en Replicate; ver apps/catalogo/ia.py.
 # ---------------------------------------------------------------------------
-HUGGINGFACE_API_TOKEN = env('HUGGINGFACE_API_TOKEN', default='')
+REPLICATE_API_TOKEN = env('REPLICATE_API_TOKEN', default='')
 
 # ---------------------------------------------------------------------------
 # PayPal (checkout real + tarjetas guardadas del comprador, ver apps/pagos).
