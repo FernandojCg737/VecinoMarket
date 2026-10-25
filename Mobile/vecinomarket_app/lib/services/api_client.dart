@@ -12,7 +12,7 @@ class ApiClient {
   // URL base configurable por --dart-define=API_URL=... (por defecto Render de producción conectado a Supabase)
   static const String baseUrl = String.fromEnvironment(
     'API_URL',
-    defaultValue: 'https://vecinomarket-backend-gxn7.onrender.com/api/',
+    defaultValue: 'https://vecinomarket.onrender.com/api/',
   );
 
   final _storage = const FlutterSecureStorage();

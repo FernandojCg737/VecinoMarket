@@ -1,7 +1,7 @@
 import requests
 import time
 
-BASE_URL = 'https://vecinomarket-backend-gxn7.onrender.com/api'
+BASE_URL = 'https://vecinomarket.onrender.com/api'
 
 def test_production():
     print("1. Creando un usuario de prueba en produccion...")
