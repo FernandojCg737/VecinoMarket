@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.catalogo.models import Producto
 
 from .models import ComentarioLive, LiveCommerceSesion, Promocion
+from .services import sincronizar_descuentos_productos
 
 
 class _PromocionBaseSerializer(serializers.ModelSerializer):
@@ -19,6 +20,27 @@ class _PromocionBaseSerializer(serializers.ModelSerializer):
 
     def get_productos_nombres(self, obj):
         return [p.nombre for p in obj.productos.all()]
+
+    def create(self, validated_data):
+        productos = validated_data.pop('productos', [])
+        promocion = super().create(validated_data)
+        if productos:
+            promocion.productos.set(productos)
+        sincronizar_descuentos_productos(productos)
+        return promocion
+
+    def update(self, instance, validated_data):
+        productos_antes = list(instance.productos.all())
+        productos = validated_data.pop('productos', None)
+        promocion = super().update(instance, validated_data)
+        if productos is not None:
+            promocion.productos.set(productos)
+            afectados = set(productos_antes + list(productos))
+        else:
+            afectados = set(productos_antes)
+        sincronizar_descuentos_productos(afectados)
+        return promocion
+
 
 
 class PromocionAdminSerializer(_PromocionBaseSerializer):

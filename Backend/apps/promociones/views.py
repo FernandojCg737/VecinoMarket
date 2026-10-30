@@ -24,6 +24,8 @@ from .serializers import (
     PromocionAdminSerializer,
     PromocionEmpresaSerializer,
 )
+from .services import sincronizar_descuentos_productos
+
 
 
 def _log(request, accion, entidad_id, detalle=None, entidad_afectada='promocion'):
@@ -105,9 +107,12 @@ class EditarEliminarPromocionAdminView(APIView):
     def delete(self, request, promocion_id):
         promocion = get_object_or_404(Promocion, id=promocion_id)
         nombre = promocion.nombre
+        productos_afectados = list(promocion.productos.all())
         promocion.delete()
+        sincronizar_descuentos_productos(productos_afectados)
         _log(request, 'ELIMINAR_PROMOCION', promocion_id, {'nombre': nombre})
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 class ListaCrearMisPromocionesView(generics.ListCreateAPIView):
@@ -151,9 +156,12 @@ class EditarEliminarMiPromocionView(APIView):
     def delete(self, request, promocion_id):
         promocion = get_object_or_404(Promocion, id=promocion_id, empresa=request.user.get_empresa())
         nombre = promocion.nombre
+        productos_afectados = list(promocion.productos.all())
         promocion.delete()
+        sincronizar_descuentos_productos(productos_afectados)
         _log(request, 'ELIMINAR_PROMOCION', promocion_id, {'nombre': nombre})
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 class ListaLivesPublicoView(generics.ListAPIView):
