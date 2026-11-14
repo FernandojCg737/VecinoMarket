@@ -26,6 +26,10 @@
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Usamos la cámara para adjuntar fotos de comprobantes o evidencias de reclamos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Selecciona una foto de tu biblioteca para adjuntarla al pedido o reclamo.</string>
 		<key>UIApplicationSceneManifest</key>
 		<dict>
 			<key>UIApplicationSupportsMultipleScenes</key>

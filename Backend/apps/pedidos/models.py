@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 from apps.core.models import BaseModel
@@ -44,16 +46,19 @@ class OrdenCompra(BaseModel):
         TARJETA = 'TARJETA', 'Tarjeta'
         QR = 'QR', 'QR'
         PAYPAL = 'PAYPAL', 'PayPal'
+        PASARELA = 'PASARELA', 'Pasarela'
 
     class EstadoPago(models.TextChoices):
         PENDIENTE = 'PENDIENTE', 'Pendiente'
         PAGADO = 'PAGADO', 'Pagado'
         FALLIDO = 'FALLIDO', 'Fallido'
+        REEMBOLSO_PARCIAL = 'REEMBOLSO_PARCIAL', 'Reembolso parcial'
         REEMBOLSADO = 'REEMBOLSADO', 'Reembolsado'
 
     comprador = models.ForeignKey('usuarios.Comprador', on_delete=models.CASCADE, related_name='ordenes')
     monto_total = models.DecimalField(max_digits=10, decimal_places=2)
     metodo_pago = models.CharField(max_length=20, choices=MetodoPago.choices)
+    paypal_orden_id = models.CharField(max_length=100, blank=True)
     estado_pago = models.CharField(max_length=20, choices=EstadoPago.choices, default=EstadoPago.PENDIENTE)
     comprobante = models.ImageField(upload_to='comprobantes_pago/', null=True, blank=True)
 
@@ -77,16 +82,22 @@ class Pago(models.Model):
         TARJETA = 'TARJETA', 'Tarjeta'
         QR = 'QR', 'QR'
         PAYPAL = 'PAYPAL', 'PayPal'
+        PASARELA = 'PASARELA', 'Pasarela'
 
     class Estado(models.TextChoices):
         PENDIENTE = 'PENDIENTE', 'Pendiente'
         APROBADO = 'APROBADO', 'Aprobado'
         RECHAZADO = 'RECHAZADO', 'Rechazado'
+        REEMBOLSO_PARCIAL = 'REEMBOLSO_PARCIAL', 'Reembolso parcial'
+        REEMBOLSADO = 'REEMBOLSADO', 'Reembolsado'
 
     orden_compra = models.ForeignKey(OrdenCompra, on_delete=models.CASCADE, related_name='pagos')
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     metodo = models.CharField(max_length=20, choices=Metodo.choices)
     referencia_pasarela = models.CharField(max_length=100, blank=True)
+    paypal_captura_id = models.CharField(max_length=100, blank=True)
+    paypal_monto_capturado = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    paypal_moneda = models.CharField(max_length=3, blank=True)
     comprobante = models.ImageField(upload_to='comprobantes_pago/', null=True, blank=True)
     estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.PENDIENTE)
     fecha_pago = models.DateTimeField(null=True, blank=True)
@@ -110,6 +121,7 @@ class Pedido(BaseModel):
         ENVIADO = 'ENVIADO', 'Enviado'
         ENTREGADO = 'ENTREGADO', 'Entregado'
         CANCELADO = 'CANCELADO', 'Cancelado'
+        DEVUELTO = 'DEVUELTO', 'Devuelto'
 
     class ModalidadEntrega(models.TextChoices):
         RECOJO_TIENDA = 'RECOJO_TIENDA', 'Recojo en tienda'
@@ -154,6 +166,9 @@ class Pedido(BaseModel):
 class PedidoItem(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='items')
     producto = models.ForeignKey('catalogo.Producto', on_delete=models.PROTECT, related_name='+')
+    sucursal_stock = models.ForeignKey(
+        'inventario.Sucursal', on_delete=models.PROTECT, related_name='+', null=True, blank=True,
+    )
     cantidad = models.PositiveIntegerField()
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
@@ -187,3 +202,46 @@ class Entrega(models.Model):
 
     def __str__(self):
         return f'Entrega pedido {self.pedido.numero_pedido} - {self.estado}'
+
+
+class SolicitudDevolucion(BaseModel):
+    class Motivo(models.TextChoices):
+        DANADO = 'DANADO', 'Producto dañado'
+        NO_CORRESPONDE = 'NO_CORRESPONDE', 'El producto no corresponde'
+        INCOMPLETO = 'INCOMPLETO', 'Pedido incompleto'
+
+    class Estado(models.TextChoices):
+        PENDIENTE = 'PENDIENTE', 'En revisión'
+        RECHAZADA = 'RECHAZADA', 'Rechazada por la empresa'
+        EN_MEDIACION = 'EN_MEDIACION', 'En mediación'
+        RECHAZADA_MEDIACION = 'RECHAZADA_MEDIACION', 'Rechazo confirmado'
+        REEMBOLSO_PENDIENTE = 'REEMBOLSO_PENDIENTE', 'Reembolso pendiente'
+        APROBADA = 'APROBADA', 'Reembolsada'
+
+    pedido = models.OneToOneField(Pedido, on_delete=models.PROTECT, related_name='devolucion')
+    comprador = models.ForeignKey('usuarios.Comprador', on_delete=models.PROTECT, related_name='devoluciones')
+    motivo = models.CharField(max_length=20, choices=Motivo.choices)
+    descripcion = models.TextField(max_length=2000)
+    evidencia = models.ImageField(upload_to='devoluciones/evidencias/')
+    estado = models.CharField(max_length=24, choices=Estado.choices, default=Estado.PENDIENTE)
+    respuesta = models.TextField(max_length=2000, blank=True)
+    motivo_mediacion = models.TextField(max_length=2000, blank=True)
+    resolucion_mediacion = models.TextField(max_length=2000, blank=True)
+    fecha_respuesta = models.DateTimeField(null=True, blank=True)
+    fecha_mediacion = models.DateTimeField(null=True, blank=True)
+    fecha_resolucion = models.DateTimeField(null=True, blank=True)
+    fecha_reembolso = models.DateTimeField(null=True, blank=True)
+    fecha_intento_paypal = models.DateTimeField(null=True, blank=True)
+    pago = models.ForeignKey(Pago, on_delete=models.PROTECT, related_name='devoluciones', null=True, blank=True)
+    referencia_reembolso = models.CharField(max_length=100, blank=True)
+    monto_reembolso = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    monto_pasarela = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    sucursales_restitucion = models.JSONField(default=dict, blank=True)
+    clave_reembolso = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
+    class Meta:
+        ordering = ('-creado_en', '-id')
+        indexes = [models.Index(fields=['estado', '-creado_en'], name='pedidos_devol_estado_fecha')]
+
+    def __str__(self):
+        return f'Devolución de {self.pedido}'

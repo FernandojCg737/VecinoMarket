@@ -57,13 +57,14 @@ class PedidoSerializer(serializers.ModelSerializer):
     fecha = serializers.DateTimeField(source='creado_en', read_only=True)
     items = PedidoItemSerializer(many=True, read_only=True)
     comprobante_url = serializers.SerializerMethodField()
+    reclamo_id = serializers.IntegerField(source='devolucion.pk', read_only=True, default=None)
 
     class Meta:
         model = Pedido
         fields = [
             'id', 'numero_pedido', 'empresa', 'empresa_nombre', 'comprador_nombre', 'comprador_email',
             'subtotal', 'comision_monto', 'estado', 'modalidad_entrega',
-            'metodo_pago', 'estado_pago', 'fecha', 'items', 'comprobante_url',
+            'metodo_pago', 'estado_pago', 'fecha', 'items', 'comprobante_url', 'reclamo_id',
         ]
 
     def get_comprador_nombre(self, obj):

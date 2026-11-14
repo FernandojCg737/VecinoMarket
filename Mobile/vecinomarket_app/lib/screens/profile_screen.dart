@@ -13,6 +13,7 @@ import 'buyer/buyer_reviews_screen.dart';
 import 'buyer/buyer_store_chatbot_screen.dart';
 import 'chat_screen.dart';
 import 'mis_pedidos_screen.dart';
+import 'reclamos_screen.dart';
 import 'notifications_screen.dart';
 
 const _nombresRol = {
@@ -391,6 +392,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onTap: _confirmarCerrarSesion,
               ),
             ],
+
+            if (rol == 'COMPRADOR' || rol == 'EMPRESA' || rol == 'ADMIN' || rol == 'SUPERADMIN'
+                || (rol == 'EMPLEADO' && (usuario['permisos'] as List?)?.contains('gestionar_pedidos') == true))
+              _buildMenuOpcion(
+                icon: Icons.assignment_return_outlined,
+                titulo: rol == 'COMPRADOR' ? 'Mis reclamos' : 'Reclamos de devolución',
+                subtitulo: 'Consulta el estado y la resolución de cada caso',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ReclamosScreen())),
+              ),
 
             // SECCIÓN ADMINISTRACIÓN (Si es ADMIN o SUPERADMIN)
             if (rol == 'ADMIN' || rol == 'SUPERADMIN') ...[

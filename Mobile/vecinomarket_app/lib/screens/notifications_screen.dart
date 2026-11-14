@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/notificacion_service.dart';
+import 'reclamos_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -70,8 +71,20 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final leido = notif['leido'] == true;
     if (!leido && id != null) {
       _notifService.marcarLeida(id).then((_) {
-        _cargarNotificaciones();
+        if (mounted) _cargarNotificaciones();
       });
+    }
+
+    final enlace = Uri.tryParse(notif['enlace']?.toString() ?? '');
+    final partes = enlace?.pathSegments ?? [];
+    if (partes.length == 2 && const {'mis-reclamos', 'reclamos'}.contains(partes.first)) {
+      final reclamo = int.tryParse(partes.last);
+      if (reclamo != null) {
+        await Navigator.push<void>(context, MaterialPageRoute(
+          builder: (_) => DetalleReclamoScreen(id: reclamo),
+        ));
+        return;
+      }
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;

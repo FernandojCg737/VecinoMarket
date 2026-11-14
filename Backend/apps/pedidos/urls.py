@@ -19,8 +19,17 @@ from .views import (
     SincronizarMiCarritoView,
 )
 from .factura_pdf import DescargarFacturaView
+from .devolucion_views import (
+    AccionSolicitudView, CrearSolicitudView, DetalleSolicitudView, EvidenciaSolicitudView,
+    ListaSolicitudesView,
+)
 
 urlpatterns = [
+    path('reclamos/', ListaSolicitudesView.as_view(), name='devoluciones'),
+    path('reclamos/crear/', CrearSolicitudView.as_view(), name='devolucion-crear'),
+    path('reclamos/<int:pk>/', DetalleSolicitudView.as_view(), name='devolucion-detalle'),
+    path('reclamos/<int:pk>/accion/', AccionSolicitudView.as_view(), name='devolucion-accion'),
+    path('reclamos/<int:pk>/evidencia/', EvidenciaSolicitudView.as_view(), name='devolucion-evidencia'),
     # CU11: sincronización en vivo del carrito del comprador (SaaS en tiempo real)
     path('mi-carrito/', SincronizarMiCarritoView.as_view(), name='mi-carrito'),
 

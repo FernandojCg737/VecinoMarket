@@ -8,6 +8,7 @@ env/
 ENV/
 
 .env
+evidencias_privadas/
 db.sqlite3
 media/
 staticfiles/

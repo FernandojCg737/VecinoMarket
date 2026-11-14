@@ -41,6 +41,7 @@ const MisDirecciones = lazy(() => import('./pages/MisDirecciones'));
 const Facturacion = lazy(() => import('./pages/admin/Facturacion'));
 const MisFacturas = lazy(() => import('./pages/empresa/MisFacturas'));
 const MisCompras = lazy(() => import('./pages/MisCompras'));
+const Reclamos = lazy(() => import('./pages/Reclamos'));
 const DashboardComprador = lazy(() => import('./pages/DashboardComprador'));
 const Reputacion = lazy(() => import('./pages/admin/Reputacion'));
 const MiReputacion = lazy(() => import('./pages/empresa/MiReputacion'));
@@ -118,6 +119,11 @@ function App() {
           <Route path="/admin/facturacion" element={<Facturacion />} />
           <Route path="/mi-empresa/facturas" element={<MisFacturas />} />
           <Route path="/mis-compras" element={<MisCompras />} />
+          <Route path="/mis-reclamos" element={<Reclamos comprador />} />
+          <Route path="/mis-reclamos/nuevo/:pedido" element={<Reclamos comprador nuevo />} />
+          <Route path="/mis-reclamos/:id" element={<Reclamos comprador />} />
+          <Route path="/reclamos" element={<Reclamos />} />
+          <Route path="/reclamos/:id" element={<Reclamos />} />
           <Route path="/mi-cuenta" element={<DashboardComprador />} />
           <Route path="/admin/reputacion" element={<Reputacion />} />
           <Route path="/mi-empresa/reputacion" element={<MiReputacion />} />

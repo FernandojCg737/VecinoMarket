@@ -19,6 +19,7 @@ import uuid
 import requests
 from django.conf import settings
 from django.core.cache import cache
+from django.utils.crypto import salted_hmac
 
 _CACHE_KEY_TOKEN = 'paypal_access_token'
 
@@ -54,13 +55,15 @@ def _access_token():
     return token
 
 
-def _request(method, path, json=None, params=None, idempotency_key=None):
+def _request(method, path, json=None, params=None, idempotency_key=None, representation=False):
     headers = {
         'Authorization': f'Bearer {_access_token()}',
         'Content-Type': 'application/json',
     }
     if idempotency_key:
         headers['PayPal-Request-Id'] = idempotency_key
+    if representation:
+        headers['Prefer'] = 'return=representation'
 
     resp = requests.request(
         method, f'{settings.PAYPAL_API_BASE}{path}',
@@ -122,7 +125,11 @@ def eliminar_payment_token(payment_token_id):
     _request('DELETE', f'/v3/vault/payment-tokens/{payment_token_id}')
 
 
-def crear_orden(monto_usd, payment_token_id=None, return_url=None, cancel_url=None):
+def referencia_checkout(orden_id):
+    return salted_hmac('vecinomarket.paypal.checkout', str(orden_id), algorithm='sha256').hexdigest()
+
+
+def crear_orden(monto_usd, payment_token_id=None, return_url=None, cancel_url=None, *, referencia=None):
     """POST /v2/checkout/orders — intent=CAPTURE. Si hay payment_token_id
     cobra directo con la cuenta PayPal guardada del comprador (sin volver
     a pasar por el popup); si no, el frontend abre el popup estándar de
@@ -139,6 +146,8 @@ def crear_orden(monto_usd, payment_token_id=None, return_url=None, cancel_url=No
         'intent': 'CAPTURE',
         'purchase_units': [{'amount': {'currency_code': 'USD', 'value': f'{monto_usd:.2f}'}}],
     }
+    if referencia:
+        payload['purchase_units'][0]['custom_id'] = referencia
     if payment_token_id:
         payload['payment_source'] = {
             'token': {'id': payment_token_id, 'type': 'PAYMENT_METHOD_TOKEN'},
@@ -148,7 +157,38 @@ def crear_orden(monto_usd, payment_token_id=None, return_url=None, cancel_url=No
     return _request('POST', '/v2/checkout/orders', json=payload, idempotency_key=str(uuid.uuid4()))
 
 
-def capturar_orden(paypal_order_id):
+def capturar_orden(paypal_order_id, idempotency_key=None):
     """POST /v2/checkout/orders/{id}/capture — confirma el cobro."""
     return _request('POST', f'/v2/checkout/orders/{paypal_order_id}/capture', json={},
-                     idempotency_key=str(uuid.uuid4()))
+                     idempotency_key=idempotency_key or str(uuid.uuid4()), representation=True)
+
+
+def captura_completada(orden):
+    capturas = [
+        captura for unidad in orden.get('purchase_units', [])
+        for captura in unidad.get('payments', {}).get('captures', [])
+        if captura.get('status') in {'COMPLETED', 'PARTIALLY_REFUNDED', 'REFUNDED'}
+    ]
+    if len(capturas) != 1:
+        return None
+    captura = capturas[0]
+    if not captura.get('id') or not captura.get('amount', {}).get('value') or not captura['amount'].get('currency_code'):
+        return None
+    return captura
+
+
+def consultar_orden(paypal_order_id):
+    return _request('GET', f'/v2/checkout/orders/{paypal_order_id}')
+
+
+def reembolsar_captura(captura_id, monto, moneda, *, clave):
+    return _request(
+        'POST', f'/v2/payments/captures/{captura_id}/refund',
+        json={'amount': {'value': f'{monto:.2f}', 'currency_code': moneda}, 'custom_id': str(clave)},
+        idempotency_key=str(clave),
+        representation=True,
+    )
+
+
+def consultar_reembolso(reembolso_id):
+    return _request('GET', f'/v2/payments/refunds/{reembolso_id}')

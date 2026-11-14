@@ -13,6 +13,7 @@ from apps.catalogo.models import Producto
 from apps.core.exportadores import responder_exportacion
 from apps.core.utils import get_client_ip
 from apps.pedidos.models import Pedido, PedidoItem
+from apps.pedidos.devoluciones import ORDEN_PAGADA
 from apps.usuarios.models import Comprador, Empresa
 from apps.usuarios.permissions import EsAdmin, EsComprador, EsEmpresaOEmpleado, TienePermisoEmpleado
 
@@ -227,7 +228,7 @@ def _dashboard_admin():
             SELECT COALESCE(SUM(p.subtotal), 0), COUNT(*)
             FROM pedidos_pedido p
             JOIN pedidos_ordencompra oc ON oc.id = p.orden_compra_id
-            WHERE oc.estado_pago = 'PAGADO'
+            WHERE oc.estado_pago IN ('PAGADO', 'REEMBOLSO_PARCIAL') AND p.estado <> 'DEVUELTO'
         """)
         total_ventas, total_ventas_count = cursor.fetchone()
 
@@ -242,7 +243,7 @@ def _dashboard_admin():
             FROM pedidos_pedido p
             JOIN pedidos_ordencompra oc ON oc.id = p.orden_compra_id
             JOIN usuarios_empresa e ON e.id = p.empresa_id
-            WHERE oc.estado_pago = 'PAGADO'
+            WHERE oc.estado_pago IN ('PAGADO', 'REEMBOLSO_PARCIAL') AND p.estado <> 'DEVUELTO'
             GROUP BY e.id, e.razon_social
             ORDER BY ventas DESC
             LIMIT 5
@@ -255,7 +256,7 @@ def _dashboard_admin():
             JOIN pedidos_pedido p ON p.id = pi.pedido_id
             JOIN pedidos_ordencompra oc ON oc.id = p.orden_compra_id
             JOIN catalogo_producto prod ON prod.id = pi.producto_id
-            WHERE oc.estado_pago = 'PAGADO'
+            WHERE oc.estado_pago IN ('PAGADO', 'REEMBOLSO_PARCIAL') AND p.estado <> 'DEVUELTO'
             GROUP BY prod.id, prod.nombre
             ORDER BY unidades DESC
             LIMIT 5
@@ -292,7 +293,7 @@ def _dashboard_empresa(empresa_id):
             SELECT COALESCE(SUM(p.subtotal), 0), COUNT(*)
             FROM pedidos_pedido p
             JOIN pedidos_ordencompra oc ON oc.id = p.orden_compra_id
-            WHERE oc.estado_pago = 'PAGADO' AND p.empresa_id = %s
+            WHERE oc.estado_pago IN ('PAGADO', 'REEMBOLSO_PARCIAL') AND p.estado <> 'DEVUELTO' AND p.empresa_id = %s
         """, [empresa_id])
         total_ventas, total_ventas_count = cursor.fetchone()
 
@@ -319,7 +320,7 @@ def _dashboard_empresa(empresa_id):
             JOIN pedidos_pedido p ON p.id = pi.pedido_id
             JOIN pedidos_ordencompra oc ON oc.id = p.orden_compra_id
             JOIN catalogo_producto prod ON prod.id = pi.producto_id
-            WHERE oc.estado_pago = 'PAGADO' AND p.empresa_id = %s
+            WHERE oc.estado_pago IN ('PAGADO', 'REEMBOLSO_PARCIAL') AND p.estado <> 'DEVUELTO' AND p.empresa_id = %s
             GROUP BY prod.id, prod.nombre
             ORDER BY unidades DESC
             LIMIT 5
@@ -695,7 +696,7 @@ class AsistenteVozReportesView(APIView):
         )
         if is_top_empresa:
             top_emp = (
-                Pedido.objects.filter(orden_compra__estado_pago='PAGADO')
+                Pedido.objects.filter(orden_compra__estado_pago__in=ORDEN_PAGADA).exclude(estado=Pedido.Estado.DEVUELTO)
                 .values('empresa__razon_social')
                 .annotate(total_ventas=Sum('subtotal'), total_pedidos=Count('id'))
                 .order_by('-total_ventas')
@@ -878,7 +879,7 @@ class AsistenteVozReportesView(APIView):
                 pedidos_qs = pedidos_qs.filter(creado_en__date__lte=fecha_fin)
 
             total_count = pedidos_qs.count()
-            pagados = pedidos_qs.filter(orden_compra__estado_pago='PAGADO')
+            pagados = pedidos_qs.filter(orden_compra__estado_pago__in=ORDEN_PAGADA).exclude(estado=Pedido.Estado.DEVUELTO)
             total_monto = pagados.aggregate(total=Sum('subtotal'))['total'] or 0
 
             if total_count > 0:

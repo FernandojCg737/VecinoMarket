@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Receipt, ChevronDown, ChevronUp, Printer, Download, FileText } from 'lucide-react';
 import API from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -7,7 +7,7 @@ import { esComprador } from '../utils/roles';
 
 const ESTADO_LABEL = {
   PENDIENTE: 'Verificando pago (QR)', CONFIRMADO: 'Confirmado', EN_PREPARACION: 'En preparación',
-  ENVIADO: 'Enviado', ENTREGADO: 'Entregado', CANCELADO: 'Cancelado',
+  ENVIADO: 'Enviado', ENTREGADO: 'Entregado', CANCELADO: 'Cancelado', DEVUELTO: 'Devuelto',
 };
 
 function badgeEstado(estado) {
@@ -101,7 +101,9 @@ export default function MisCompras() {
                   <span>Total</span>
                   <span>Bs {c.subtotal}</span>
                 </div>
-                <div className="flex items-center gap-4 mt-2 pt-1">
+                <div className="flex flex-wrap items-center gap-4 mt-2 pt-1">
+                  {c.reclamo_id ? <Link className="font-semibold text-brand-600 dark:text-brand-400" to={'/mis-reclamos/' + c.reclamo_id}>Ver reclamo</Link>
+                    : c.estado === 'ENTREGADO' && <Link className="font-semibold text-brand-600 dark:text-brand-400" to={'/mis-reclamos/nuevo/' + c.id}>Solicitar devolución</Link>}
                   {c.estado !== 'CANCELADO' && (
                     <>
                       <a

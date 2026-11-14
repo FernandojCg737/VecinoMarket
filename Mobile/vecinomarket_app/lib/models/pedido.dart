@@ -37,6 +37,7 @@ class Pedido {
   final String estadoPago;
   final String metodoPago;
   final DateTime fecha;
+  final int? reclamoId;
   final List<PedidoItem> items;
 
   Pedido({
@@ -49,6 +50,7 @@ class Pedido {
     required this.estadoPago,
     required this.metodoPago,
     required this.fecha,
+    this.reclamoId,
     this.items = const [],
   });
 
@@ -64,6 +66,7 @@ class Pedido {
       estadoPago: json['estado_pago'] as String? ?? '',
       metodoPago: json['metodo_pago'] as String? ?? 'Desconocido',
       fecha: DateTime.parse(json['fecha'] as String),
+      reclamoId: json['reclamo_id'] as int?,
       items: itemsJson.map((it) => PedidoItem.fromJson(it as Map<String, dynamic>)).toList(),
     );
   }

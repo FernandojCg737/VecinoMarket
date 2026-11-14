@@ -26,6 +26,11 @@ export default function AccountMenu() {
         <>
           <div className="px-4 py-1.5 text-xs text-gray-400 dark:text-gray-500">Hola, {usuario.nombre}</div>
           <Link to="/perfil" className="block px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">Mi perfil</Link>
+          {(esStaff(usuario) || tienePermisoEmpleado(usuario, 'gestionar_pedidos')) && (
+            <Link to="/reclamos" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+              <ClipboardList size={16} /> Reclamos de devolución
+            </Link>
+          )}
           {esEmpresaOEmpleado(usuario) && (
             <>
               {tienePermisoEmpleado(usuario, 'ver_reportes') && (
@@ -156,6 +161,9 @@ export default function AccountMenu() {
               </Link>
               <Link to="/mis-compras" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <Receipt size={16} /> Mis compras
+              </Link>
+              <Link to="/mis-reclamos" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <ClipboardList size={16} /> Mis reclamos
               </Link>
               <Link to="/mis-resenas" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <Star size={16} /> Mis reseñas

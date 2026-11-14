@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { ClipboardList, Search, ChevronLeft, ChevronRight, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
@@ -13,6 +13,7 @@ const ESTADOS_PEDIDO = [
   { value: 'ENVIADO', label: 'Enviado' },
   { value: 'ENTREGADO', label: 'Entregado' },
   { value: 'CANCELADO', label: 'Cancelado' },
+  { value: 'DEVUELTO', label: 'Devuelto' },
 ];
 
 const METODOS_PAGO = [
@@ -218,19 +219,20 @@ export default function PedidosVentas() {
                   <td className="px-4 py-3">
                     <select
                       value={p.estado}
+                      disabled={Boolean(p.reclamo_id)}
                       onChange={(e) => cambiarEstado(p, e.target.value)}
                       className={`rounded-full border-0 px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-300 ${badgeEstado(p.estado)}`}
                     >
-                      {ESTADOS_PEDIDO.filter((op) => op.value).map((op) => <option key={op.value} value={op.value}>{op.label}</option>)}
+                      {ESTADOS_PEDIDO.filter((op) => op.value && (op.value !== 'DEVUELTO' || p.estado === 'DEVUELTO')).map((op) => <option key={op.value} value={op.value}>{op.label}</option>)}
                     </select>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
+                    {p.reclamo_id ? <Link to={'/reclamos/' + p.reclamo_id} className="text-xs font-semibold text-brand-600 dark:text-brand-400">Ver reclamo</Link> : <button
                       onClick={() => eliminar(p)}
                       className="grid h-8 w-8 place-items-center rounded-full bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-100 ml-auto"
                     >
                       <Trash2 size={14} />
-                    </button>
+                    </button>}
                   </td>
                 </tr>
                 {expandido === p.id && (
