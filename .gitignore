@@ -41,6 +41,9 @@ GeneratedPluginRegistrant.java
 Thumbs.db
 .DS_Store
 
+# Volcado local del código del backend (~630 MB), nunca va al repo
+Backend/codigo_backend.txt
+
 # Documentación pesada y binarios (Diagramas, Word y PDFs de avance)
 Documentacion/Diagramas/
 Documentacion/*.docx

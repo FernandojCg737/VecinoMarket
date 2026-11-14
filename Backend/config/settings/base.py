@@ -132,27 +132,12 @@ MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 # de whitenoise en collectstatic (falla con MissingFileError buscando
 # admin/img/sorting-icons.svg). Costó una release fallida en Render
 # encontrarlo — no las agregues de nuevo a INSTALLED_APPS.
-_c_name = str(env('CLOUDINARY_CLOUD_NAME', default='ss5kjxlu')).strip() or 'ss5kjxlu'
-_c_key = str(env('CLOUDINARY_API_KEY', default='791469666359297')).strip()
-_c_secret = str(env('CLOUDINARY_API_SECRET', default='NXe00YIWDOD7OPkW04zXpy8B1UY')).strip()
-
-# En Cloudinary, el API Key son 15 dígitos numéricos (ej. 791469666359297)
-# y el API Secret es una cadena alfanumérica con letras (ej. NXe00YIWDOD7OPkW04zXpy8B1UY).
-# Si en Render se invirtieron o se asignó el secret en la variable de API_KEY:
-if _c_key and not _c_key.isdigit():
-    if _c_secret and _c_secret.isdigit():
-        _c_key, _c_secret = _c_secret, _c_key
-    else:
-        _c_secret = _c_key
-        _c_key = '791469666359297'
-
-if not _c_secret or not any(c.isalpha() for c in _c_secret):
-    _c_secret = 'NXe00YIWDOD7OPkW04zXpy8B1UY'
-
+# Las 3 credenciales vienen SOLO de variables de entorno (sin valores por
+# defecto en el código: estaban versionadas en git y se rotaron).
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': _c_name,
-    'API_KEY': _c_key,
-    'API_SECRET': _c_secret,
+    'CLOUD_NAME': str(env('CLOUDINARY_CLOUD_NAME', default='')).strip(),
+    'API_KEY': str(env('CLOUDINARY_API_KEY', default='')).strip(),
+    'API_SECRET': str(env('CLOUDINARY_API_SECRET', default='')).strip(),
 }
 _cloudinary_habilitado = bool(
     CLOUDINARY_STORAGE.get('CLOUD_NAME')
@@ -287,14 +272,10 @@ REPLICATE_API_TOKEN = env('REPLICATE_API_TOKEN', default='')
 # verdad. BOB no es una moneda soportada por PayPal, así que el checkout
 # cobra en USD usando el tipo de cambio oficial boliviano fijo.
 # ---------------------------------------------------------------------------
-PAYPAL_CLIENT_ID = env(
-    'PAYPAL_CLIENT_ID',
-    default='BAAZ92cTaT22iM2HUWD7AR0Ys2281-jYGnwPWYMiEU2wr02qZtOyTWBLYVcsNsJNhDwHZB9LSJo5McJ3yM',
-)
-PAYPAL_CLIENT_SECRET = env(
-    'PAYPAL_CLIENT_SECRET',
-    default='EN9hIe0Yc2nEpEVAusTu9gO6KGwV9_a3AhpaRn9md0kqPm1f5h1_wlci5RW_QqMbT-j1N5cIh0GbtNSu',
-)
+# Credenciales SOLO por variables de entorno (sin valores por defecto en el
+# código). Sin ellas, el checkout con PayPal falla al usarse, no al arrancar.
+PAYPAL_CLIENT_ID = env('PAYPAL_CLIENT_ID', default='')
+PAYPAL_CLIENT_SECRET = env('PAYPAL_CLIENT_SECRET', default='')
 PAYPAL_MODE = env('PAYPAL_MODE', default='sandbox')
 PAYPAL_API_BASE = (
     'https://api-m.sandbox.paypal.com' if PAYPAL_MODE == 'sandbox' else 'https://api-m.paypal.com'
