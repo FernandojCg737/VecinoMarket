@@ -26,8 +26,11 @@ export default function Home() {
   // El backend ya ordena por más reciente primero, así que los primeros N ya
   // sirven como "recién agregados"; no hay valoración por producto en el
   // modelo real, así que ya no hay un criterio de "mejor valorado" posible.
-  const recienAgregados = productos.slice(0, 8);
   const ofertas = productos.filter((p) => p.precio_descuento).slice(0, 8);
+  // Sin los que ya salen en "Ofertas destacadas", para no mostrar el mismo
+  // producto dos veces en la página (los más nuevos suelen tener descuento).
+  const idsOfertas = new Set(ofertas.map((p) => p.id));
+  const recienAgregados = productos.filter((p) => !idsOfertas.has(p.id)).slice(0, 8);
 
   return (
     <div>
