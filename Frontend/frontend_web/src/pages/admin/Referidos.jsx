@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Users, CheckCircle2 } from 'lucide-react';
+import { Users } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import { esStaff } from '../../utils/roles';
@@ -42,16 +42,6 @@ export default function Referidos() {
   if (!usuario) return <Navigate to="/login?next=/admin/referidos" replace />;
   if (!esStaff(usuario)) return <Navigate to="/" replace />;
 
-  async function confirmar(referido) {
-    if (!window.confirm(`¿Confirmar que "${referido.empresa_referente_nombre}" refirió a "${referido.empresa_referida_nombre}"? Esto le suma 30 días a su suscripción.`)) return;
-    try {
-      const { data } = await API.post(`facturacion/admin/referidos/${referido.id}/confirmar/`);
-      setReferidos((prev) => prev.map((r) => (r.id === referido.id ? data : r)));
-    } catch (err) {
-      setError(err?.response?.data?.detail || 'No se pudo confirmar el referido.');
-    }
-  }
-
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="flex items-center gap-2 mb-1">
@@ -59,7 +49,9 @@ export default function Referidos() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Programa de referidos</h1>
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-        CU27 · Empresas que invitaron a otras a unirse a VecinoMarket. Al confirmar, la que refirió gana 30 días extra de suscripción.
+        CU27 · Empresas que invitaron a otras a unirse a VecinoMarket. El referido se confirma solo cuando la empresa invitada
+        contrata un plan pagado: Básico da 3 días extra de suscripción a la que refirió y Premium, 5 días. Con el plan de
+        prueba queda pendiente.
       </p>
 
       <select
@@ -86,15 +78,6 @@ export default function Referidos() {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${badgeEstado(r.estado)}`}>{r.estado}</span>
-              {r.estado === 'PENDIENTE' && (
-                <button
-                  onClick={() => confirmar(r)}
-                  title="Confirmar referido"
-                  className="grid h-8 w-8 place-items-center rounded-full bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
-                >
-                  <CheckCircle2 size={14} />
-                </button>
-              )}
             </div>
           </div>
         ))}

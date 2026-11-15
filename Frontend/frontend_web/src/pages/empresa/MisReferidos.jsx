@@ -67,7 +67,8 @@ export default function MisReferidos() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Programa de referidos</h1>
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        CU27 · Invita a otros negocios a VecinoMarket. Cuando se confirme su registro, ganas 30 días extra de suscripción.
+        CU27 · Invita a otros negocios a VecinoMarket. Cuando tu invitado contrata un plan pagado ganas días extra de
+        suscripción automáticamente: 3 días si elige el plan Básico y 5 días si elige el Premium.
       </p>
 
       {enlace && (
