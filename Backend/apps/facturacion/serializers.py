@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 
 from .models import ComisionVenta, Factura, MetodoPago, Referido
@@ -79,22 +81,52 @@ class FacturaSerializer(serializers.ModelSerializer):
         extra_kwargs = {'empresa': {'read_only': True}, 'tipo': {'read_only': True}}
 
 
+_RE_DIAS = re.compile(r'^(\d+) dias')
+_RE_PLAN = re.compile(r'plan ([^)]+)\)')
+
+
+def dias_premio_referido(beneficio):
+    """Días de premio que quedaron registrados al confirmar el referido
+    (fn_aplicar_premio_referido escribe "<n> dias extra ... (referida con
+    plan <X>)"); se lee del texto guardado para respetar el premio real
+    aunque la empresa referida cambie de plan después."""
+    m = _RE_DIAS.match(beneficio or '')
+    return int(m.group(1)) if m else 0
+
+
 class ReferidoSerializer(serializers.ModelSerializer):
     """CU27: una empresa refiere a otra pasándole su slug como "código de
     referido" al registrarse (SolicitudEmpresa.codigo_referido) — se crea
-    sola en estado PENDIENTE (fn_crear_referido_por_empresa) cuando el
-    SuperAdmin aprueba esa solicitud. El SuperAdmin la confirma con
-    fn_confirmar_referido, que además le suma 30 días de suscripción a la
-    empresa que refirió."""
+    sola en estado PENDIENTE (fn_crear_referido_por_empresa) y se confirma
+    automáticamente cuando la referida contrata un plan pagado
+    (trg_referido_por_suscripcion): Básico da 3 días y Premium 5 días de
+    suscripción a la empresa que refirió."""
 
     empresa_referente_nombre = serializers.CharField(source='empresa_referente.razon_social', read_only=True)
     empresa_referida_nombre = serializers.CharField(source='empresa_referida.razon_social', read_only=True)
+    plan_referido = serializers.SerializerMethodField()
+    dias_premio = serializers.SerializerMethodField()
+    fecha_confirmacion = serializers.SerializerMethodField()
 
     class Meta:
         model = Referido
         fields = [
             'id', 'empresa_referente', 'empresa_referente_nombre',
             'empresa_referida', 'empresa_referida_nombre',
-            'estado', 'beneficio_aplicado', 'creado_en',
+            'estado', 'beneficio_aplicado', 'plan_referido', 'dias_premio',
+            'fecha_confirmacion', 'creado_en',
         ]
         read_only_fields = fields
+
+    def get_plan_referido(self, obj):
+        m = _RE_PLAN.search(obj.beneficio_aplicado or '')
+        if m:
+            return m.group(1)
+        plan = obj.empresa_referida.plan
+        return plan.nombre if plan else ''
+
+    def get_dias_premio(self, obj):
+        return dias_premio_referido(obj.beneficio_aplicado)
+
+    def get_fecha_confirmacion(self, obj):
+        return obj.actualizado_en if obj.estado == Referido.Estado.CONFIRMADO else None

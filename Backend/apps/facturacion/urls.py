@@ -14,6 +14,7 @@ from .views import (
     ListaMisFacturasView,
     ListaMisReferidosView,
     ListaReferidosAdminView,
+    ListaResumenReferidosAdminView,
     MetodosPagoPublicosEmpresaView,
 )
 
@@ -40,6 +41,7 @@ urlpatterns = [
     path('mis-facturas/<int:factura_id>/exportar/', ExportarMiFacturaView.as_view(), name='mi-factura-exportar'),
 
     # CU27: programa de referidos (SuperAdmin/Admin de soporte)
+    path('admin/referidos/resumen-empresas/', ListaResumenReferidosAdminView.as_view(), name='admin-referidos-resumen-empresas'),
     path('admin/referidos/', ListaReferidosAdminView.as_view(), name='admin-referidos'),
     path('admin/referidos/<int:referido_id>/confirmar/', ConfirmarReferidoAdminView.as_view(), name='admin-referido-confirmar'),
 
