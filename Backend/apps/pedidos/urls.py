@@ -23,6 +23,14 @@ from .devolucion_views import (
     AccionSolicitudView, CrearSolicitudView, DetalleSolicitudView, EmpresasDevolucionesView,
     EvidenciaSolicitudView, ListaSolicitudesView,
 )
+from .wishlist_views import (
+    DemandaEmpresaWishlistView,
+    WishlistActualizarAlertaView,
+    WishlistIdsView,
+    WishlistListaView,
+    WishlistMoverAlCarritoView,
+    WishlistToggleView,
+)
 
 urlpatterns = [
     path('reclamos/', ListaSolicitudesView.as_view(), name='devoluciones'),
@@ -65,4 +73,12 @@ urlpatterns = [
     # Checkout real (comprador): crea la orden real y abre el pago en PayPal
     path('checkout/', IniciarCheckoutView.as_view(), name='iniciar-checkout'),
     path('checkout/<int:orden_compra_id>/confirmar/', ConfirmarPagoCheckoutView.as_view(), name='confirmar-checkout'),
+
+    # CU30: Lista de Deseos y Alertas de Precio
+    path('wishlist/', WishlistListaView.as_view(), name='wishlist-lista'),
+    path('wishlist/ids/', WishlistIdsView.as_view(), name='wishlist-ids'),
+    path('wishlist/toggle/', WishlistToggleView.as_view(), name='wishlist-toggle'),
+    path('wishlist/<int:pk>/alerta/', WishlistActualizarAlertaView.as_view(), name='wishlist-actualizar-alerta'),
+    path('wishlist/<int:pk>/mover-al-carrito/', WishlistMoverAlCarritoView.as_view(), name='wishlist-mover-al-carrito'),
+    path('wishlist/demanda-empresa/', DemandaEmpresaWishlistView.as_view(), name='wishlist-demanda-empresa'),
 ]

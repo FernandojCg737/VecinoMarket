@@ -11,6 +11,7 @@ import 'buyer/buyer_dashboard_screen.dart';
 import 'buyer/buyer_recommendations_screen.dart';
 import 'buyer/buyer_reviews_screen.dart';
 import 'buyer/buyer_store_chatbot_screen.dart';
+import 'buyer/wishlist_screen.dart';
 import 'chat_screen.dart';
 import 'mis_pedidos_screen.dart';
 import 'reclamos_screen.dart';
@@ -338,6 +339,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 titulo: 'Mi cuenta',
                 subtitulo: 'Resumen, estadísticas y accesos directos',
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerDashboardScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.favorite_border,
+                titulo: 'Lista de deseos / Alertas',
+                subtitulo: 'Tus productos favoritos y alertas de precio (CU30)',
+                colorIcono: const Color(0xFFE11D48),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WishlistScreen())),
               ),
               _buildMenuOpcion(
                 icon: Icons.auto_awesome_outlined,

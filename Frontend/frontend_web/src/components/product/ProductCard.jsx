@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 import StarRating from './StarRating';
+import WishlistButton from './WishlistButton';
 import { useCart } from '../../context/CartContext';
 
 export default function ProductCard({ producto }) {
@@ -24,6 +25,9 @@ export default function ProductCard({ producto }) {
             -{porcentaje}%
           </span>
         )}
+        <div className="absolute top-2 right-2 z-10">
+          <WishlistButton producto={producto} className="h-8 w-8" size={16} />
+        </div>
       </Link>
 
       <div className="flex flex-1 flex-col gap-1.5 p-3">

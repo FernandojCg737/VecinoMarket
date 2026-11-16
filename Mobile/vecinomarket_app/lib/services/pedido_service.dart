@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import '../models/pedido.dart';
 import '../models/sucursal.dart';
@@ -50,8 +51,19 @@ class PedidoService {
     required List<Map<String, dynamic>> items,
     required Map<String, dynamic> entregas,
     required String rutaComprobante,
+    Uint8List? comprobanteBytes,
+    String? comprobanteNombre,
   }) async {
-    final multipartFile = await http.MultipartFile.fromPath('comprobante', rutaComprobante);
+    final http.MultipartFile multipartFile;
+    if (comprobanteBytes != null) {
+      multipartFile = http.MultipartFile.fromBytes(
+        'comprobante',
+        comprobanteBytes,
+        filename: comprobanteNombre ?? 'comprobante.jpg',
+      );
+    } else {
+      multipartFile = await http.MultipartFile.fromPath('comprobante', rutaComprobante);
+    }
     final data = await ApiClient.instance.postMultipart(
       'pedidos/checkout/',
       fields: {

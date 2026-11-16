@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-26T10:20:00.000Z" agent="Antigravity Network Architecture Generator" version="24.0.0" type="device">
+  <diagram id="diagrama_red_vecinomarket_exacto" name="Diagrama de Red - VecinoMarket">
+    <mxGraphModel dx="1200" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="950" pageHeight="1150" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============================================================ -->
+        <!-- 1. ZONAS / CONTENEDORES DE SEGURIDAD (FONDO)                 -->
+        <!-- ============================================================ -->
+
+        <!-- CONTENEDOR DMZ (AMARILLO PASTEL) -->
+        <mxCell id="zone_dmz" value="&lt;b style=&quot;font-size: 15px;&quot;&gt;DMZ&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size: 12px;&quot;&gt;(Zona Desmilitarizada)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE599;strokeColor=#000000;strokeWidth=1;verticalAlign=top;align=right;fontFamily=Helvetica;spacingRight=25;spacingTop=15;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="60" y="270" width="820" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- CONTENEDOR VLAN USUARIOS (ROJO / ROSA PASTEL) -->
+        <mxCell id="zone_vlan_usuarios" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;VLAN Usuarios&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size: 11px;&quot;&gt;(Gestión Interna / DevOps)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#000000;strokeWidth=1;verticalAlign=top;align=left;fontFamily=Helvetica;spacingLeft=15;spacingTop=15;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="60" y="500" width="360" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- CONTENEDOR VLAN APLICACIÓN (AZUL PASTEL) -->
+        <mxCell id="zone_vlan_app" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;VLAN Aplicación&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size: 11px;&quot;&gt;(Lógica, Core e IA)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#000000;strokeWidth=1;verticalAlign=top;align=right;fontFamily=Helvetica;spacingRight=20;spacingTop=15;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="440" y="500" width="440" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- CONTENEDOR VLAN DATOS (VERDE PASTEL) -->
+        <mxCell id="zone_vlan_datos" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;VLAN Datos&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size: 11px;&quot;&gt;(Persistencia y Bucket Storage)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#000000;strokeWidth=1;verticalAlign=top;align=right;fontFamily=Helvetica;spacingRight=25;spacingTop=15;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="440" y="695" width="440" height="175" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- 2. ZONA EXTERNA SUPERIOR: USUARIOS, INTERNET Y ROUTERS       -->
+        <!-- ============================================================ -->
+
+        <!-- Nube Internet -->
+        <mxCell id="elem_internet" value="Internet" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="380" y="30" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Stickman Usuarios -->
+        <mxCell id="elem_usuarios" value="Usuarios" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1;fontFamily=Helvetica;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="590" y="30" width="30" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Línea Usuarios a Internet -->
+        <mxCell id="line_user_cloud" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="elem_usuarios" target="elem_internet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Routers Redundantes -->
+        <mxCell id="lbl_routers" value="&lt;b&gt;Routers&lt;br&gt;Redundantes&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="240" y="145" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Router Izquierdo -->
+        <mxCell id="elem_router_izq" value="&amp;gt;&amp;lt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#B0B0B0;strokeColor=#404040;strokeWidth=1;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="350" y="140" width="60" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Router Derecho -->
+        <mxCell id="elem_router_der" value="&amp;gt;&amp;lt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#B0B0B0;strokeColor=#404040;strokeWidth=1;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="470" y="140" width="60" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Enlaces Internet a Routers -->
+        <mxCell id="line_cloud_r1" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="elem_internet" target="elem_router_izq">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line_cloud_r2" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="elem_internet" target="elem_router_der">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- 3. FIREWALL PERIMETRAL (FILTRO 1)                            -->
+        <!-- ============================================================ -->
+
+        <mxCell id="elem_fw1" value="" style="shape=rect;whiteSpace=wrap;html=1;fillColor=#D04A35;strokeColor=#801400;strokeWidth=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="415" y="225" width="55" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="elem_fw1_tex" value="&lt;b&gt;Firewall Perimetral&lt;br&gt;(Filtro 1)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="260" y="235" width="150" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Enlaces Routers a Firewall 1 -->
+        <mxCell id="line_r1_fw1" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="elem_router_izq" target="elem_fw1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="line_r2_fw1" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="elem_router_der" target="elem_fw1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- 4. ELEMENTOS DE LA DMZ                                        -->
+        <!-- ============================================================ -->
+
+        <!-- Servidor de Correo (Arriba) -->
+        <mxCell id="srv_correo" value="" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.1;darkOpacity2=0.15;fillColor=#D8D8D8;strokeColor=#666666;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="165" width="50" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="srv_correo_sobre" value="✉" style="shape=rect;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="590" y="185" width="30" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_srv_correo" value="&lt;b&gt;Servidor de correo&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #444;&quot;&gt;[Gmail API / SMTP 587]&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="540" y="235" width="130" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Servidor de Frontend (Izquierda) -->
+        <mxCell id="srv_frontend" value="" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.1;darkOpacity2=0.15;fillColor=#D8D8D8;strokeColor=#666666;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="325" width="50" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="srv_frontend_globe" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#2388E4;strokeColor=#105B9E;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="330" y="360" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_srv_frontend" value="&lt;b&gt;Servidor Web&lt;br&gt;(Frontend)&lt;/b&gt;&lt;br&gt;[React 18 / Vite]&lt;br&gt;&lt;b&gt;Servidor de Frontend&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=9.5;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="175" y="330" width="125" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Servidor Web Nginx (Centro) -->
+        <mxCell id="srv_web_nginx" value="" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.1;darkOpacity2=0.15;fillColor=#D8D8D8;strokeColor=#666666;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="325" width="50" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="srv_web_sphere" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#007ACC;strokeColor=#004C80;" vertex="1" parent="1">
+          <mxGeometry x="530" y="360" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_srv_web" value="&lt;b&gt;Servidor web&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #444;&quot;&gt;[Reverse Proxy Nginx / SSL]&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="460" y="395" width="135" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- DNS Server (Derecha) -->
+        <mxCell id="srv_dns" value="" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.1;darkOpacity2=0.15;fillColor=#D8D8D8;strokeColor=#666666;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="690" y="325" width="50" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="srv_dns_icon" value="🖹" style="ellipse;whiteSpace=wrap;html=1;fillColor=#2388E4;strokeColor=#105B9E;fontColor=#ffffff;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="720" y="360" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_srv_dns" value="&lt;b&gt;DNS Server&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #444;&quot;&gt;[vecinomarket.bo]&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="660" y="395" width="110" height="30" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- 5. BUS DE CONEXIÓN EN LA DMZ                                 -->
+        <!-- ============================================================ -->
+
+        <!-- Bus Horizontal DMZ Superior (conecta a Correo y DNS) -->
+        <mxCell id="bus_dmz_top" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="442" y="295" as="sourcePoint" />
+            <mxPoint x="720" y="295" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Conexión vertical a Servidor de Correo -->
+        <mxCell id="line_to_mail" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="605" y="295" as="sourcePoint" />
+            <mxPoint x="605" y="235" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Conexión vertical a Servidor Web (Centro) -->
+        <mxCell id="line_to_web" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="525" y="295" as="sourcePoint" />
+            <mxPoint x="525" y="325" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Conexión vertical a DNS Server -->
+        <mxCell id="line_to_dns" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="295" as="sourcePoint" />
+            <mxPoint x="715" y="325" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Conexión cruzada a Frontend Web (Izquierda) -->
+        <mxCell id="line_to_frontend" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="350" y="355" as="sourcePoint" />
+            <mxPoint x="500" y="355" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- 6. FIREWALL INTERNO (FILTRO 2)                               -->
+        <!-- ============================================================ -->
+
+        <!-- Bus Central Vertical cruzando de FW1 a FW2 -->
+        <mxCell id="bus_central_dmz" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="442" y="275" as="sourcePoint" />
+            <mxPoint x="442" y="475" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="elem_fw2" value="" style="shape=rect;whiteSpace=wrap;html=1;fillColor=#D04A35;strokeColor=#801400;strokeWidth=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="415" y="450" width="55" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="elem_fw2_tex" value="&lt;b&gt;Firewall Interno&lt;br&gt;(Filtro 2)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="270" y="460" width="140" height="30" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- 7. ELEMENTOS DE VLAN USUARIOS Y VLAN APLICACIÓN              -->
+        <!-- ============================================================ -->
+
+        <!-- Equipo Administrador (Izquierda - VLAN Usuarios) -->
+        <mxCell id="host_admin" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=img/lib/clip_art/computers/Workstation_128x128.png;" vertex="1" parent="1">
+          <mxGeometry x="295" y="565" width="65" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_host_admin" value="&lt;b&gt;Equipo administrador&lt;/b&gt;&lt;br&gt;[SSH, Monitoreo, Backups]&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; color: #555;&quot;&gt;CU28: Backup/Restore BD | CU22: Auditoría&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="225" y="630" width="200" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Servidor de Aplicaciones (Derecha - VLAN Aplicación) -->
+        <mxCell id="srv_app" value="" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.1;darkOpacity2=0.15;fillColor=#D8D8D8;strokeColor=#666666;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="505" y="560" width="55" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_srv_app" value="&lt;b&gt;Servidor de aplicaciones&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #444;&quot;&gt;[Django REST + Daphne ASGI / Channels]&lt;br&gt;Core Multi-Tenant, Pedidos CU12, Live CU17&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="430" y="635" width="200" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Microservicio IA -->
+        <mxCell id="icon_ia" value="⚙" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontSize=22;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="645" y="570" width="45" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_ia" value="&lt;b&gt;Microservicio IA&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #444;&quot;&gt;[Replicate CLIP CU08]&lt;br&gt;Chatbot FAQ y Consejos&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="610" y="620" width="120" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Enlaces desde Firewall Interno hacia VLAN Usuarios y VLAN App -->
+        <mxCell id="line_fw2_admin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="442" y="530" as="sourcePoint" />
+            <mxPoint x="330" y="565" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="330" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="line_fw2_app" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="442" y="530" as="sourcePoint" />
+            <mxPoint x="532" y="560" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="532" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Conexión App a Microservicio IA -->
+        <mxCell id="line_app_ia" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="srv_app" target="icon_ia">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- 8. ELEMENTOS DE VLAN DATOS (VERDE PASTEL)                    -->
+        <!-- ============================================================ -->
+
+        <!-- Troncal Vertical que baja hacia la VLAN de Datos -->
+        <mxCell id="bus_down_data" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="442" y="500" as="sourcePoint" />
+            <mxPoint x="442" y="795" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Base de Datos (PostgreSQL + PostGIS) -->
+        <mxCell id="db_server" value="" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.1;darkOpacity2=0.15;fillColor=#D8D8D8;strokeColor=#666666;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="495" y="755" width="55" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="db_cylinder" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=5;fillColor=#2388E4;strokeColor=#105B9E;" vertex="1" parent="1">
+          <mxGeometry x="530" y="800" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_db" value="&lt;b&gt;Base de datos&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color: #274E13;&quot;&gt;[PostgreSQL 16 + PostGIS 3.4]&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; color: #444;&quot;&gt;Multi-Tenant, Catálogo, Pedidos, Ubicación&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="830" width="210" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Conexión del bus hacia la Base de Datos -->
+        <mxCell id="line_bus_db" style="edgeStyle=none;html=1;endArrow=none;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="442" y="790" as="sourcePoint" />
+            <mxPoint x="495" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Bucket Storage (Cloudinary) -->
+        <mxCell id="icon_bucket" value="" style="shape=rect;whiteSpace=wrap;html=1;fillColor=#82B366;strokeColor=#4D7336;strokeWidth=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="595" y="755" width="45" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="icon_bucket_sym" value="🗄️" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=22;" vertex="1" parent="1">
+          <mxGeometry x="595" y="755" width="45" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_bucket" value="&lt;b&gt;Bucket Storage&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;color: #274E13;&quot;&gt;[Cloudinary Media]&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; color: #444;&quot;&gt;Fotos Catálogo CU07, Comprobantes QR&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="645" y="760" width="200" height="35" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

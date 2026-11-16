@@ -245,3 +245,41 @@ class SolicitudDevolucion(BaseModel):
 
     def __str__(self):
         return f'Devolución de {self.pedido}'
+
+
+class ListaDeseoItem(BaseModel):
+    """
+    CU30: Gestionar Lista de Deseos y Alertas de Precio.
+    El comprador guarda productos de su interés (transversal a múltiples empresas)
+    y configura alertas para cuando el precio baje.
+    """
+    comprador = models.ForeignKey(
+        'usuarios.Comprador',
+        on_delete=models.CASCADE,
+        related_name='lista_deseos'
+    )
+    producto = models.ForeignKey(
+        'catalogo.Producto',
+        on_delete=models.CASCADE,
+        related_name='deseado_por'
+    )
+    precio_al_guardar = models.DecimalField(max_digits=10, decimal_places=2)
+    notificar_baja_precio = models.BooleanField(default=True)
+    precio_objetivo = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='Precio meta deseado por el cliente para recibir alerta'
+    )
+    ultima_alerta_enviada = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Ítem de Lista de Deseos'
+        verbose_name_plural = 'Ítems de Lista de Deseos'
+        unique_together = ('comprador', 'producto')
+        ordering = ('-creado_en',)
+
+    def __str__(self):
+        return f'{self.comprador.usuario.email} - {self.producto.nombre}'
+

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import {
   LayoutDashboard, Receipt, Star, MapPin, MessageCircle, Bot, Radio, Sparkles,
-  Package, Wallet, Bell, ChevronRight,
+  Package, Wallet, Bell, ChevronRight, Heart,
 } from 'lucide-react';
 import API from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -35,6 +35,7 @@ function Tarjeta({ icono: Icono, etiqueta, valor, color }) {
 }
 
 const ACCESOS = [
+  { to: '/favoritos', icono: Heart, etiqueta: 'Lista de Deseos' },
   { to: '/mis-direcciones', icono: MapPin, etiqueta: 'Direcciones' },
   { to: '/mis-resenas', icono: Star, etiqueta: 'Reseñas' },
   { to: '/chat', icono: MessageCircle, etiqueta: 'Chats' },

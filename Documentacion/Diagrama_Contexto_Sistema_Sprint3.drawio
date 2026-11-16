@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-26T11:05:00.000Z" agent="Antigravity System Context Generator" version="24.0.0" type="device">
+  <diagram id="contexto_sistema_sprint3_oficial" name="Contexto del Sistema - Sprint 3">
+    <mxGraphModel dx="1200" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============================================================ -->
+        <!-- TITULO SUPERIOR                                              -->
+        <!-- ============================================================ -->
+        <mxCell id="title_banner" value="&lt;b style=&quot;font-size: 15px;&quot;&gt;1.3 CONTEXTO DEL SISTEMA — SPRINT 3&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 11px; color: #555;&quot;&gt;Diagrama General de Casos de Uso del Sistema por Actores (VecinoMarket)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CED4DA;align=center;verticalAlign=middle;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="20" width="760" height="45" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- ACTORES (A LA IZQUIERDA - EXACTO AL MODELO OFICIAL)          -->
+        <!-- ============================================================ -->
+
+        <!-- ADMINISTRADOR -->
+        <mxCell id="act_admin" value="&lt;b&gt;ADMINISTRADOR&lt;/b&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="110" y="150" width="45" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- EMPRESA -->
+        <mxCell id="act_empresa" value="&lt;b&gt;EMPRESA&lt;/b&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="110" y="440" width="45" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- COMPRADOR -->
+        <mxCell id="act_comprador" value="&lt;b&gt;COMPRADOR&lt;/b&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="110" y="730" width="45" height="90" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- LOS 6 CASOS DE USO ASIGNADOS A SPRINT 3 (A LA DERECHA)       -->
+        <!-- ============================================================ -->
+
+        <!-- 1. CU09: Gestionar Empleados y Permisos (Web) -->
+        <mxCell id="cu_09" value="&lt;b&gt;CU09 - Gestionar Empleados&lt;br&gt;y Permisos&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;(Web)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="100" width="220" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- 2. CU12: Gestionar Pedidos y Ventas (Web/Móvil) -->
+        <mxCell id="cu_12" value="&lt;b&gt;CU12 - Gestionar Pedidos&lt;br&gt;y Ventas&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;(Web/Móvil)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="230" width="220" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- 3. CU13: Gestionar Entregas (Web/Móvil) -->
+        <mxCell id="cu_13" value="&lt;b&gt;CU13 - Gestionar Entregas&lt;br&gt;y Despachos&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;(Web/Móvil)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="360" width="220" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- 4. CU16: Gestionar Promociones y Descuentos (Web) -->
+        <mxCell id="cu_16" value="&lt;b&gt;CU16 - Gestionar Promociones&lt;br&gt;y Descuentos&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;(Web)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="490" width="220" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- 5. CU17: Gestionar Transmisiones en Vivo - Live Commerce (Web/Móvil) -->
+        <mxCell id="cu_17" value="&lt;b&gt;CU17 - Gestionar Transmisiones&lt;br&gt;en Vivo - Live Commerce&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;(Web/Móvil)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="620" width="220" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- 6. CU23: Gestionar Notificaciones del Sistema (Web/Móvil) -->
+        <mxCell id="cu_23" value="&lt;b&gt;CU23 - Gestionar Notificaciones&lt;br&gt;del Sistema&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;(Web/Móvil)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="750" width="220" height="75" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- ASOCIACIONES / FLECHAS (ACTOR -> CASO DE USO)                -->
+        <!-- ============================================================ -->
+
+        <!-- ADMINISTRADOR -> CU12 (Supervisión global de pedidos y ventas) -->
+        <mxCell id="l_admin_cu12" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_admin" target="cu_12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ADMINISTRADOR -> CU23 (Difusión y monitoreo de notificaciones) -->
+        <mxCell id="l_admin_cu23" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_admin" target="cu_23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- EMPRESA -> CU09 (Creación de empleados y asignación de permisos) -->
+        <mxCell id="l_emp_cu09" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_empresa" target="cu_09">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EMPRESA -> CU12 (Atención de pedidos, aprobación QR y comprobantes PDF) -->
+        <mxCell id="l_emp_cu12" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_empresa" target="cu_12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EMPRESA -> CU13 (Despacho logístico y coordinación con geolocalización) -->
+        <mxCell id="l_emp_cu13" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_empresa" target="cu_13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EMPRESA -> CU16 (Creación de ofertas y cupones de descuento) -->
+        <mxCell id="l_emp_cu16" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_empresa" target="cu_16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EMPRESA -> CU17 (Transmisión en vivo WebRTC y fijación de ofertas flash) -->
+        <mxCell id="l_emp_cu17" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_empresa" target="cu_17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EMPRESA -> CU23 (Recepción de alertas de pedidos y compras) -->
+        <mxCell id="l_emp_cu23" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_empresa" target="cu_23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- COMPRADOR -> CU12 (Seguimiento de pedidos y descarga de recibo) -->
+        <mxCell id="l_comp_cu12" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_comprador" target="cu_12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- COMPRADOR -> CU13 (Rastreo de entrega y confirmación por PIN) -->
+        <mxCell id="l_comp_cu13" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_comprador" target="cu_13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- COMPRADOR -> CU17 (Sintonización de streaming, chat y compras flash) -->
+        <mxCell id="l_comp_cu17" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_comprador" target="cu_17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- COMPRADOR -> CU23 (Notificaciones push FCM en su dispositivo móvil) -->
+        <mxCell id="l_comp_cu23" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.3;" edge="1" parent="1" source="act_comprador" target="cu_23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -56,9 +56,15 @@ def sincronizar_descuentos_productos(productos=None):
                 mejor_precio = precio_con_desc
 
         if mejor_precio < prod.precio:
-            if prod.precio_descuento != mejor_precio:
+            cambio_precio = (prod.precio_descuento != mejor_precio)
+            if cambio_precio:
                 prod.precio_descuento = mejor_precio
                 prod.save(update_fields=['precio_descuento'])
+            try:
+                from apps.pedidos.wishlist_views import verificar_y_notificar_alertas_precio
+                verificar_y_notificar_alertas_precio(prod, mejor_precio)
+            except Exception as e:
+                print(f"Error verificando alertas de precio en promocion: {e}")
         else:
             if prod.precio_descuento is not None:
                 prod.precio_descuento = None

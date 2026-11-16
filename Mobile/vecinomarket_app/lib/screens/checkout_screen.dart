@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -44,6 +45,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   // Método de pago: 'QR' | 'PAYPAL'
   String _metodoSeleccionado = 'QR';
   XFile? _comprobanteFoto;
+  Uint8List? _comprobanteBytes;
 
   bool _procesando = false;
   bool _mostrarPaypalInline = false;
@@ -352,8 +354,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         imageQuality: 85,
       );
       if (foto != null) {
+        final bytes = await foto.readAsBytes();
         setState(() {
           _comprobanteFoto = foto;
+          _comprobanteBytes = bytes;
           _error = null;
         });
       }
@@ -453,6 +457,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         items: items,
         entregas: entregas,
         rutaComprobante: _comprobanteFoto!.path,
+        comprobanteBytes: _comprobanteBytes,
+        comprobanteNombre: _comprobanteFoto!.name,
       );
 
       if (!mounted) return;
@@ -956,11 +962,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Center(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.file(
-                          File(_comprobanteFoto!.path),
-                          height: 170,
-                          fit: BoxFit.cover,
-                        ),
+                        child: _comprobanteBytes != null
+                            ? Image.memory(
+                                _comprobanteBytes!,
+                                height: 170,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(
+                                File(_comprobanteFoto!.path),
+                                height: 170,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -978,7 +990,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: TextButton.styleFrom(foregroundColor: Colors.red, visualDensity: VisualDensity.compact),
                           icon: const Icon(Icons.delete_outline, size: 16),
                           label: const Text('Eliminar'),
-                          onPressed: () => setState(() => _comprobanteFoto = null),
+                          onPressed: () => setState(() {
+                            _comprobanteFoto = null;
+                            _comprobanteBytes = null;
+                          }),
                         ),
                       ],
                     ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../services/catalogo_service.dart';
 import '../services/notificacion_service.dart';
+import 'product_detail_screen.dart';
 import 'reclamos_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -41,6 +43,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       case 'PAGO_RECHAZADO':
       case 'PEDIDO_CANCELADO':
         return Icons.cancel_outlined;
+      case 'ALERTA_PRECIO':
+        return Icons.favorite_rounded;
       default:
         return Icons.notifications_outlined;
     }
@@ -61,6 +65,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       case 'PAGO_RECHAZADO':
       case 'PEDIDO_CANCELADO':
         return const Color(0xFFEF4444);
+      case 'ALERTA_PRECIO':
+        return const Color(0xFFE11D48);
       default:
         return const Color(0xFFD97706);
     }
@@ -84,6 +90,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           builder: (_) => DetalleReclamoScreen(id: reclamo),
         ));
         return;
+      }
+    }
+    if (partes.length == 2 && partes.first == 'productos') {
+      final prodId = int.tryParse(partes.last);
+      if (prodId != null) {
+        final prod = await CatalogoService().obtenerProductoPorId(prodId);
+        if (prod != null && mounted) {
+          await Navigator.push<void>(context, MaterialPageRoute(
+            builder: (_) => ProductDetailScreen(producto: prod),
+          ));
+          return;
+        }
       }
     }
 

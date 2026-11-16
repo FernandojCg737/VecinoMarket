@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-26T10:57:00.000Z" agent="Antigravity System Context Generator" version="24.0.0" type="device">
+  <diagram id="contexto_sistema_sprint2" name="Contexto del Sistema - Sprint 2">
+    <mxGraphModel dx="1200" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TITULO SUPERIOR -->
+        <mxCell id="title_banner" value="&lt;b style=&quot;font-size: 15px;&quot;&gt;1.3 CONTEXTO DEL SISTEMA — SPRINT 2&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 11px; color: #555;&quot;&gt;Diagrama General de Casos de Uso del Sistema por Actores (VecinoMarket - Pág. 218)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#CED4DA;align=center;verticalAlign=middle;fontFamily=Helvetica;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="20" width="760" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ACTORES -->
+        <mxCell id="act_admin" value="&lt;b&gt;ADMINISTRADOR&lt;/b&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="110" y="160" width="45" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_empresa" value="&lt;b&gt;EMPRESA&lt;/b&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="110" y="470" width="45" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_comprador" value="&lt;b&gt;COMPRADOR&lt;/b&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="110" y="800" width="45" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- CASOS DE USO SPRINT 2 -->
+        <mxCell id="cu_10" value="&lt;b&gt;CU10 - Gestionar&lt;br&gt;Inventario y Stock&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="90" width="190" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cu_19" value="&lt;b&gt;CU19 - Visualizar&lt;br&gt;Dashboard y Reportes&lt;br&gt;Administrativos&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="190" width="190" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cu_28" value="&lt;b&gt;CU28 - Administrar&lt;br&gt;Backup/Restore&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="290" width="190" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cu_20" value="&lt;b&gt;CU20 - Gestionar&lt;br&gt;Planes y Suscripciones&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="390" width="190" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cu_18" value="&lt;b&gt;CU18 - Visualizar&lt;br&gt;Dashboard y Reportes&lt;br&gt;de Empresa&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="490" width="190" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cu_14" value="&lt;b&gt;CU14 - Gestionar Chat&lt;br&gt;Interno entre&lt;br&gt;Comprador y Empresa&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="590" width="190" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cu_11" value="&lt;b&gt;CU11 - Gestionar&lt;br&gt;Carrito de Compras&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="690" width="190" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cu_15" value="&lt;b&gt;CU15 - Consultar&lt;br&gt;Chatbot de Atencion&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;fontColor=#000000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="790" width="190" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ENLACES EXACTOS DE LA IMAGEN SPRINT 2 -->
+        <!-- Admin -> CU10, CU19, CU28, CU20 -->
+        <mxCell id="l_admin_cu10" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_admin" target="cu_10"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="l_admin_cu19" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_admin" target="cu_19"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="l_admin_cu28" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_admin" target="cu_28"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="l_admin_cu20" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_admin" target="cu_20"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Empresa -> CU10, CU20, CU18, CU14 -->
+        <mxCell id="l_emp_cu10" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_empresa" target="cu_10"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="l_emp_cu20" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_empresa" target="cu_20"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="l_emp_cu18" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_empresa" target="cu_18"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="l_emp_cu14" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_empresa" target="cu_14"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Comprador -> CU14, CU11, CU15 -->
+        <mxCell id="l_comp_cu14" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_comprador" target="cu_14"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="l_comp_cu11" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_comprador" target="cu_11"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="l_comp_cu15" style="edgeStyle=none;html=1;endArrow=classic;strokeColor=#4A4A4A;strokeWidth=1.2;" edge="1" parent="1" source="act_comprador" target="cu_15"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

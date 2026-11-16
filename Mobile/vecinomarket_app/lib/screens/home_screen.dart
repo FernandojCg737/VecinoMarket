@@ -7,7 +7,9 @@ import '../services/cart_service.dart';
 import '../services/catalogo_service.dart';
 import '../services/notificacion_service.dart';
 import '../services/theme_service.dart';
+import '../services/wishlist_service.dart';
 import 'auth_screen.dart';
+import 'buyer/wishlist_screen.dart';
 import 'cart_screen.dart';
 import 'live_commerce_screen.dart';
 import '../widgets/notification_badge_button.dart';
@@ -37,6 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
     _productosFuture = _catalogo.obtenerProductos();
     _catalogo.obtenerCategorias().then((cats) {
       if (mounted) setState(() => _categorias = cats);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<WishlistService>().cargarIds();
     });
   }
 
@@ -155,6 +160,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
             ],
+          ),
+          Consumer<WishlistService>(
+            builder: (context, wishlist, _) {
+              final totalDeseados = wishlist.totalDeseados;
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.favorite_border, size: 21),
+                    padding: const EdgeInsets.all(6),
+                    constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                    visualDensity: VisualDensity.compact,
+                    tooltip: 'Lista de deseos (CU30)',
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const WishlistScreen()),
+                    ),
+                  ),
+                  if (totalDeseados > 0)
+                    Positioned(
+                      top: 3,
+                      right: 1,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: const BoxDecoration(color: Color(0xFFE11D48), shape: BoxShape.circle),
+                        constraints: const BoxConstraints(minWidth: 15, minHeight: 15),
+                        child: Text(
+                          '$totalDeseados',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.white, fontSize: 9.5, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
           IconButton(
             icon: Icon(usuario != null ? Icons.person : Icons.person_outline, size: 21),
@@ -281,9 +322,63 @@ class _TarjetaProducto extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 1,
-              child: producto.imagenUrl != null
-                  ? Image.network(producto.imagenUrl!, fit: BoxFit.cover)
-                  : Container(color: Colors.grey.shade200, child: const Icon(Icons.image_not_supported)),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  producto.imagenUrl != null
+                      ? Image.network(producto.imagenUrl!, fit: BoxFit.cover)
+                      : Container(color: Colors.grey.shade200, child: const Icon(Icons.image_not_supported)),
+                  Positioned(
+                    top: 5,
+                    right: 5,
+                    child: Consumer<WishlistService>(
+                      builder: (context, wishlist, _) {
+                        final esFavorito = wishlist.esDeseado(producto.id);
+                        return GestureDetector(
+                          onTap: () async {
+                            final auth = context.read<AuthService>();
+                            if (auth.usuario == null) {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
+                              return;
+                            }
+                            final rol = auth.usuario!['rol']?.toString().toUpperCase() ?? '';
+                            if (rol != 'COMPRADOR') {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  icon: const Icon(Icons.warning_amber_rounded, size: 36, color: Color(0xFFD97706)),
+                                  title: const Text('Acción exclusiva para compradores', textAlign: TextAlign.center, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                  content: const Text('Inicia sesión con una cuenta de comprador para guardar productos en tu lista de deseos.', textAlign: TextAlign.center, style: TextStyle(fontSize: 13)),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Entendido')),
+                                  ],
+                                ),
+                              );
+                              return;
+                            }
+                            await wishlist.toggleDeseo(producto.id);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.92),
+                              shape: BoxShape.circle,
+                              boxShadow: const [
+                                BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 1)),
+                              ],
+                            ),
+                            child: Icon(
+                              esFavorito ? Icons.favorite : Icons.favorite_border,
+                              color: esFavorito ? const Color(0xFFE11D48) : Colors.grey.shade700,
+                              size: 16,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),

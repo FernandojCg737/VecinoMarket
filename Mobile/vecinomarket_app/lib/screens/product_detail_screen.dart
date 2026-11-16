@@ -4,9 +4,9 @@ import '../models/producto.dart';
 import '../services/auth_service.dart';
 import '../services/cart_service.dart';
 import '../services/chat_service.dart';
-import '../services/notificacion_service.dart';
 import '../services/theme_service.dart';
-import 'notifications_screen.dart';
+import '../services/wishlist_service.dart';
+import 'buyer/wishlist_screen.dart';
 import 'auth_screen.dart';
 import 'cart_screen.dart';
 import 'chat_screen.dart';
@@ -100,6 +100,40 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
             },
             child: const Text('Iniciar sesión', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _mostrarDialogoNoComprador(BuildContext context, String accion) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.warning_amber_rounded, size: 40, color: _brandGold),
+        title: const Text(
+          'Acción exclusiva para compradores',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+        ),
+        content: Text(
+          'Tu cuenta actual no es de tipo comprador. Para $accion, inicia sesión con una cuenta de comprador.',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 13.5),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          OutlinedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Entendido'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: _brandGold),
+            onPressed: () {
+              Navigator.pop(ctx);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
+            },
+            child: const Text('Cambiar de cuenta', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -440,56 +474,154 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ),
         const SizedBox(height: 24),
 
-        // BOTÓN 1: AGREGAR AL CARRITO
-        SizedBox(
-          width: double.infinity,
-          height: 52,
-          child: ElevatedButton.icon(
-            icon: const Icon(Icons.shopping_cart_outlined, size: 20, color: Colors.white),
-            label: const Text(
-              'Agregar al carrito',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _brandGold,
-              elevation: 2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-            ),
-            onPressed: p.stock <= 0
-                ? null
-                : () {
-                    final auth = context.read<AuthService>();
-                    if (auth.usuario == null) {
-                      _mostrarDialogoRequerirLogin(context);
-                      return;
-                    }
-                    context.read<CartService>().agregar(p, cantidad: _cantidad);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        behavior: SnackBarBehavior.floating,
-                        backgroundColor: const Color(0xFF1E293B),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        content: Row(
-                          children: [
-                            const Icon(Icons.check_circle_outline, color: Color(0xFF10B981), size: 20),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                '¡${p.nombre} agregado al carrito!',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
+        // BOTÓN 1: AGREGAR AL CARRITO + BOTÓN CORAZÓN (CU30)
+        Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 52,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.shopping_cart_outlined, size: 20, color: Colors.white),
+                  label: const Text(
+                    'Agregar al carrito',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _brandGold,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+                  ),
+                  onPressed: p.stock <= 0
+                      ? null
+                      : () {
+                          final auth = context.read<AuthService>();
+                          if (auth.usuario == null) {
+                            _mostrarDialogoRequerirLogin(context);
+                            return;
+                          }
+                          final rol = auth.usuario!['rol']?.toString().toUpperCase() ?? '';
+                          if (rol != 'COMPRADOR') {
+                            _mostrarDialogoNoComprador(context, 'agregar productos al carrito');
+                            return;
+                          }
+                          context.read<CartService>().agregar(p, cantidad: _cantidad);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: const Color(0xFF1E293B),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              content: Row(
+                                children: [
+                                  const Icon(Icons.check_circle_outline, color: Color(0xFF10B981), size: 20),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      '¡${p.nombre} agregado al carrito!',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                              duration: const Duration(seconds: 2),
                             ),
-                          ],
-                        ),
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
-                  },
-          ),
+                          );
+                        },
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Consumer<WishlistService>(
+              builder: (context, wishlist, _) {
+                final esFavorito = wishlist.esDeseado(p.id);
+                return Container(
+                  height: 52,
+                  width: 52,
+                  decoration: BoxDecoration(
+                    color: esFavorito ? const Color(0xFFFFF1F2) : (isDark ? const Color(0xFF1F2937) : Colors.white),
+                    border: Border.all(
+                      color: esFavorito ? const Color(0xFFE11D48) : (isDark ? const Color(0xFF374151) : const Color(0xFFD1D5DB)),
+                      width: 1.5,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      esFavorito ? Icons.favorite : Icons.favorite_border,
+                      color: esFavorito ? const Color(0xFFE11D48) : Colors.grey.shade600,
+                      size: 24,
+                    ),
+                    tooltip: esFavorito ? 'Quitar de lista de deseos' : 'Guardar en lista de deseos (CU30)',
+                    onPressed: () async {
+                      final auth = context.read<AuthService>();
+                      if (auth.usuario == null) {
+                        _mostrarDialogoRequerirLogin(context);
+                        return;
+                      }
+                      final rol = auth.usuario!['rol']?.toString().toUpperCase() ?? '';
+                      if (rol != 'COMPRADOR') {
+                        _mostrarDialogoNoComprador(context, 'guardar productos en tu lista de deseos');
+                        return;
+                      }
+                      try {
+                        final res = await wishlist.toggleDeseo(p.id);
+                        if (context.mounted && res != null) {
+                          final agregando = res['agregado'] == true || res['en_deseos'] == true;
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: const Color(0xFF1E293B),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              content: Row(
+                                children: [
+                                  Icon(
+                                    agregando ? Icons.favorite : Icons.favorite_border,
+                                    color: agregando ? const Color(0xFFE11D48) : Colors.grey,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      agregando
+                                          ? '¡${p.nombre} guardado en tu lista de deseos! Te avisaremos si baja de precio.'
+                                          : '${p.nombre} eliminado de tu lista de deseos.',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              duration: const Duration(seconds: 2),
+                              action: agregando
+                                  ? null
+                                  : SnackBarAction(
+                                      label: 'Deshacer',
+                                      textColor: const Color(0xFFFBBF24),
+                                      onPressed: () => wishlist.toggleDeseo(p.id),
+                                    ),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+                          );
+                        }
+                      }
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         const SizedBox(height: 12),
 
@@ -1154,6 +1286,45 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 ),
                               ),
                           ],
+                        ),
+
+                        // Lista de deseos (CU30)
+                        Consumer<WishlistService>(
+                          builder: (context, wishlist, _) {
+                            final totalDeseados = wishlist.totalDeseados;
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                _buildHeaderIcon(
+                                  icon: Icons.favorite_border,
+                                  tooltip: 'Lista de deseos',
+                                  isDark: isDark,
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const WishlistScreen()),
+                                  ),
+                                ),
+                                if (totalDeseados > 0)
+                                  Positioned(
+                                    top: 2,
+                                    right: 2,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(3),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFFE11D48),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                                      child: Text(
+                                        '$totalDeseados',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),

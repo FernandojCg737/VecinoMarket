@@ -9,6 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 import { esStaff } from '../../utils/roles';
 import VentasPorDiaChart from '../../components/dashboard/VentasPorDiaChart';
 import ExportarReporteMenu from '../../components/dashboard/ExportarReporteMenu';
+import WidgetDemandaDeseos from '../../components/empresa/WidgetDemandaDeseos';
 
 function renderTextoConNegrita(txt) {
   if (!txt) return null;
@@ -309,6 +310,8 @@ export default function DashboardAdmin() {
           </div>
 
           <VentasPorDiaChart datos={datos.ventas_por_dia} />
+
+          <WidgetDemandaDeseos />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">

@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { esEmpresaOEmpleado } from '../../utils/roles';
 import VentasPorDiaChart from '../../components/dashboard/VentasPorDiaChart';
 import ExportarReporteMenu from '../../components/dashboard/ExportarReporteMenu';
+import WidgetDemandaDeseos from '../../components/empresa/WidgetDemandaDeseos';
 
 function Tarjeta({ icono: Icono, etiqueta, valor, color }) {
   return (
@@ -85,6 +86,8 @@ export default function DashboardEmpresa() {
           </div>
 
           <VentasPorDiaChart datos={datos.ventas_por_dia} />
+
+          <WidgetDemandaDeseos />
 
           <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
             <div className="flex items-center gap-1.5 mb-3">
