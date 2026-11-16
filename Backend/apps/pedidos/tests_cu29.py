@@ -121,6 +121,31 @@ class DevolucionesTests(TestCase):
         self.assertEqual(self.accion(self.admin, caso, 'rechazar', respuesta='Sin permiso').status_code, 403)
         self.assertEqual(self.accion(self.empleado, caso, 'rechazar', respuesta='Respuesta').status_code, 200)
 
+    def test_filtros_de_empresa_y_estado_respetan_el_acceso_por_rol(self):
+        casos = [self.crear(pedido).data['id'] for pedido in self.pedidos]
+        self.assertEqual(self.accion(self.vendedores[0], casos[0], 'rechazar', respuesta='Revisado').status_code, 200)
+        bandeja = '/api/pedidos/reclamos/'
+        empresas = bandeja + 'empresas/'
+
+        for personal in (self.superadmin, self.admin):
+            self.client.force_authenticate(personal)
+            opciones = self.client.get(empresas)
+            self.assertEqual(opciones.status_code, 200)
+            self.assertEqual(opciones.data, [
+                {'id': empresa.pk, 'razon_social': empresa.razon_social} for empresa in self.empresas
+            ])
+            self.assertEqual(self.client.get(bandeja).data['count'], 2)
+            filtros = {'empresa': self.empresas[0].pk, 'estado': 'RECHAZADA'}
+            self.assertEqual([fila['id'] for fila in self.client.get(bandeja, filtros).data['results']], [casos[0]])
+            self.assertEqual(self.client.get(bandeja, {**filtros, 'estado': 'PENDIENTE'}).data['count'], 0)
+            self.assertEqual(self.client.get(bandeja, {'empresa': 'inválida'}).status_code, 400)
+
+        for usuario, esperado in ((self.empleado, [casos[0]]), (self.vendedores[0], [casos[0]]), (self.otro_comprador, [])):
+            self.client.force_authenticate(usuario)
+            self.assertEqual(self.client.get(empresas).status_code, 403)
+            resultado = self.client.get(bandeja, {'empresa': self.empresas[1].pk})
+            self.assertEqual([fila['id'] for fila in resultado.data['results']], esperado)
+
     @override_settings(
         DEVOLUCIONES_EVIDENCIAS_LOCALES=False,
         CLOUDINARY_STORAGE={'CLOUD_NAME': 'cu29-prueba', 'API_KEY': 'key', 'API_SECRET': 'secret'},

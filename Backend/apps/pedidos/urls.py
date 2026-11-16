@@ -20,12 +20,13 @@ from .views import (
 )
 from .factura_pdf import DescargarFacturaView
 from .devolucion_views import (
-    AccionSolicitudView, CrearSolicitudView, DetalleSolicitudView, EvidenciaSolicitudView,
-    ListaSolicitudesView,
+    AccionSolicitudView, CrearSolicitudView, DetalleSolicitudView, EmpresasDevolucionesView,
+    EvidenciaSolicitudView, ListaSolicitudesView,
 )
 
 urlpatterns = [
     path('reclamos/', ListaSolicitudesView.as_view(), name='devoluciones'),
+    path('reclamos/empresas/', EmpresasDevolucionesView.as_view(), name='devoluciones-empresas'),
     path('reclamos/crear/', CrearSolicitudView.as_view(), name='devolucion-crear'),
     path('reclamos/<int:pk>/', DetalleSolicitudView.as_view(), name='devolucion-detalle'),
     path('reclamos/<int:pk>/accion/', AccionSolicitudView.as_view(), name='devolucion-accion'),

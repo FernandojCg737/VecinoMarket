@@ -35,7 +35,7 @@ El formulario de decisión pide resolver explícitamente la sucursal de artícul
 ### Dónde se usa
 
 - Web de comprador: `/mis-compras` → **Solicitar devolución** o **Ver reclamo**. El historial está en `/mis-reclamos`.
-- Web de gestión: **Cuenta → Reclamos de devolución**. Las acciones se calculan en la API por rol, tenant y estado.
+- Web de administración: **Cuenta → P3 · Inventario, Pedidos y Ventas → CU29 Devoluciones**, debajo de CU26. La bandeja combina los filtros de estado y empresa, con **Todas las empresas** como opción inicial. Empresa y empleados autorizados tienen el acceso **Cuenta → Devoluciones** para su empresa. La API calcula las acciones por rol, tenant y estado.
 - Flutter: **Perfil → Mis reclamos** para el comprador, **Perfil → Reclamos de devolución** para gestión, y **Mis compras** para abrir un reclamo desde un pedido. Las notificaciones del CU29 abren el detalle autenticado.
 - API: `GET /api/pedidos/reclamos/`, `POST /api/pedidos/reclamos/crear/`, y recursos de detalle, foto y acción bajo `/api/pedidos/reclamos/{id}/`.
 

@@ -12,8 +12,8 @@ from rest_framework.views import APIView
 
 from apps.inventario.models import Sucursal
 from apps.notificaciones.models import Notificacion
-from apps.usuarios.models import Empleado
-from apps.usuarios.permissions import EsComprador
+from apps.usuarios.models import Empleado, Empresa
+from apps.usuarios.permissions import EsAdmin, EsComprador
 
 from .devoluciones import (
     ORDEN_PAGADA, ConflictoDevolucion, bloquear_solicitud, finalizar_reembolso,
@@ -143,9 +143,24 @@ class ListaSolicitudesView(generics.ListAPIView):
     pagination_class = PedidoPagination
 
     def get_queryset(self):
-        queryset = solicitudes_visibles(self.request.user)
+        usuario = self.request.user
+        queryset = solicitudes_visibles(usuario)
         estado = self.request.query_params.get('estado')
-        return queryset.filter(estado=estado) if estado in Estado.values else queryset
+        if estado in Estado.values:
+            queryset = queryset.filter(estado=estado)
+        empresa = self.request.query_params.get('empresa')
+        if usuario.es_admin() and empresa:
+            empresa_id = serializers.IntegerField(min_value=1, max_value=2**63 - 1).run_validation(empresa)
+            queryset = queryset.filter(pedido__empresa_id=empresa_id)
+        return queryset
+
+
+class EmpresasDevolucionesView(APIView):
+    permission_classes = [EsAdmin]
+
+    def get(self, request):
+        empresas = Empresa.objects.order_by('razon_social', 'pk').values('id', 'razon_social')
+        return Response(list(empresas))
 
 
 class CrearSolicitudView(APIView):

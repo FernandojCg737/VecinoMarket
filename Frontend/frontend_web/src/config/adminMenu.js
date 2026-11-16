@@ -112,6 +112,12 @@ export const GRUPOS_ADMIN = [
         to: '/admin/facturacion',
         implementado: true,
       },
+      {
+        cu: 'CU29',
+        titulo: 'Devoluciones',
+        to: '/reclamos',
+        implementado: true,
+      },
     ],
   },
   {

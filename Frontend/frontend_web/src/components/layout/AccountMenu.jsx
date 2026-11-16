@@ -26,9 +26,9 @@ export default function AccountMenu() {
         <>
           <div className="px-4 py-1.5 text-xs text-gray-400 dark:text-gray-500">Hola, {usuario.nombre}</div>
           <Link to="/perfil" className="block px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">Mi perfil</Link>
-          {(esStaff(usuario) || tienePermisoEmpleado(usuario, 'gestionar_pedidos')) && (
+          {esEmpresaOEmpleado(usuario) && tienePermisoEmpleado(usuario, 'gestionar_pedidos') && (
             <Link to="/reclamos" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
-              <ClipboardList size={16} /> Reclamos de devolución
+              <ClipboardList size={16} /> Devoluciones
             </Link>
           )}
           {esEmpresaOEmpleado(usuario) && (

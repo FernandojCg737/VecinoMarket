@@ -26,17 +26,17 @@ function mensaje(err) {
   return datos?.detail || Object.values(datos || {}).flat().find((v) => typeof v === 'string') || 'No se pudo completar la solicitud.';
 }
 
-function usarConsulta(ruta, pagina = 1, estado = '') {
+function usarConsulta(ruta, { pagina, estado, empresa } = {}) {
   const [datos, setDatos] = useState(null);
   const [error, setError] = useState('');
   const [revision, setRevision] = useState(0);
   useEffect(() => {
     const cancel = new AbortController();
-    API.get(ruta, { params: { page: pagina, estado }, signal: cancel.signal })
+    API.get(ruta, { params: { page: pagina, estado: estado || undefined, empresa: empresa || undefined }, signal: cancel.signal })
       .then(({ data }) => { if (!cancel.signal.aborted) setDatos(data); })
       .catch((err) => { if (!cancel.signal.aborted) setError(mensaje(err)); });
     return () => cancel.abort();
-  }, [ruta, pagina, estado, revision]);
+  }, [ruta, pagina, estado, empresa, revision]);
   function recargar() {
     setError('');
     setDatos(null);
@@ -76,20 +76,47 @@ function Evidencia({ ruta }) {
   return <a href={src} target="_blank" rel="noreferrer"><img src={src} alt="Foto de evidencia" className="max-h-72 rounded-lg object-contain" /></a>;
 }
 
-function Bandeja({ base }) {
+function FiltroEmpresa({ empresa, onChange }) {
+  const { datos, error, recargar } = usarConsulta('pedidos/reclamos/empresas/');
+  return (
+    <div className="min-w-0">
+      <label className="block text-sm font-medium">Empresa
+        <select className={campo} value={empresa} onChange={onChange} disabled={!datos}>
+          <option value="">Todas las empresas</option>
+          {datos?.map(({ id, razon_social }) => <option key={id} value={id}>{razon_social}</option>)}
+        </select>
+      </label>
+      {error ? (
+        <p role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
+          No se pudieron cargar las empresas. <button className={enlace} onClick={recargar}>Reintentar</button>
+        </p>
+      ) : !datos && <p role="status" className="mt-1 text-sm text-gray-500 dark:text-gray-400">Cargando empresas…</p>}
+    </div>
+  );
+}
+
+function Bandeja({ base, filtrarPorEmpresa }) {
   const [estado, setEstado] = useState('');
+  const [empresa, setEmpresa] = useState('');
   const [pagina, setPagina] = useState(1);
-  const { datos, error, recargar } = usarConsulta('pedidos/reclamos/', pagina, estado);
+  const { datos, error, recargar } = usarConsulta('pedidos/reclamos/', { pagina, estado, empresa });
   return <>
-    <label className="block max-w-xs text-sm font-medium">Estado
-      <select className={campo} value={estado} onChange={(e) => { setEstado(e.target.value); setPagina(1); recargar(); }}>
-        <option value="">Todos los estados</option>
-        {Object.entries(estados).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-      </select>
-    </label>
+    <div className={filtrarPorEmpresa ? 'grid max-w-2xl gap-3 sm:grid-cols-2' : 'max-w-xs'}>
+      {filtrarPorEmpresa && <FiltroEmpresa empresa={empresa} onChange={(e) => {
+        setEmpresa(e.target.value);
+        setPagina(1);
+        recargar();
+      }} />}
+      <label className="block min-w-0 text-sm font-medium">Estado
+        <select className={campo} value={estado} onChange={(e) => { setEstado(e.target.value); setPagina(1); recargar(); }}>
+          <option value="">Todos los estados</option>
+          {Object.entries(estados).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+        </select>
+      </label>
+    </div>
     {error ? <div role="alert" className={tarjeta}>{error} <button className={enlace} onClick={recargar}>Reintentar</button></div>
       : !datos ? <p role="status">Cargando reclamos…</p>
-        : datos.results.length === 0 ? <p className={tarjeta}>No hay reclamos en este estado.</p>
+        : datos.results.length === 0 ? <p className={tarjeta}>No hay reclamos para los filtros seleccionados.</p>
           : datos.results.map((caso) => <Link key={caso.id} to={base + '/' + caso.id}
             className={tarjeta + ' flex flex-wrap items-center justify-between gap-3 hover:border-brand-400'}>
             <div><p className="font-semibold">{caso.numero_pedido} · {caso.empresa}</p>
@@ -181,7 +208,7 @@ function Detalle({ id, base }) {
   }
   const aprobacion = accion === 'aprobar' || accion === 'mediar_aprobar';
   return <>
-    <Link to={base} className={enlace + ' flex items-center gap-2'}><ArrowLeft size={16} /> Volver a reclamos</Link>
+    <Link to={base} className={enlace + ' flex items-center gap-2'}><ArrowLeft size={16} /> {base === '/mis-reclamos' ? 'Volver a mis reclamos' : 'Volver a devoluciones'}</Link>
     {(error || errorAccion) && <p role="alert" className="text-sm text-red-600 dark:text-red-400">{error || errorAccion}</p>}
     {!caso ? (error ? <button className={boton} onClick={() => { setError(''); recargar(); }}>Reintentar</button> : <p role="status">Cargando reclamo…</p>) : <>
       <section className={tarjeta + ' space-y-3'}>
@@ -248,8 +275,8 @@ export default function Reclamos({ comprador = false, nuevo = false }) {
   return <div className="mx-auto max-w-3xl space-y-4 px-4 py-8 text-gray-900 dark:text-gray-100">
     <h1 className="flex items-center gap-2 text-2xl font-bold">
       <ClipboardList size={24} className="text-brand-600 dark:text-brand-400" />
-      {comprador ? 'Mis reclamos' : 'Reclamos de devolución'}
+      {comprador ? 'Mis reclamos' : 'Devoluciones'}
     </h1>
-    {nuevo ? <NuevoReclamo key={pedido} pedido={pedido} /> : id ? <Detalle key={id} id={id} base={base} /> : <Bandeja base={base} />}
+    {nuevo ? <NuevoReclamo key={pedido} pedido={pedido} /> : id ? <Detalle key={id} id={id} base={base} /> : <Bandeja base={base} filtrarPorEmpresa={esStaff(usuario)} />}
   </div>;
 }
