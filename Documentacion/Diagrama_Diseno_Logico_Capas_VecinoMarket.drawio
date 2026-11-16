@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-26T11:40:00.000Z" agent="Antigravity Package Layer Generator" version="24.0.0" type="device">
+  <diagram id="diagrama_paquetes_capas_sprint3" name="Diseño Lógico por Capas - Sprint 3">
+    <mxGraphModel dx="1400" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============================================================ -->
+        <!-- ETIQUETA SUPERIOR IZQUIERDA                                  -->
+        <!-- ============================================================ -->
+        <mxCell id="tag_header" value="&lt;b&gt;Diagrama de paquetes organizado por capas — Sprint 3&lt;/b&gt;" style="shape=ext;margin=3;double=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fillColor=#B1DDF0;strokeColor=#10739E;fontFamily=Helvetica;fontSize=11;fontColor=#003366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="25" width="310" height="30" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- 4 CONTENEDORES HORIZONTALES (CAPAS DE LA ARQUITECTURA)       -->
+        <!-- ============================================================ -->
+
+        <!-- 1. CAPA ESPECÍFICA -->
+        <mxCell id="layer_especifica" value="&lt;b style=&quot;font-size: 13px;&quot;&gt;Capa Específico&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B3C6E5;strokeWidth=1.5;verticalAlign=top;align=center;fontFamily=Helvetica;spacingTop=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="65" width="1020" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- 2. CAPA GENERAL -->
+        <mxCell id="layer_general" value="&lt;b style=&quot;font-size: 13px;&quot;&gt;Capa General&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B3C6E5;strokeWidth=1.5;verticalAlign=top;align=center;fontFamily=Helvetica;spacingTop=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="325" width="1020" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- 3. CAPA ENTORNO -->
+        <mxCell id="layer_entorno" value="&lt;b style=&quot;font-size: 13px;&quot;&gt;Capa Entorno&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B3C6E5;strokeWidth=1.5;verticalAlign=top;align=center;fontFamily=Helvetica;spacingTop=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="585" width="1020" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- 4. CAPA DE SOFTWARE -->
+        <mxCell id="layer_software" value="&lt;b style=&quot;font-size: 13px;&quot;&gt;Capa de Software&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B3C6E5;strokeWidth=1.5;verticalAlign=top;align=center;fontFamily=Helvetica;spacingTop=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="845" width="1020" height="210" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- CAPA 1: PAQUETES DE LA CAPA ESPECÍFICA (DOMINIO SPRINT 3)    -->
+        <!-- ============================================================ -->
+
+        <!-- Paquete 1: Seguridad y Administración (ROSA PASTEL) -->
+        <mxCell id="pkg_p1" value="&lt;b&gt;Paquete 1:&lt;br&gt;Seguridad y&lt;br&gt;Administración&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9.5px; color: #555;&quot;&gt;&lt;b style=&quot;color: #990000;&quot;&gt;CU09: Empleados y Permisos&lt;/b&gt;&lt;br&gt;(Web)&lt;br&gt;Matriz RBAC granular&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#F8CECC;strokeColor=#B85450;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="70" y="115" width="165" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Paquete 2: Promociones y Descuentos (NARANJA PASTEL) -->
+        <mxCell id="pkg_p2" value="&lt;b&gt;Paquete 2:&lt;br&gt;Configuración y&lt;br&gt;Promociones&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9.5px; color: #555;&quot;&gt;&lt;b style=&quot;color: #B45F06;&quot;&gt;CU16: Promociones y Descuentos&lt;/b&gt;&lt;br&gt;(Web)&lt;br&gt;Cupones y Medición ROI&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFE6CC;strokeColor=#D79B00;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="270" y="115" width="165" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Paquete 3: Logística e Inventario (VERDE PASTEL) -->
+        <mxCell id="pkg_p3" value="&lt;b&gt;Paquete 3:&lt;br&gt;Logística e&lt;br&gt;Inventario&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9.5px; color: #555;&quot;&gt;&lt;b style=&quot;color: #274E13;&quot;&gt;CU13: Gestionar Entregas&lt;/b&gt;&lt;br&gt;(Web / Móvil)&lt;br&gt;Despacho con PostGIS y PIN&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#D5E8D4;strokeColor=#82B366;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="470" y="115" width="165" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Paquete 4: Experiencia e Innovación del Cliente (AZUL PASTEL) -->
+        <mxCell id="pkg_p4" value="&lt;b&gt;Paquete 4:&lt;br&gt;Experiencia e&lt;br&gt;Innovación del&lt;br&gt;Cliente&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9.5px; color: #555;&quot;&gt;&lt;b style=&quot;color: #1B365D;&quot;&gt;CU17: Transmisión en Vivo&lt;/b&gt;&lt;br&gt;(Live Commerce Web/Móvil)&lt;br&gt;WebRTC + Chat en Vivo&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="670" y="115" width="165" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Paquete 5: Comercial y Transaccional (NARANJA CLARO / MELÓN) -->
+        <mxCell id="pkg_p5" value="&lt;b&gt;Paquete 5:&lt;br&gt;Comercial y&lt;br&gt;Transaccional&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9.5px; color: #555;&quot;&gt;&lt;b style=&quot;color: #7F4F00;&quot;&gt;CU12: Pedidos y Ventas&lt;/b&gt;&lt;br&gt;(Web / Móvil)&lt;br&gt;Máquina de Estados + PDF QR&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FCE5CD;strokeColor=#E0B084;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="870" y="115" width="165" height="135" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- CAPA 2: PAQUETES DE LA CAPA GENERAL (SERVICIOS TRANSVERSALES)-->
+        <!-- ============================================================ -->
+
+        <!-- Mantenimiento y Auditoría (ROSA PASTEL) -->
+        <mxCell id="pkg_mantenimiento" value="&lt;b&gt;Mantenimiento y&lt;br&gt;reservas&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #555;&quot;&gt;Trazabilidad de Pedidos&lt;br&gt;y Auditoría Transaccional&lt;br&gt;[apps.auditoria]&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#F8CECC;strokeColor=#B85450;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="70" y="380" width="165" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Reportes y Analíticas (NARANJA PASTEL) -->
+        <mxCell id="pkg_reportes" value="&lt;b&gt;Reportes y&lt;br&gt;Analítica&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #555;&quot;&gt;Analítica de Promociones&lt;br&gt;Comprobantes de Pago PDF&lt;br&gt;[apps.reportes]&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFE6CC;strokeColor=#D79B00;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="270" y="380" width="165" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Usuarios y Auth (VERDE PASTEL) -->
+        <mxCell id="pkg_usuarios_auth" value="&lt;b&gt;Usuarios y Auth&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #555;&quot;&gt;TenantModel Multi-Tenant&lt;br&gt;Permisos Modulares RBAC&lt;br&gt;[apps.usuarios]&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#D5E8D4;strokeColor=#82B366;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="470" y="380" width="165" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Seguridad e IA (AZUL PASTEL) -->
+        <mxCell id="pkg_seguridad_ia" value="&lt;b&gt;Streaming y&lt;br&gt;WebRTC Core&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #555;&quot;&gt;Señalización SDP / ICE&lt;br&gt;Ofertas Flash y Pausa Live&lt;br&gt;[apps.promociones]&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="670" y="380" width="165" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- Comunicaciones y Notificaciones (NARANJA CLARO / MELÓN) -->
+        <mxCell id="pkg_comunicaciones" value="&lt;b&gt;Comunicaciones y&lt;br&gt;notificaciones&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 9px; color: #555;&quot;&gt;&lt;b style=&quot;color: #7F4F00;&quot;&gt;CU23: Notificaciones del Sistema&lt;/b&gt;&lt;br&gt;WebSockets (Channels)&lt;br&gt;Push FCM + Gmail API&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FCE5CD;strokeColor=#E0B084;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="870" y="380" width="165" height="135" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- CAPA 3: PAQUETES DE LA CAPA ENTORNO                          -->
+        <!-- ============================================================ -->
+
+        <!-- REACT -->
+        <mxCell id="pkg_react" value="&lt;b style=&quot;font-size: 13px;&quot;&gt;REACT&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;Frontend Web SPA (Vite)&lt;br&gt;Consola Empresa &amp; Admin&lt;br&gt;Leaflet Maps &amp; Live Studio&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFF2CC;strokeColor=#D6B656;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="350" y="640" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- DJANGO -->
+        <mxCell id="pkg_django" value="&lt;b style=&quot;font-size: 13px;&quot;&gt;DJANGO&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;Django REST + Daphne ASGI&lt;br&gt;Pipeline de Estados y Permisos&lt;br&gt;Django Channels (WebSockets)&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFF2CC;strokeColor=#D6B656;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="550" y="640" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- PostgreSQL -->
+        <mxCell id="pkg_postgres" value="&lt;b style=&quot;font-size: 13px;&quot;&gt;PostgreSQL&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;PostgreSQL 16 + PostGIS 3.4&lt;br&gt;Motor Geoespacial ACID&lt;br&gt;Transacciones y Auditoría&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=85;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFF2CC;strokeColor=#D6B656;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="770" y="640" width="180" height="130" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- CAPA 4: PAQUETE DE LA CAPA DE SOFTWARE / DESPLIEGUE         -->
+        <!-- ============================================================ -->
+
+        <!-- RAILWAY / RENDER / DOCKER -->
+        <mxCell id="pkg_railway" value="&lt;b style=&quot;font-size: 13px;&quot;&gt;RAILWAY&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #444;&quot;&gt;[PaaS Deployment / Docker Container]&lt;br&gt;Host de Backend, Frontend y Base de Datos&lt;br&gt;Almacenamiento Cloudinary (Videos Lives)&lt;/span&gt;" style="shape=folder;fontStyle=0;tabWidth=95;tabHeight=24;tabPosition=left;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#FFF2CC;strokeColor=#D6B656;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="500" y="890" width="230" height="140" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- DEPENDENCIAS ENTRE CAPA ESPECÍFICA Y CAPA GENERAL            -->
+        <!-- ============================================================ -->
+
+        <!-- Paquete 1 -> Mantenimiento -->
+        <mxCell id="dep_p1_mantenimiento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#B85450;strokeWidth=1.5;" edge="1" parent="1" source="pkg_p1" target="pkg_mantenimiento">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Paquete 2 -> Reportes -->
+        <mxCell id="dep_p2_reportes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#D79B00;strokeWidth=1.5;" edge="1" parent="1" source="pkg_p2" target="pkg_reportes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Paquete 3 -> Usuarios y Auth -->
+        <mxCell id="dep_p3_usuarios" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#82B366;strokeWidth=1.5;" edge="1" parent="1" source="pkg_p3" target="pkg_usuarios_auth">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Paquete 4 -> Seguridad e IA -->
+        <mxCell id="dep_p4_seguridad" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#6C8EBF;strokeWidth=1.5;" edge="1" parent="1" source="pkg_p4" target="pkg_seguridad_ia">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Paquete 4 -> Mantenimiento (Línea transversal que cruza en la plantilla) -->
+        <mxCell id="dep_p4_mantenimiento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#6C8EBF;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="250" as="sourcePoint" />
+            <mxPoint x="150" y="380" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="740" y="300" />
+              <mxPoint x="150" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Paquete 5 -> Comunicaciones -->
+        <mxCell id="dep_p5_comunicaciones" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#E0B084;strokeWidth=1.5;" edge="1" parent="1" source="pkg_p5" target="pkg_comunicaciones">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- DEPENDENCIAS ENTRE CAPA GENERAL Y CAPA ENTORNO               -->
+        <!-- ============================================================ -->
+
+        <!-- Mantenimiento -> Django -->
+        <mxCell id="dep_mantenimiento_django" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#B85450;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="160" y="515" as="sourcePoint" />
+            <mxPoint x="570" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="160" y="560" />
+              <mxPoint x="570" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Reportes -> React -->
+        <mxCell id="dep_reportes_react" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#D79B00;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="345" y="515" as="sourcePoint" />
+            <mxPoint x="400" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="345" y="570" />
+              <mxPoint x="400" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Reportes -> Django -->
+        <mxCell id="dep_reportes_django" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#D79B00;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="365" y="515" as="sourcePoint" />
+            <mxPoint x="590" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="365" y="580" />
+              <mxPoint x="590" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Usuarios y Auth -> React y Django -->
+        <mxCell id="dep_usuarios_react" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#82B366;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="515" as="sourcePoint" />
+            <mxPoint x="430" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="530" y="550" />
+              <mxPoint x="430" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep_usuarios_django" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#82B366;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="515" as="sourcePoint" />
+            <mxPoint x="615" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="560" y="560" />
+              <mxPoint x="615" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Seguridad e IA -> Django -->
+        <mxCell id="dep_seguridad_django" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#6C8EBF;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="730" y="515" as="sourcePoint" />
+            <mxPoint x="645" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="730" y="570" />
+              <mxPoint x="645" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Comunicaciones -> Django y React -->
+        <mxCell id="dep_comunicaciones_django" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#E0B084;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="930" y="515" as="sourcePoint" />
+            <mxPoint x="680" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="930" y="580" />
+              <mxPoint x="680" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- DEPENDENCIAS DENTRO DE CAPA ENTORNO Y HACIA CAPA SOFTWARE    -->
+        <!-- ============================================================ -->
+
+        <!-- Django -> PostgreSQL -->
+        <mxCell id="dep_django_postgres" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#333333;strokeWidth=1.8;" edge="1" parent="1" source="pkg_django" target="pkg_postgres">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- React -> Railway -->
+        <mxCell id="dep_react_railway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#333333;strokeWidth=1.8;" edge="1" parent="1" source="pkg_react" target="pkg_railway">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="440" y="820" />
+              <mxPoint x="550" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Django -> Railway -->
+        <mxCell id="dep_django_railway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#333333;strokeWidth=1.8;" edge="1" parent="1" source="pkg_django" target="pkg_railway">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="820" />
+              <mxPoint x="620" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

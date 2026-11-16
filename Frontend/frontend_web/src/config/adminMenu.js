@@ -154,6 +154,13 @@ export const GRUPOS_ADMIN = [
         to: '/admin/referidos',
         implementado: true,
       },
+      {
+        cu: 'CU30',
+        titulo: 'Gestionar Lista de Deseos y Alertas de Precio',
+        to: '/admin/deseos',
+        implementado: true,
+        descripcion: 'Supervisión multi-tenant de productos guardados por compradores en lista de deseos y alertas de rebajas.',
+      },
     ],
   },
   {

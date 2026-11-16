@@ -16,6 +16,8 @@ const Home = lazy(() => import('./pages/Home'));
 const ProductListing = lazy(() => import('./pages/ProductListing'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
 const Cart = lazy(() => import('./pages/Cart'));
+const WishlistPage = lazy(() => import('./pages/WishlistPage'));
+const DemandaDeseosEmpresa = lazy(() => import('./pages/empresa/DemandaDeseosEmpresa'));
 const Checkout = lazy(() => import('./pages/Checkout'));
 const Auth = lazy(() => import('./pages/Auth'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
@@ -92,6 +94,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/productos" element={<ProductListing />} />
           <Route path="/productos/:id" element={<ProductDetail />} />
+          <Route path="/favoritos" element={<WishlistPage />} />
+          <Route path="/lista-deseos" element={<WishlistPage />} />
+          <Route path="/mi-empresa/deseos" element={<DemandaDeseosEmpresa />} />
+          <Route path="/admin/deseos" element={<DemandaDeseosEmpresa />} />
           <Route path="/carrito" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<Auth />} />

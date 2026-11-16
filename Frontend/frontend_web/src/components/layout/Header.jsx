@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Search, Menu as MenuIcon, X, Radio } from 'lucide-react';
+import { ShoppingCart, Search, Menu as MenuIcon, X, Radio, Heart } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 import { useCatalogo } from '../../context/CatalogoContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
@@ -19,6 +20,7 @@ export default function Header() {
   const [logoError, setLogoError] = useState(false);
   const [logoOscuroError, setLogoOscuroError] = useState(false);
   const { totalItems, pedirLogin } = useCart();
+  const { totalDeseados } = useWishlist();
   const { categorias } = useCatalogo();
   const { tema } = useTheme();
   const { usuario } = useAuth();
@@ -116,6 +118,19 @@ export default function Header() {
             <AccountMenu />
             {usuario && <NotificationBell />}
             <ThemeToggle />
+            <Link
+              to="/favoritos"
+              className="relative ml-1 flex items-center gap-1.5 rounded-full p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              aria-label="Lista de deseos"
+              title="Lista de deseos"
+            >
+              <Heart size={22} />
+              {usuario && esComprador(usuario) && totalDeseados > 0 && (
+                <span className="absolute -top-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-rose-500 text-[11px] font-bold text-white">
+                  {totalDeseados}
+                </span>
+              )}
+            </Link>
             <button
               type="button"
               onClick={() => {
@@ -150,6 +165,19 @@ export default function Header() {
             <AccountMenu />
             {usuario && <NotificationBell />}
             <ThemeToggle />
+            <Link
+              to="/favoritos"
+              className="relative ml-1 flex items-center gap-1.5 rounded-full p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              aria-label="Lista de deseos"
+              title="Lista de deseos"
+            >
+              <Heart size={22} />
+              {usuario && esComprador(usuario) && totalDeseados > 0 && (
+                <span className="absolute -top-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-rose-500 text-[11px] font-bold text-white">
+                  {totalDeseados}
+                </span>
+              )}
+            </Link>
             <button
               type="button"
               onClick={() => {
