@@ -392,7 +392,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                           ? Image.network(
                               item.imagen,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Container(
+                              errorBuilder: (context, error, stackTrace) => Container(
                                 color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
                                 child: const Icon(Icons.image_not_supported, size: 24, color: Colors.grey),
                               ),

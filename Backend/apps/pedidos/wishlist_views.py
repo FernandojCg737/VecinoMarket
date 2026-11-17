@@ -293,31 +293,49 @@ def verificar_y_notificar_alertas_precio(producto, nuevo_precio):
     nuevo_precio_dec = Decimal(str(nuevo_precio))
 
     for it in items:
-        # Verificar condición de baja de precio o precio meta
-        cumple_baja = nuevo_precio_dec < it.precio_al_guardar
-        cumple_meta = it.precio_objetivo is not None and nuevo_precio_dec <= it.precio_objetivo
+        # 1. Si el comprador fijó un precio meta:
+        #    SOLO le notificamos cuando el producto alcance o baje de ese monto deseado.
+        # 2. Si NO fijó meta:
+        #    Le notificamos ante cualquier baja con respecto al precio inicial guardado.
+        if it.precio_objetivo is not None:
+            if nuevo_precio_dec > it.precio_objetivo:
+                continue  # Aún no alcanza la meta fijada por el comprador
+            es_meta = True
+        else:
+            if nuevo_precio_dec >= it.precio_al_guardar:
+                continue  # No hubo baja respecto al precio inicial guardado
+            es_meta = False
 
-        if (cumple_baja or cumple_meta):
-            if it.ultima_alerta_enviada and it.ultima_alerta_enviada > limite_antispam:
-                continue
+        if it.ultima_alerta_enviada and it.ultima_alerta_enviada > limite_antispam:
+            continue
 
-            ahorro = it.precio_al_guardar - nuevo_precio_dec
+        ahorro = (it.precio_al_guardar - nuevo_precio_dec) if it.precio_al_guardar > nuevo_precio_dec else Decimal("0.00")
+
+        if es_meta:
+            titulo = f'¡Llegó a tu precio meta! {producto.nombre}'
+            mensaje = (
+                f'¡Buenas noticias! El producto "{producto.nombre}" alcanzó o superó tu precio deseado de '
+                f'Bs. {it.precio_objetivo:.2f}. Ahora está disponible en Bs. {nuevo_precio_dec:.2f} '
+                f'(Ahorro de Bs. {ahorro:.2f}). ¡Aprovecha antes de que se agote!'
+            )
+        else:
+            titulo = f'¡Bajó de precio! {producto.nombre}'
             mensaje = (
                 f'¡El producto "{producto.nombre}" bajó de precio! '
                 f'Ahora está en Bs. {nuevo_precio_dec:.2f} (Ahorro de Bs. {ahorro:.2f}).'
             )
 
-            Notificacion.objects.create(
-                usuario=it.comprador.usuario,
-                tipo='ALERTA_PRECIO',
-                titulo=f'¡Bajó de precio! {producto.nombre}',
-                mensaje=mensaje,
-                enlace=f'/productos/{producto.id}',
-            )
+        Notificacion.objects.create(
+            usuario=it.comprador.usuario,
+            tipo='ALERTA_PRECIO',
+            titulo=titulo,
+            mensaje=mensaje,
+            enlace=f'/productos/{producto.id}',
+        )
 
-            it.ultima_alerta_enviada = ahora
-            it.save(update_fields=['ultima_alerta_enviada'])
-            alertas_enviadas += 1
+        it.ultima_alerta_enviada = ahora
+        it.save(update_fields=['ultima_alerta_enviada'])
+        alertas_enviadas += 1
 
     return alertas_enviadas
 
