@@ -15,4 +15,13 @@ class Migration(migrations.Migration):
             name='user_agent',
             field=models.TextField(blank=True, default=''),
         ),
+        # `default=''` de Django solo aplica en Python: fn_auditoria_generica
+        # (core/0001) inserta sin user_agent y en una base nueva rompía todas
+        # las migraciones siguientes (NOT NULL). En producción el trigger se
+        # corrigió a mano (update_trigger_script.py); esto deja a cualquier
+        # base creada desde cero (docker-compose, tests) en el mismo estado.
+        migrations.RunSQL(
+            sql="ALTER TABLE auditoria_logauditoria ALTER COLUMN user_agent SET DEFAULT '';",
+            reverse_sql='ALTER TABLE auditoria_logauditoria ALTER COLUMN user_agent DROP DEFAULT;',
+        ),
     ]
