@@ -314,9 +314,9 @@ def _notificar_descuento_a_compradores(producto):
     from apps.usuarios.models import Usuario
     from apps.notificaciones.models import Notificacion
     try:
-        from apps.pedidos.wishlist_views import verificar_y_notificar_alertas_precio
+        from apps.pedidos.lista_deseos_views import verificar_alertas_precio
         precio_efectivo = producto.precio_descuento if producto.precio_descuento is not None else producto.precio
-        verificar_y_notificar_alertas_precio(producto, precio_efectivo)
+        verificar_alertas_precio(producto, precio_efectivo)
     except Exception as e:
         print(f"Error verificando alertas de precio: {e}")
     

@@ -23,13 +23,18 @@ from .devolucion_views import (
     AccionSolicitudView, CrearSolicitudView, DetalleSolicitudView, EmpresasDevolucionesView,
     EvidenciaSolicitudView, ListaSolicitudesView,
 )
-from .wishlist_views import (
-    DemandaEmpresaWishlistView,
-    WishlistActualizarAlertaView,
-    WishlistIdsView,
+from .lista_deseos_views import (
+    ListarDeseosView,
+    AlternarDeseoView,
+    ActualizarAlertaPrecioView,
+    MoverAlCarritoView,
+    DemandaEmpresaDeseosView,
     WishlistListaView,
-    WishlistMoverAlCarritoView,
+    WishlistIdsView,
     WishlistToggleView,
+    WishlistActualizarAlertaView,
+    WishlistMoverAlCarritoView,
+    DemandaEmpresaWishlistView,
 )
 
 urlpatterns = [
@@ -74,11 +79,17 @@ urlpatterns = [
     path('checkout/', IniciarCheckoutView.as_view(), name='iniciar-checkout'),
     path('checkout/<int:orden_compra_id>/confirmar/', ConfirmarPagoCheckoutView.as_view(), name='confirmar-checkout'),
 
-    # CU30: Lista de Deseos y Alertas de Precio
-    path('wishlist/', WishlistListaView.as_view(), name='wishlist-lista'),
+    # CU30: Lista de Deseos y Alertas de Precio (Vistas Oficiales en Español)
+    path('wishlist/', ListarDeseosView.as_view(), name='wishlist-lista'),
     path('wishlist/ids/', WishlistIdsView.as_view(), name='wishlist-ids'),
-    path('wishlist/toggle/', WishlistToggleView.as_view(), name='wishlist-toggle'),
-    path('wishlist/<int:pk>/alerta/', WishlistActualizarAlertaView.as_view(), name='wishlist-actualizar-alerta'),
-    path('wishlist/<int:pk>/mover-al-carrito/', WishlistMoverAlCarritoView.as_view(), name='wishlist-mover-al-carrito'),
-    path('wishlist/demanda-empresa/', DemandaEmpresaWishlistView.as_view(), name='wishlist-demanda-empresa'),
+    path('wishlist/toggle/', AlternarDeseoView.as_view(), name='wishlist-toggle'),
+    path('wishlist/<int:pk>/alerta/', ActualizarAlertaPrecioView.as_view(), name='wishlist-actualizar-alerta'),
+    path('wishlist/<int:pk>/mover-al-carrito/', MoverAlCarritoView.as_view(), name='wishlist-mover-al-carrito'),
+    path('wishlist/demanda-empresa/', DemandaEmpresaDeseosView.as_view(), name='wishlist-demanda-empresa'),
+
+    # Rutas alias en español
+    path('deseos/', ListarDeseosView.as_view(), name='deseos-lista'),
+    path('deseos/alternar/', AlternarDeseoView.as_view(), name='deseos-alternar'),
+    path('deseos/<int:pk>/alerta/', ActualizarAlertaPrecioView.as_view(), name='deseos-alerta'),
+    path('deseos/<int:pk>/mover-al-carrito/', MoverAlCarritoView.as_view(), name='deseos-mover-al-carrito'),
 ]
