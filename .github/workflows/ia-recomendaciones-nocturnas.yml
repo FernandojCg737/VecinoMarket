@@ -1,0 +1,76 @@
+# CU1 (RF44): corrida nocturna del motor de recomendación.
+#
+# El backend corre en Render free (sin Cron Jobs, y el servicio se duerme sin
+# tráfico), así que esta tarea la dispara GitHub Actions: despierta el backend
+# y llama a POST /api/ia/tareas/generar-recomendaciones/ con la clave
+# compartida IA_CRON_KEY (cabecera X-Cron-Key).
+#
+# Configuración (una sola vez):
+#   1. Generar una clave:  python -c "import secrets; print(secrets.token_urlsafe(32))"
+#   2. Render → servicio vecinomarket-backend → Environment: IA_CRON_KEY = <clave>
+#   3. GitHub → Settings → Secrets and variables → Actions:
+#        - Secret   IA_CRON_KEY = <la misma clave>
+#        - Variable BACKEND_URL (opcional; por defecto https://vecinomarket.onrender.com)
+#
+# Nota: GitHub solo ejecuta los "schedule" del workflow que está en la rama
+# por defecto (main). Hasta que se haga merge, se puede probar con
+# "Run workflow" (workflow_dispatch) desde la pestaña Actions.
+
+name: IA - recomendaciones nocturnas (CU1)
+
+on:
+  schedule:
+    - cron: '0 7 * * *' # 07:00 UTC = 03:00 en Bolivia (UTC-4, sin horario de verano)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ia-recomendaciones-nocturnas
+  cancel-in-progress: false
+
+jobs:
+  generar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      BACKEND_URL: ${{ vars.BACKEND_URL || 'https://vecinomarket.onrender.com' }}
+      IA_CRON_KEY: ${{ secrets.IA_CRON_KEY }}
+    steps:
+      - name: Verificar configuración
+        run: |
+          if [ -z "$IA_CRON_KEY" ]; then
+            echo "::error::Falta el secreto IA_CRON_KEY (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+      - name: Despertar el backend (Render free se duerme sin tráfico)
+        run: |
+          for i in $(seq 1 10); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "$BACKEND_URL/api/catalogo/categorias/" || true)
+            echo "Intento $i: HTTP $code"
+            if [ "$code" = "200" ]; then exit 0; fi
+            sleep 30
+          done
+          echo "::error::El backend no respondió en $BACKEND_URL"
+          exit 1
+
+      - name: Generar recomendaciones
+        run: |
+          curl -sS --fail-with-body --max-time 600 \
+            --retry 3 --retry-delay 30 --retry-all-errors \
+            -X POST "$BACKEND_URL/api/ia/tareas/generar-recomendaciones/" \
+            -H "X-Cron-Key: $IA_CRON_KEY" \
+            -H "User-Agent: github-actions-ia-nocturna" \
+            -o resumen.json
+          python3 - <<'PY'
+          import json, os
+          r = json.load(open('resumen.json'))
+          linea = (f"Vecinos: {r['vecinos']} · recomendaciones: {r['recomendaciones']} para "
+                   f"{r['compradores_con_recomendaciones']} compradores · matriz {r['compradores']}×{r['productos']} · "
+                   f"{r['segundos']} s · pico {r['pico_memoria_mb']} MB")
+          print(linea)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write('### Recomendaciones nocturnas (CU1)\n\n' + linea + '\n')
+          PY

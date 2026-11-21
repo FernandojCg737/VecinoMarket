@@ -7,6 +7,7 @@ from .views import (
     RegistrarEventoView,
     TendenciasConsumoView,
 )
+from .tareas import GenerarRecomendacionesTareaView
 
 urlpatterns = [
     # RF44–RF46: historial de navegación (VISTA / BUSQUEDA / CARRITO)
@@ -20,4 +21,7 @@ urlpatterns = [
 
     # CU3 (RF46): tendencias de consumo (empresa/empleado con ver_reportes; global para ADMIN)
     path('tendencias/', TendenciasConsumoView.as_view(), name='ia-tendencias'),
+
+    # Tarea nocturna (GitHub Actions, cabecera X-Cron-Key = IA_CRON_KEY)
+    path('tareas/generar-recomendaciones/', GenerarRecomendacionesTareaView.as_view(), name='ia-tarea-generar-recomendaciones'),
 ]

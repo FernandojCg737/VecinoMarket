@@ -227,6 +227,34 @@ def _decimal(valor):
     return Decimal(str(round(min(max(valor, 0.0), 1.0), 4)))
 
 
+def ejecutar(top_vecinos=TOP_VECINOS, por_comprador=POR_COMPRADOR):
+    """Corrida completa (entrenar + recomendar + guardar). La usan el comando
+    generar_recomendaciones y la tarea nocturna (POST /api/ia/tareas/...).
+    Devuelve un resumen con lo generado y el pico de memoria del cálculo."""
+    import tracemalloc
+
+    tracemalloc.start()  # numpy/scipy reportan sus buffers a tracemalloc
+    try:
+        modelo = entrenar(top_vecinos=top_vecinos)
+        recos = recomendar(modelo, por_comprador=por_comprador)
+        vecinos = guardar(modelo, recos)
+        _, pico = tracemalloc.get_traced_memory()
+    finally:
+        tracemalloc.stop()
+    n_compradores, n_productos = modelo.R.shape
+    return {
+        'compradores': n_compradores,
+        'productos': n_productos,
+        'interacciones': int(modelo.R.nnz),
+        'vecinos': int(vecinos),
+        'top_vecinos': top_vecinos,
+        'recomendaciones': sum(len(v) for v in recos.values()),
+        'compradores_con_recomendaciones': len(recos),
+        'segundos': round(modelo.segundos, 2),
+        'pico_memoria_mb': round(pico / 1024 / 1024, 1),
+    }
+
+
 @transaction.atomic
 def guardar(modelo, recomendaciones):
     """Reemplaza las tablas precalculadas (SimilitudProducto y

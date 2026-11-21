@@ -67,6 +67,11 @@ services:
       # Configurarlo en Environment del servicio; nunca en el frontend.
       - key: REPLICATE_API_TOKEN
         sync: false
+      # IA (CU1): clave de la tarea nocturna de recomendaciones; la misma que
+      # el secreto IA_CRON_KEY del workflow de GitHub Actions. Sin esto, el
+      # endpoint /api/ia/tareas/generar-recomendaciones/ responde 503.
+      - key: IA_CRON_KEY
+        sync: false
       # PayPal (CU01 + pagos): checkout y suscripciones
       - key: PAYPAL_CLIENT_ID
         sync: false

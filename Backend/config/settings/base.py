@@ -266,6 +266,13 @@ DEVELOPER_KEY = env('DEVELOPER_KEY', default='')
 REPLICATE_API_TOKEN = env('REPLICATE_API_TOKEN', default='')
 
 # ---------------------------------------------------------------------------
+# IA (CU1): clave compartida con el workflow nocturno de GitHub Actions que
+# llama a POST /api/ia/tareas/generar-recomendaciones/ (cabecera X-Cron-Key).
+# Sin valor por defecto: si no está configurada, el endpoint responde 503.
+# ---------------------------------------------------------------------------
+IA_CRON_KEY = env('IA_CRON_KEY', default='')
+
+# ---------------------------------------------------------------------------
 # PayPal (checkout real + tarjetas guardadas del comprador, ver apps/pagos).
 # Bolivia no tiene Stripe, pero sí está en la lista de países soportados por
 # PayPal (incluso cuentas de negocio) — verificado contra la documentación

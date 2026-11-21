@@ -119,6 +119,26 @@ Cada app corresponde a un paquete del documento de alcance del proyecto:
 - `comunicacion`, `promociones` — Paquete 4: comunicación, marketing y live commerce.
 - `reportes`, `auditoria` — Paquete 5: reportes, IA y auditoría.
 - `notificaciones`, `suscripciones`, `facturacion` — módulos transversales.
+- `ia` — CU1 recomendaciones (RF44), CU2 por ubicación (RF45) y CU3 tendencias (RF46), sin APIs externas.
+
+## IA (`apps/ia`)
+
+Endpoints en `/api/ia/`: `eventos/`, `recomendaciones/`, `productos/<id>/similares/`,
+`recomendaciones/cercanas/` y `tendencias/`. CU1/CU2 solo recomiendan productos
+de empresas con plan de IA y suscripción ACTIVA vigente; CU3 exige el permiso
+`ver_reportes` y ese mismo plan (el ADMIN ve la versión global).
+
+```bash
+python manage.py seed_interacciones --reset   # historial sintético para la demo (después de poblar_datos)
+python manage.py generar_recomendaciones      # recalcula vecinos (top-50) y top-20 por comprador
+python manage.py evaluar_recomendaciones      # precision@10 dejando las últimas compras como prueba
+```
+
+**Corrida nocturna:** `.github/workflows/ia-recomendaciones-nocturnas.yml` llama
+cada día a las 03:00 (Bolivia) a `POST /api/ia/tareas/generar-recomendaciones/`
+con la cabecera `X-Cron-Key`. Configurar la misma clave en Render
+(`IA_CRON_KEY`) y como secreto del repositorio en GitHub; sin ella, el
+endpoint responde 503.
 
 ## Siguientes pasos
 
