@@ -11,7 +11,7 @@ function adaptarCategoria(c) {
   return { id: String(c.id), nombre: c.nombre, icono: c.icono || 'Package' };
 }
 
-function adaptarProducto(p) {
+export function adaptarProducto(p) {
   return {
     id: p.id,
     nombre: p.nombre,

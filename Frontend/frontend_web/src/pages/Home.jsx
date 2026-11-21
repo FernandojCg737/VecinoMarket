@@ -4,6 +4,8 @@ import * as Icons from 'lucide-react';
 import { obtenerProductos } from '../api/catalogo';
 import { useCatalogo } from '../context/CatalogoContext';
 import ProductCard from '../components/product/ProductCard';
+import SeccionParaTi from '../components/ia/SeccionParaTi';
+import SeccionCercaDeTi from '../components/ia/SeccionCercaDeTi';
 
 const ICONOS_FLOTANTES = [
   { Icono: Icons.Camera, className: 'left-[6%] top-[18%] h-10 w-10 -rotate-6' },
@@ -109,6 +111,16 @@ export default function Home() {
           })}
         </div>
       </section>
+
+      {/* CU1 (RF44): "Para ti" (o "Lo más vendido" sin historial) */}
+      <div className="mx-auto max-w-7xl px-4 py-6">
+        <SeccionParaTi limite={5} verTodos compacta />
+      </div>
+
+      {/* CU2 (RF45): "Cerca de ti" */}
+      <div className="mx-auto max-w-7xl px-4 py-6">
+        <SeccionCercaDeTi />
+      </div>
 
       {/* Ofertas */}
       {ofertas.length > 0 && (

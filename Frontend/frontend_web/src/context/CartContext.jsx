@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, LogIn, UserPlus, X } from 'lucide-react';
 import API from '../api/axios';
+import { registrarEvento } from '../api/ia';
 import { useAuth } from './AuthContext';
 import { esComprador } from '../utils/roles';
 
@@ -108,6 +109,8 @@ export function CartProvider({ children }) {
         },
       ];
     });
+    // RF44: señal CARRITO (peso 3) para el recomendador. Silenciosa.
+    registrarEvento('CARRITO', { producto: producto.id });
     return true;
   }
 

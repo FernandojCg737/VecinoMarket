@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { User, LogOut, ChevronDown, Wallet, ClipboardList, Truck, MapPin, Receipt, Star, Tag, Users, MessageCircle, Radio, Bot, LayoutDashboard, Sparkles, UserCog, Building2, Boxes, CreditCard, Sliders, Lock } from 'lucide-react';
+import { User, LogOut, ChevronDown, Wallet, ClipboardList, Truck, MapPin, Receipt, Star, Tag, Users, MessageCircle, Radio, Bot, LayoutDashboard, Sparkles, TrendingUp, UserCog, Building2, Boxes, CreditCard, Sliders, Lock } from 'lucide-react';
 import Dropdown from '../ui/Dropdown';
 import AdminMenu from './AdminMenu';
 import { useAuth } from '../../context/AuthContext';
@@ -104,6 +104,27 @@ export default function AccountMenu() {
                   </Link>
                 )
               )}
+              {tienePermisoEmpleado(usuario, 'ver_reportes') && (
+                planPermiteIA(usuario) ? (
+                  <Link to="/mi-empresa/tendencias" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <TrendingUp size={16} /> Tendencias (IA)
+                  </Link>
+                ) : (
+                  <Link
+                    to="/mi-empresa/suscripcion"
+                    title="Requiere plan con Inteligencia Artificial (Básico o Premium) y suscripción activa."
+                    className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-400 dark:text-gray-500 group"
+                  >
+                    <span className="flex items-center gap-2">
+                      <TrendingUp size={16} className="text-gray-400" />
+                      <span>Tendencias</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500">
+                      <Lock size={10} /> IA
+                    </span>
+                  </Link>
+                )
+              )}
               {tienePermisoEmpleado(usuario, 'gestionar_chat') && (
                 planPermiteIA(usuario) ? (
                   <Link to="/mi-empresa/chatbot" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
@@ -147,6 +168,9 @@ export default function AccountMenu() {
               </Link>
               <Link to="/recomendados" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <Sparkles size={16} /> Recomendado para ti
+              </Link>
+              <Link to="/cerca-de-ti" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <MapPin size={16} /> Cerca de ti
               </Link>
               <Link to="/mis-direcciones" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <MapPin size={16} /> Mis direcciones

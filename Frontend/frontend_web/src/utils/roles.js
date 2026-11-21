@@ -43,7 +43,9 @@ export function planPermiteLive(usuario) {
 }
 
 // CU15 / CU20: Valida si el plan activo de la empresa incluye Inteligencia Artificial (ej. Básico y Premium)
+// y si la suscripción está ACTIVA y vigente (ia_vigente: misma regla que
+// PlanPermiteIA en el backend). Si el backend aún no manda ia_vigente, cae a incluye_ia.
 export function planPermiteIA(usuario) {
-  if (!usuario) return false;
-  return Boolean(usuario.empresa_plan?.incluye_ia);
+  if (!usuario || !usuario.empresa_plan) return false;
+  return Boolean(usuario.empresa_plan.ia_vigente ?? usuario.empresa_plan.incluye_ia);
 }

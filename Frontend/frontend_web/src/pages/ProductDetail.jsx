@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Minus, Plus, Store, Truck, ShieldCheck, Bot, MessageCircle } from 'lucide-react';
 import API from '../api/axios';
@@ -9,6 +9,9 @@ import { esComprador } from '../utils/roles';
 import StarRating from '../components/product/StarRating';
 import { useCart } from '../context/CartContext';
 import ChatbotWidget from '../components/chat/ChatbotWidget';
+import ProductosSimilares from '../components/ia/ProductosSimilares';
+import { registrarEvento } from '../api/ia';
+import { useLocationPref } from '../context/LocationContext';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -23,6 +26,8 @@ export default function ProductDetail() {
   const [mostrarChatbot, setMostrarChatbot] = useState(false);
   const [iniciandoChat, setIniciandoChat] = useState(false);
   const { agregarAlCarrito } = useCart();
+  const { departamento } = useLocationPref();
+  const vistaRegistrada = useRef(null);
 
   // Igual que en ProductListing: si cambia el id (navegar de un producto a
   // otro), se resetea el estado durante el render, no en el efecto.
@@ -40,6 +45,14 @@ export default function ProductDetail() {
       .catch(() => setNoEncontrado(true))
       .finally(() => setCargando(false));
   }, [id]);
+
+  // RF44: una VISTA por producto abierto (el ref evita el doble registro del
+  // StrictMode en desarrollo; el backend además descarta repetidas en 30 min).
+  useEffect(() => {
+    if (!producto || vistaRegistrada.current === producto.id) return;
+    vistaRegistrada.current = producto.id;
+    registrarEvento('VISTA', { producto: producto.id, departamento });
+  }, [producto, departamento]);
 
   async function handleContactarVendedor() {
     if (!usuario) {
@@ -236,6 +249,8 @@ export default function ProductDetail() {
           )}
         </div>
       </div>
+
+      <ProductosSimilares productoId={producto.id} />
     </div>
   );
 }

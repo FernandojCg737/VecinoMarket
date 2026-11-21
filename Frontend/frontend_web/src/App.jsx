@@ -77,6 +77,9 @@ const MiPerfilEmpresa = lazy(() => import('./pages/empresa/MiPerfilEmpresa'));
 const MiSuscripcion = lazy(() => import('./pages/empresa/MiSuscripcion'));
 const PlanesAdmin = lazy(() => import('./pages/admin/PlanesAdmin'));
 const Recomendaciones = lazy(() => import('./pages/Recomendaciones'));
+const CercaDeTi = lazy(() => import('./pages/CercaDeTi'));
+const Tendencias = lazy(() => import('./pages/empresa/Tendencias'));
+const TendenciasAdmin = lazy(() => import('./pages/admin/Tendencias'));
 const NotificacionesAdmin = lazy(() => import('./pages/admin/NotificacionesAdmin'));
 const EnConstruccion = lazy(() => import('./pages/admin/EnConstruccion'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -154,6 +157,9 @@ function App() {
           <Route path="/mi-empresa/suscripcion" element={<MiSuscripcion />} />
           <Route path="/admin/planes" element={<PlanesAdmin />} />
           <Route path="/recomendados" element={<Recomendaciones />} />
+          <Route path="/cerca-de-ti" element={<CercaDeTi />} />
+          <Route path="/mi-empresa/tendencias" element={<Tendencias />} />
+          <Route path="/admin/tendencias" element={<TendenciasAdmin />} />
           <Route path="/admin/notificaciones" element={<NotificacionesAdmin />} />
           {rutasAdminPendientes.map((item) => (
             <Route

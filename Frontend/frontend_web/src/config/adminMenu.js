@@ -194,6 +194,13 @@ export const GRUPOS_ADMIN = [
         descripcion: 'Motor de recomendación de productos personalizado según el historial de cada comprador (vista del comprador en "Recomendado para ti").',
       },
       {
+        cu: 'RF46',
+        titulo: 'Análisis de Tendencias de Consumo (IA)',
+        to: '/admin/tendencias',
+        implementado: true,
+        descripcion: 'Tendencias semanales por categoría y producto, pronóstico, horas pico, búsquedas sin resultados y demanda vs. oferta de toda la plataforma.',
+      },
+      {
         cu: 'CU22',
         titulo: 'Consultar Logs de Auditoría del Sistema',
         to: '/bitacora',

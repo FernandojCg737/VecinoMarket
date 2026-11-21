@@ -3,7 +3,10 @@ import { ShoppingCart } from 'lucide-react';
 import StarRating from './StarRating';
 import { useCart } from '../../context/CartContext';
 
-export default function ProductCard({ producto }) {
+// insignia (opcional): { texto, icono } — etiqueta arriba a la izquierda
+// ("Para ti", "0,6 km"). nota (opcional): línea chica bajo el nombre
+// ("★ 4,7", "Sucursal Centro"). Sin ellas la tarjeta se ve igual que siempre.
+export default function ProductCard({ producto, insignia = null, nota = '' }) {
   const { agregarAlCarrito } = useCart();
   const tieneDescuento = Boolean(producto.precio_descuento);
   const porcentaje = tieneDescuento
@@ -19,8 +22,14 @@ export default function ProductCard({ producto }) {
           loading="lazy"
           className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
+        {insignia && (
+          <span className="absolute top-2 left-2 flex items-center gap-1 rounded-full border border-brand-200 dark:border-brand-800 bg-brand-50/95 dark:bg-gray-900/90 px-2 py-0.5 text-[11px] font-semibold text-brand-700 dark:text-brand-300">
+            {insignia.icono && <insignia.icono size={11} />}
+            {insignia.texto}
+          </span>
+        )}
         {tieneDescuento && (
-          <span className="absolute top-2 left-2 rounded-full bg-brand-600 px-2 py-0.5 text-xs font-bold text-white">
+          <span className={`absolute top-2 ${insignia ? 'right-2' : 'left-2'} rounded-full bg-brand-600 px-2 py-0.5 text-xs font-bold text-white`}>
             -{porcentaje}%
           </span>
         )}
@@ -44,6 +53,7 @@ export default function ProductCard({ producto }) {
           {producto.nombre}
         </Link>
         <StarRating rating={producto.rating} resenas={producto.resenas} />
+        {nota && <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{nota}</p>}
 
         <div className="mt-auto flex items-end justify-between pt-2">
           <div>

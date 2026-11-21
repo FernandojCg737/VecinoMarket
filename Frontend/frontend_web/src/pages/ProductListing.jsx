@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Store, MessageCircle, Bot } from 'lucide-react';
 import API from '../api/axios';
 import { obtenerProductos } from '../api/catalogo';
+import { registrarEvento } from '../api/ia';
+import { useLocationPref } from '../context/LocationContext';
 import { useCatalogo } from '../context/CatalogoContext';
 import { useAuth } from '../context/AuthContext';
 import { esComprador } from '../utils/roles';
@@ -14,6 +16,8 @@ export default function ProductListing() {
   const { usuario } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { departamento } = useLocationPref();
+  const busquedaRegistrada = useRef('');
 
   const q = searchParams.get('q') || '';
   const categoriaId = searchParams.get('categoria') || '';
@@ -39,6 +43,15 @@ export default function ProductListing() {
       .catch(() => setResultados([]))
       .finally(() => setCargando(false));
   }, [q, categoriaId, empresaId]);
+
+  // RF46: cada búsqueda nueva (?q=) se registra una vez; el backend cuenta
+  // cuántos resultados tuvo (para "búsquedas sin resultados" de CU3).
+  useEffect(() => {
+    const termino = q.trim();
+    if (termino.length < 2 || busquedaRegistrada.current === termino) return;
+    busquedaRegistrada.current = termino;
+    registrarEvento('BUSQUEDA', { termino, departamento });
+  }, [q, departamento]);
 
   function cambiarCategoria(id) {
     const params = new URLSearchParams(searchParams);
