@@ -13,6 +13,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from apps.suscripciones.models import Plan, Suscripcion
+from apps.suscripciones.services import empresa_tiene_ia
 
 from .models import Comprador, Direccion, Empleado, Empresa, Permiso, RolBase, SolicitudEmpresa, Usuario
 
@@ -228,6 +229,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'codigo': p.codigo,
             'duracion_dias': p.duracion_dias,
             'incluye_ia': p.incluye_ia,
+            # CU20 + decisión 4: plan con IA Y suscripción ACTIVA vigente (lo
+            # mismo que exige PlanPermiteIA en el backend).
+            'ia_vigente': empresa_tiene_ia(empresa),
             'incluye_live_commerce': p.incluye_live_commerce,
             'limite_productos': p.limite_productos,
             'porcentaje_comision': str(p.porcentaje_comision),

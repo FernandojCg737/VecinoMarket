@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'apps.suscripciones',
     'apps.facturacion',
     'apps.pagos',
+    'apps.ia',
 ]
 
 MIDDLEWARE = [

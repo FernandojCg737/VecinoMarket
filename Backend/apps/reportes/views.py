@@ -169,41 +169,42 @@ class EliminarValoracionAdminView(APIView):
 
 
 
-class ListaMisRecomendacionesView(generics.ListAPIView):
-    """CU21: el comprador ve sus recomendaciones — si todavía no se
-    generaron (o quiere refrescarlas), llama primero a
-    GenerarMisRecomendacionesView."""
+def _recomendaciones_cu21(request, regenerar=False):
+    """CU21 -> delega al motor híbrido de apps/ia (decisión 1). Ya no se usa
+    fn_generar_recomendaciones (la función queda en la migración 0004, sin
+    llamarse). Se arman instancias sin guardar para conservar la forma de
+    RecomendacionIASerializer que consume el front actual."""
+    from apps.ia import recomendaciones
+
+    comprador = get_object_or_404(Comprador, usuario=request.user)
+    datos = recomendaciones.para_comprador(comprador, limite=10, regenerar=regenerar)
+    filas = [
+        RecomendacionIA(comprador=comprador, producto=producto, score=score, fecha_generada=datos['generado_en'])
+        for producto, score in datos['resultados']
+    ]
+    return RecomendacionIASerializer(filas, many=True, context={'request': request}).data
+
+
+class ListaMisRecomendacionesView(APIView):
+    """CU21: el comprador ve sus recomendaciones (las precalculadas por
+    generar_recomendaciones; si no tiene, se calculan en línea o se cae al
+    arranque en frío). Endpoint heredado: el front nuevo usa /api/ia/recomendaciones/."""
 
     permission_classes = [EsComprador]
-    serializer_class = RecomendacionIASerializer
-    pagination_class = None
 
-    def get_serializer_context(self):
-        return {**super().get_serializer_context(), 'request': self.request}
-
-    def get_queryset(self):
-        comprador = get_object_or_404(Comprador, usuario=self.request.user)
-        return RecomendacionIA.objects.filter(comprador=comprador).select_related('producto__empresa').prefetch_related('producto__imagenes').order_by('-score')
+    def get(self, request):
+        return Response(_recomendaciones_cu21(request))
 
 
 class GenerarMisRecomendacionesView(APIView):
-    """CU21: regenera las recomendaciones del comprador autenticado vía
-    fn_generar_recomendaciones (filtrado colaborativo + respaldo por
-    popularidad) y las devuelve."""
+    """CU21: recalcula en línea las recomendaciones del comprador (con los
+    vecinos de la última corrida nocturna) y las devuelve."""
 
     permission_classes = [EsComprador]
 
     def post(self, request):
-        comprador = get_object_or_404(Comprador, usuario=request.user)
-        with connection.cursor() as cursor:
-            cursor.execute('SELECT fn_generar_recomendaciones(%s, %s)', [comprador.id, 10])
-            total = cursor.fetchone()[0]
-
-        recomendaciones = RecomendacionIA.objects.filter(comprador=comprador).select_related(
-            'producto__empresa'
-        ).prefetch_related('producto__imagenes').order_by('-score')
-        serializer = RecomendacionIASerializer(recomendaciones, many=True, context={'request': request})
-        return Response({'total': total, 'recomendaciones': serializer.data})
+        recomendaciones = _recomendaciones_cu21(request, regenerar=True)
+        return Response({'total': len(recomendaciones), 'recomendaciones': recomendaciones})
 
 
 def _ventas_por_dia(empresa_id, dias=14):

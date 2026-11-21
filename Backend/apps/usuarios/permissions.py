@@ -94,18 +94,22 @@ class PlanPermiteLiveCommerce(BasePermission):
 
 
 class PlanPermiteIA(BasePermission):
-    """CU15 / CU20: Verifica que el plan activo de la empresa incluya funciones de Inteligencia Artificial (ej. Básico o Premium)."""
+    """CU15 / CU20: Verifica que el plan de la empresa incluya funciones de
+    Inteligencia Artificial (ej. Básico o Premium) y que tenga una
+    suscripción ACTIVA y vigente (ver apps/suscripciones/services.py)."""
 
-    message = 'Tu plan actual no incluye funciones de Inteligencia Artificial. Mejora tu plan para acceder a esta herramienta.'
+    message = (
+        'Tu plan actual no incluye funciones de Inteligencia Artificial o tu suscripción no está activa. '
+        'Mejora o renueva tu plan para acceder a esta herramienta.'
+    )
 
     def has_permission(self, request, view):
+        from apps.suscripciones.services import empresa_tiene_ia
+
         user = request.user
         if not (user and user.is_authenticated):
             return False
         if user.es_admin():
             return True
-        empresa = user.get_empresa()
-        if not empresa or not empresa.plan:
-            return False
-        return bool(empresa.plan.incluye_ia)
+        return empresa_tiene_ia(user.get_empresa())
 

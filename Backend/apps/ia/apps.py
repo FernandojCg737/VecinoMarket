@@ -1,0 +1,7 @@
+from django.apps import AppConfig
+
+
+class IaConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'apps.ia'
+    verbose_name = 'Inteligencia artificial (recomendaciones y tendencias)'

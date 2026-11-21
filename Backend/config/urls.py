@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/comunicacion/', include('apps.comunicacion.urls')),
     path('api/notificaciones/', include('apps.notificaciones.urls')),
     path('api/pagos/', include('apps.pagos.urls')),
+    path('api/ia/', include('apps.ia.urls')),
 ]
 
 # Servir archivos de media (fotos, comprobantes, QR) tanto en dev como prod si caen a disco local

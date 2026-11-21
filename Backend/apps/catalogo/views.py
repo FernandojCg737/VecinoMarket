@@ -43,6 +43,17 @@ def _productos_queryset():
     )
 
 
+def filtrar_por_texto(qs, q):
+    """Búsqueda ?q= del catálogo público. La reutiliza apps/ia al registrar
+    un evento BUSQUEDA, para contar los resultados con el mismo criterio
+    que ve el comprador."""
+    return qs.filter(
+        models.Q(nombre__icontains=q)
+        | models.Q(descripcion__icontains=q)
+        | models.Q(empresa__razon_social__icontains=q)
+    )
+
+
 class ListaCategoriasView(generics.ListAPIView):
     """Catálogo público de categorías (no dependen de una empresa en particular)."""
 
@@ -63,11 +74,7 @@ class ListaProductosView(generics.ListAPIView):
         qs = _productos_queryset().order_by('-creado_en')
         q = self.request.query_params.get('q')
         if q:
-            qs = qs.filter(
-                models.Q(nombre__icontains=q)
-                | models.Q(descripcion__icontains=q)
-                | models.Q(empresa__razon_social__icontains=q)
-            )
+            qs = filtrar_por_texto(qs, q)
         empresa_id = self.request.query_params.get('empresa')
         if empresa_id:
             qs = qs.filter(empresa_id=empresa_id)
