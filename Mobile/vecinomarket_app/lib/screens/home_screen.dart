@@ -10,8 +10,11 @@ import '../services/theme_service.dart';
 import 'auth_screen.dart';
 import 'cart_screen.dart';
 import 'live_commerce_screen.dart';
+import '../services/ia_service.dart';
 import '../widgets/notification_badge_button.dart';
-import 'product_detail_screen.dart';
+import '../widgets/secciones_ia.dart';
+import '../widgets/tarjeta_producto.dart';
+import 'buyer/buyer_nearby_screen.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -41,6 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _recargar() {
+    // RF46: registra la búsqueda (el backend cuenta sus resultados para CU3).
+    final termino = _busquedaCtrl.text.trim();
+    if (termino.length >= 2) IaService.registrarEvento('BUSQUEDA', termino: termino);
     setState(() {
       _productosFuture = _catalogo.obtenerProductos(
         q: _busquedaCtrl.text.trim(),
@@ -121,6 +127,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
+          // CU2 (RF45): "Cerca de ti"
+          IconButton(
+            icon: const Icon(Icons.location_on_outlined, size: 21),
+            padding: const EdgeInsets.all(6),
+            constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+            visualDensity: VisualDensity.compact,
+            tooltip: 'Cerca de ti',
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerNearbyScreen())),
+          ),
           IconButton(
             icon: Icon(esOscuro ? Icons.light_mode_outlined : Icons.dark_mode_outlined, size: 21),
             padding: const EdgeInsets.all(6),
@@ -231,19 +246,41 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }
                   final productos = snapshot.data ?? [];
-                  if (productos.isEmpty) {
-                    return const Center(child: Text('No hay productos con esos filtros.'));
-                  }
-                  return GridView.builder(
-                    padding: const EdgeInsets.all(12),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.62,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-                    itemCount: productos.length,
-                    itemBuilder: (context, i) => _TarjetaProducto(producto: productos[i]),
+                  // Los carruseles de IA solo en la portada "limpia" (sin búsqueda ni categoría).
+                  final portada = _busquedaCtrl.text.trim().isEmpty && _categoriaSeleccionada == null;
+                  return CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      if (portada) ...[
+                        const SliverToBoxAdapter(child: SeccionParaTi()),
+                        const SliverToBoxAdapter(child: SeccionCercaDeTi()),
+                        const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                            child: Text('Todos los productos', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
+                      if (productos.isEmpty)
+                        const SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(child: Text('No hay productos con esos filtros.')),
+                        )
+                      else
+                        SliverPadding(
+                          padding: const EdgeInsets.all(12),
+                          sliver: SliverGrid.builder(
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.62,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                            ),
+                            itemCount: productos.length,
+                            itemBuilder: (context, i) => TarjetaProducto(producto: productos[i]),
+                          ),
+                        ),
+                    ],
                   );
                 },
               ),
@@ -261,63 +298,6 @@ class _HomeScreenState extends State<HomeScreen> {
         label: Text(texto),
         selected: seleccionado,
         onSelected: (_) => onTap(),
-      ),
-    );
-  }
-}
-
-class _TarjetaProducto extends StatelessWidget {
-  const _TarjetaProducto({required this.producto});
-  final Producto producto;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailScreen(producto: producto))),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AspectRatio(
-              aspectRatio: 1,
-              child: producto.imagenUrl != null
-                  ? Image.network(producto.imagenUrl!, fit: BoxFit.cover)
-                  : Container(color: Colors.grey.shade200, child: const Icon(Icons.image_not_supported)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    producto.empresaNombre,
-                    style: const TextStyle(fontSize: 10, color: Colors.green, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                  ),
-                  Text(producto.nombre, style: const TextStyle(fontSize: 13), maxLines: 2, overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 4),
-                  if (producto.tieneDescuento)
-                    Row(
-                      children: [
-                        Text('Bs ${producto.precioDescuento}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.deepOrange)),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Text(
-                            'Bs ${producto.precio}',
-                            style: const TextStyle(fontSize: 11, color: Colors.grey, decoration: TextDecoration.lineThrough),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    )
-                  else
-                    Text('Bs ${producto.precio}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

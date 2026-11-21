@@ -8,6 +8,7 @@ import 'admin/bitacora_screen.dart';
 import 'buyer/buyer_addresses_screen.dart';
 import 'buyer/buyer_cards_screen.dart';
 import 'buyer/buyer_dashboard_screen.dart';
+import 'buyer/buyer_nearby_screen.dart';
 import 'buyer/buyer_recommendations_screen.dart';
 import 'buyer/buyer_reviews_screen.dart';
 import 'buyer/buyer_store_chatbot_screen.dart';
@@ -343,6 +344,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 titulo: 'Recomendado para ti',
                 subtitulo: 'Productos sugeridos con inteligencia artificial',
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerRecommendationsScreen())),
+              ),
+              _buildMenuOpcion(
+                icon: Icons.near_me_outlined,
+                titulo: 'Cerca de ti',
+                subtitulo: 'Emprendedores y productos cercanos en el mapa',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BuyerNearbyScreen())),
               ),
               _buildMenuOpcion(
                 icon: Icons.location_on_outlined,

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import '../models/producto.dart';
+import 'ia_service.dart';
 
 class ItemCarrito {
   ItemCarrito({required this.producto, this.cantidad = 1});
@@ -28,6 +29,8 @@ class CartService extends ChangeNotifier {
     } else {
       _items.add(ItemCarrito(producto: producto, cantidad: cantidad));
     }
+    // RF44: señal CARRITO (peso 3) para el recomendador. Silenciosa.
+    IaService.registrarEvento('CARRITO', productoId: producto.id);
     notifyListeners();
   }
 

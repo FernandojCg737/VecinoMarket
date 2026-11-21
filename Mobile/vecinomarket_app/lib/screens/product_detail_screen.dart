@@ -12,7 +12,9 @@ import 'cart_screen.dart';
 import 'chat_screen.dart';
 import 'company_catalog_screen.dart';
 import 'live_commerce_screen.dart';
+import '../services/ia_service.dart';
 import '../widgets/notification_badge_button.dart';
+import '../widgets/secciones_ia.dart';
 import 'profile_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -37,6 +39,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   static const Color _brandGold = Color(0xFFD97706);
   static const Color _brandGoldLight = Color(0xFFF59E0B);
   static const Color _greenStore = Color(0xFF10B981);
+
+  @override
+  void initState() {
+    super.initState();
+    // RF44: una VISTA por producto abierto (el backend descarta repetidas en 30 min).
+    IaService.registrarEvento('VISTA', productoId: widget.producto.id);
+  }
 
   @override
   void dispose() {
@@ -212,6 +221,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     ),
                                 ],
                               ),
+                            ),
+
+                            // CU1 (RF44): productos similares
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: isWide ? 20 : 4),
+                              child: SeccionSimilares(productoId: p.id),
                             ),
 
                             const SizedBox(height: 32),

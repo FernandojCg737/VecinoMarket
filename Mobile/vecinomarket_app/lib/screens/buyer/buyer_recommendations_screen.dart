@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../models/producto.dart';
-import '../../services/api_client.dart';
-import '../product_detail_screen.dart';
+import '../../models/recomendacion_ia.dart';
+import '../../services/ia_service.dart';
+import '../../widgets/secciones_ia.dart';
+import '../../widgets/tarjeta_producto.dart';
 
+/// CU1 (RF44): "Recomendado para ti" con el motor híbrido (/api/ia/recomendaciones/).
+/// Sin historial muestra los más vendidos de 30 días (arranque en frío).
 class BuyerRecommendationsScreen extends StatefulWidget {
   const BuyerRecommendationsScreen({super.key});
 
@@ -11,8 +14,8 @@ class BuyerRecommendationsScreen extends StatefulWidget {
 }
 
 class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen> {
-  final _api = ApiClient.instance;
-  List<dynamic> _recomendaciones = [];
+  final _ia = IaService();
+  ListaRecomendada? _datos;
   bool _cargando = true;
   bool _generando = false;
   String? _error;
@@ -29,10 +32,10 @@ class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen>
       _error = null;
     });
     try {
-      final res = await _api.get('reportes/mis-recomendaciones/');
+      final datos = await _ia.recomendaciones(limite: 20);
       if (mounted) {
         setState(() {
-          _recomendaciones = (res as List?) ?? [];
+          _datos = datos;
           _cargando = false;
         });
       }
@@ -46,31 +49,24 @@ class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen>
     }
   }
 
+  /// Recalcula en línea con la historia más reciente y vuelve a cargar.
   Future<void> _generarRecomendaciones() async {
     setState(() {
       _generando = true;
       _error = null;
     });
     try {
-      final res = await _api.post('reportes/mis-recomendaciones/generar/', {}, autenticado: true);
+      await _ia.regenerar();
+      await _cargarRecomendaciones();
       if (mounted) {
-        setState(() {
-          if (res is Map && res['recomendaciones'] != null) {
-            _recomendaciones = res['recomendaciones'] as List;
-          }
-          _generando = false;
-        });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('¡Recomendaciones generadas con éxito!')),
+          const SnackBar(content: Text('¡Recomendaciones actualizadas!')),
         );
       }
     } catch (_) {
-      if (mounted) {
-        setState(() {
-          _error = 'No se pudo generar nuevas recomendaciones.';
-          _generando = false;
-        });
-      }
+      if (mounted) setState(() => _error = 'No se pudo actualizar tus recomendaciones.');
+    } finally {
+      if (mounted) setState(() => _generando = false);
     }
   }
 
@@ -80,6 +76,7 @@ class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen>
     final bgColor = isDark ? const Color(0xFF111827) : Colors.white;
     final cardBg = isDark ? const Color(0xFF1F2937) : const Color(0xFFF9FAFB);
     final borderColor = isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB);
+    final datos = _datos;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -97,14 +94,14 @@ class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen>
             icon: _generando
                 ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
                 : const Icon(Icons.refresh),
-            tooltip: 'Regenerar con IA',
+            tooltip: 'Actualizar con IA',
             onPressed: _generando ? null : _generarRecomendaciones,
           ),
         ],
       ),
-      body: _cargando
+      body: _cargando && datos == null
           ? const Center(child: CircularProgressIndicator())
-          : _error != null
+          : _error != null && datos == null
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -122,30 +119,20 @@ class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen>
                   child: ListView(
                     padding: const EdgeInsets.all(16),
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'CU12 · Basado en tu historial de compras y preferencias.',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
-                              ),
-                            ),
-                          ),
-                          TextButton.icon(
-                            icon: _generando
-                                ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
-                                : const Icon(Icons.auto_awesome, size: 16),
-                            label: const Text('Regenerar IA'),
-                            onPressed: _generando ? null : _generarRecomendaciones,
-                          ),
-                        ],
+                      Text(
+                        'CU21 · RF44 · Según tu historial de navegación, tus compras y compradores con gustos parecidos.',
+                        style: TextStyle(fontSize: 13, color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280)),
                       ),
+                      if (_error != null) ...[
+                        const SizedBox(height: 8),
+                        Text(_error!, style: const TextStyle(color: Colors.redAccent, fontSize: 13)),
+                      ],
                       const SizedBox(height: 16),
-
-                      if (_recomendaciones.isEmpty)
+                      if (datos != null && datos.esPopular) ...[
+                        _AvisoArranqueEnFrio(cardBg: cardBg, borderColor: borderColor, isDark: isDark),
+                        const SizedBox(height: 16),
+                      ],
+                      if (datos == null || datos.productos.isEmpty)
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
                           alignment: Alignment.center,
@@ -162,22 +149,9 @@ class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen>
                               ),
                               const SizedBox(height: 16),
                               const Text(
-                                'Aún no tenemos recomendaciones personalizadas.',
+                                'Todavía no hay productos para recomendarte.',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                'Haz clic en "Regenerar IA" o realiza compras para que el motor inteligente aprenda tus gustos.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 13, color: Colors.grey),
-                              ),
-                              const SizedBox(height: 16),
-                              ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white),
-                                icon: const Icon(Icons.auto_awesome, size: 16),
-                                label: const Text('Generar ahora'),
-                                onPressed: _generarRecomendaciones,
                               ),
                             ],
                           ),
@@ -188,112 +162,71 @@ class _BuyerRecommendationsScreenState extends State<BuyerRecommendationsScreen>
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            childAspectRatio: 0.68,
+                            childAspectRatio: 0.6,
                             crossAxisSpacing: 12,
                             mainAxisSpacing: 12,
                           ),
-                          itemCount: _recomendaciones.length,
+                          itemCount: datos.productos.length,
                           itemBuilder: (context, i) {
-                            final item = _recomendaciones[i] as Map<String, dynamic>;
-                            final isDetalleMap = item['producto_detalle'] is Map<String, dynamic>;
-                            final isProductoMap = item['producto'] is Map<String, dynamic>;
-                            
-                            final Map<String, dynamic> productoData = isDetalleMap 
-                                ? item['producto_detalle'] 
-                                : (isProductoMap ? item['producto'] : <String, dynamic>{});
-
-                            final nombre = productoData['nombre'] ?? item['producto_nombre'] ?? 'Producto Recomendado';
-                            final precio = productoData['precio'] ?? item['producto_precio'] ?? item['precio'] ?? 0;
-                            final imagenUrl = productoData['imagen_url'] ?? item['imagen_url'];
-                            final motivo = item['motivo'] ?? item['razon'] ?? 'Sugerido por tus compras';
-
-                            return InkWell(
-                              onTap: () {
-                                final Map<String, dynamic> jsonForProd = productoData.isNotEmpty 
-                                    ? productoData 
-                                    : {
-                                        'id': item['producto'] is int ? item['producto'] : (item['id'] ?? 0),
-                                        'nombre': nombre,
-                                        'precio': precio,
-                                        'empresa': {'razon_social': item['empresa_nombre'] ?? ''},
-                                        'imagenes': imagenUrl != null ? [{'url': imagenUrl}] : [],
-                                      };
-                                final prod = Producto.fromJson(jsonForProd);
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailScreen(producto: prod)));
-                              },
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: cardBg,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: borderColor),
-                                ),
-                                clipBehavior: Clip.antiAlias,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      flex: 5,
-                                      child: Container(
-                                        color: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
-                                        width: double.infinity,
-                                        child: imagenUrl != null && imagenUrl.toString().isNotEmpty
-                                            ? Image.network(
-                                                imagenUrl.toString(),
-                                                fit: BoxFit.contain,
-                                                errorBuilder: (context, error, stackTrace) =>
-                                                    const Icon(Icons.inventory_2_outlined, size: 36, color: Colors.grey),
-                                              )
-                                            : const Icon(Icons.inventory_2_outlined, size: 36, color: Colors.grey),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              nombre,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                            ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Bs $precio',
-                                                  style: const TextStyle(
-                                                    color: Color(0xFFD97706),
-                                                    fontWeight: FontWeight.w800,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                Text(
-                                                  motivo,
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: const TextStyle(fontSize: 10, color: Colors.grey),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            final r = datos.productos[i];
+                            return TarjetaProducto(
+                              producto: r.producto,
+                              insignia: datos.esPopular ? null : 'Para ti',
+                              iconoInsignia: Icons.auto_awesome,
+                              nota: notaReputacion(r),
                             );
                           },
                         ),
                     ],
                   ),
                 ),
+    );
+  }
+}
+
+class _AvisoArranqueEnFrio extends StatelessWidget {
+  const _AvisoArranqueEnFrio({required this.cardBg, required this.borderColor, required this.isDark});
+  final Color cardBg;
+  final Color borderColor;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.trending_up, size: 20, color: Colors.grey),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Aún estamos conociendo tus gustos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                SizedBox(height: 2),
+                Text(
+                  'Te mostramos lo más vendido de los últimos 30 días. A medida que navegues y compres, esta lista se adapta a ti.',
+                  style: TextStyle(fontSize: 12.5, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

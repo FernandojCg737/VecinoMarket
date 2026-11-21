@@ -54,6 +54,10 @@ dependencies:
   webview_flutter: ^4.14.1
   geolocator: ^14.0.2
   image_picker: ^1.1.2
+  # Mapa de "Cerca de ti" (CU2/RF45): OpenStreetMap sin API key, los mismos
+  # tiles que el Leaflet del frontend web.
+  flutter_map: ^8.3.2
+  latlong2: ^0.10.1
 
 dev_dependencies:
   flutter_test:
