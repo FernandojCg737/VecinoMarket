@@ -7,6 +7,7 @@ import { useCatalogo } from '../context/CatalogoContext';
 import { useAuth } from '../context/AuthContext';
 import { esComprador } from '../utils/roles';
 import StarRating from '../components/product/StarRating';
+import WishlistButton from '../components/product/WishlistButton';
 import { useCart } from '../context/CartContext';
 import ChatbotWidget from '../components/chat/ChatbotWidget';
 import ProductosSimilares from '../components/ia/ProductosSimilares';
@@ -174,6 +175,12 @@ export default function ProductDetail() {
             >
               <ShoppingCart size={18} /> Agregar al carrito
             </button>
+
+            <WishlistButton
+              producto={producto}
+              className="h-12 w-12 border border-gray-200 dark:border-gray-700"
+              size={22}
+            />
 
             {producto.empresaId && (
               <button

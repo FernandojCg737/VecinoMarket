@@ -1,0 +1,364 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" agent="Antigravity" version="21.6.8" type="device">
+  <diagram id="diag_p1" name="P1 - Usuarios y Seguridad">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="980" pageHeight="680" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="box_p1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="60" width="880" height="530" />
+        </mxCell>
+        <mxCell id="tab_p1" value="&lt;b&gt;cmp Subsistemas - Usuarios y Seguridad&lt;/b&gt;" style="shape=folder;tabWidth=240;tabHeight=25;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontStyle=1;fontColor=#000000;align=left;spacingLeft=10;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="35" width="339" height="26" />
+        </mxCell>
+        <mxCell id="ui_p1_0" value="usuarios.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="105" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p1_0" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="164" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p1_0" value="usuarios.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="98" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p1_0_0" value="Usuario.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="73" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p1_0_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p1_0" target="sql_p1_0_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p1_0_1" value="Persona.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="192" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p1_0_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p1_0" target="sql_p1_0_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p1_1" value="roles.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="400" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p1_1" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="459" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p1_1" value="roles.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="393" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p1_1_0" value="Rol.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="368" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p1_1_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p1_1" target="sql_p1_1_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p1_1_1" value="Permiso.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="487" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p1_1_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p1_1" target="sql_p1_1_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p1_2" value="empleados.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="675" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p1_2" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="734" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p1_2" value="empleados.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="668" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p1_2_0" value="Empleado.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="643" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p1_2_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p1_2" target="sql_p1_2_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p1_2_1" value="EmpleadoPermiso.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="762" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p1_2_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p1_2" target="sql_p1_2_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_p2" name="P2 - Catálogo y Productos">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="980" pageHeight="680" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="box_p2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="60" width="880" height="530" />
+        </mxCell>
+        <mxCell id="tab_p2" value="&lt;b&gt;cmp Subsistemas - Catálogo y Productos&lt;/b&gt;" style="shape=folder;tabWidth=240;tabHeight=25;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontStyle=1;fontColor=#000000;align=left;spacingLeft=10;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="35" width="339" height="26" />
+        </mxCell>
+        <mxCell id="ui_p2_0" value="categorias.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="105" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p2_0" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="164" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p2_0" value="categorias.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="98" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p2_0_0" value="Categoria.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="118" y="400" width="135" height="60" />
+        </mxCell>
+        <mxCell id="dash_p2_0_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p2_0" target="sql_p2_0_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p2_1" value="productos.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="400" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p2_1" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="459" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p2_1" value="productos.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="393" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p2_1_0" value="Producto.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="368" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p2_1_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p2_1" target="sql_p2_1_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p2_1_1" value="ImagenProducto.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="487" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p2_1_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p2_1" target="sql_p2_1_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p2_2" value="catalogo_vitrina.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="675" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p2_2" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="734" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p2_2" value="vitrina.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="668" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p2_2_0" value="VitrinaConfig.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="688" y="400" width="135" height="60" />
+        </mxCell>
+        <mxCell id="dash_p2_2_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p2_2" target="sql_p2_2_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_p3" name="P3 - Inventario, Pedidos y Ventas">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="980" pageHeight="680" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="box_p3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="60" width="880" height="530" />
+        </mxCell>
+        <mxCell id="tab_p3" value="&lt;b&gt;cmp Subsistemas - Comercial y Transaccional&lt;/b&gt;" style="shape=folder;tabWidth=240;tabHeight=25;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontStyle=1;fontColor=#000000;align=left;spacingLeft=10;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="35" width="379" height="26" />
+        </mxCell>
+        <mxCell id="ui_p3_0" value="carrito.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="105" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p3_0" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="164" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p3_0" value="carrito.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="98" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p3_0_0" value="Carrito.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="118" y="400" width="135" height="60" />
+        </mxCell>
+        <mxCell id="dash_p3_0_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p3_0" target="sql_p3_0_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p3_1" value="pedidos_ventas.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="400" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p3_1" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="459" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p3_1" value="pedidos.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="393" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p3_1_0" value="Pedido.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="368" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p3_1_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p3_1" target="sql_p3_1_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p3_1_1" value="Pago.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="487" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p3_1_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p3_1" target="sql_p3_1_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p3_2" value="entregas.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="675" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p3_2" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="734" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p3_2" value="entregas.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="668" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p3_2_0" value="Entrega.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="643" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p3_2_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p3_2" target="sql_p3_2_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p3_2_1" value="Sucursal.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="762" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p3_2_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p3_2" target="sql_p3_2_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_p4" name="P4 - Comunicación y Live Commerce">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="980" pageHeight="680" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="box_p4" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="60" width="880" height="530" />
+        </mxCell>
+        <mxCell id="tab_p4" value="&lt;b&gt;cmp Subsistemas - Comunicación, Marketing y Live Commerce&lt;/b&gt;" style="shape=folder;tabWidth=240;tabHeight=25;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontStyle=1;fontColor=#000000;align=left;spacingLeft=10;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="35" width="491" height="26" />
+        </mxCell>
+        <mxCell id="ui_p4_0" value="promociones.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="105" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p4_0" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="164" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p4_0" value="promociones.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="98" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p4_0_0" value="Promocion.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="73" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p4_0_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p4_0" target="sql_p4_0_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p4_0_1" value="PromocionProducto.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="192" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p4_0_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p4_0" target="sql_p4_0_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p4_1" value="live_commerce.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="400" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p4_1" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="459" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p4_1" value="live_commerce.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="393" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p4_1_0" value="LiveSesion.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="368" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p4_1_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p4_1" target="sql_p4_1_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p4_1_1" value="LiveProducto.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="487" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p4_1_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p4_1" target="sql_p4_1_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p4_2" value="chatbot.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="675" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p4_2" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="734" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p4_2" value="chatbot.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="668" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p4_2_0" value="ChatbotFAQ.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="643" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p4_2_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p4_2" target="sql_p4_2_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p4_2_1" value="ChatMensaje.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="762" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p4_2_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p4_2" target="sql_p4_2_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_p5" name="P5 - Reportes, IA y Auditoría">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="980" pageHeight="680" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="box_p5" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="60" width="880" height="530" />
+        </mxCell>
+        <mxCell id="tab_p5" value="&lt;b&gt;cmp Subsistemas - Reportes, IA y Auditoría&lt;/b&gt;" style="shape=folder;tabWidth=240;tabHeight=25;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontStyle=1;fontColor=#000000;align=left;spacingLeft=10;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="35" width="371" height="26" />
+        </mxCell>
+        <mxCell id="ui_p5_0" value="reportes.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="105" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p5_0" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="164" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p5_0" value="reportes.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="98" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p5_0_0" value="Empresa.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="73" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p5_0_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p5_0" target="sql_p5_0_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p5_0_1" value="Venta.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="192" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p5_0_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p5_0" target="sql_p5_0_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p5_1" value="notificaciones.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="400" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p5_1" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="459" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p5_1" value="notificaciones.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="393" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p5_1_0" value="Notificacion.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="413" y="400" width="135" height="60" />
+        </mxCell>
+        <mxCell id="dash_p5_1_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p5_1" target="sql_p5_1_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="ui_p5_2" value="auditoria.ui" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="675" y="100" width="160" height="75" />
+        </mxCell>
+        <mxCell id="conn_p5_2" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2042%2065%22%20width%3D%2242%22%20height%3D%2265%22%3E%0A%20%20%3C%21--%201.%20Upper%20stem%20connects%20directly%20into%20the%20top%20of%20the%20Socket%20Arch%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%220%22%20x2%3D%2221%22%20y2%3D%2224.5%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%202.%20Socket%20Arch%20/%20Dome%20%28%E2%88%A9%29%20embracing%20the%20ball%20from%20above%20--%3E%0A%20%20%3Cpath%20d%3D%22M%208.5%2C38.5%20A%2012.5%2C12.5%200%200%2C1%2033.5%2C38.5%22%20fill%3D%22none%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20/%3E%0A%20%20%0A%20%20%3C%21--%203.%20Ball%3A%20Provided%20Interface%2C%20cleanly%20separated%20inside%20the%20arch%2C%20warm%20yellow%20fill%20--%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2237%22%20r%3D%227.5%22%20fill%3D%22%23fce4b8%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%20%20%0A%20%20%3C%21--%204.%20Lower%20stem%20connects%20from%20bottom%20edge%20of%20ball%20down%20into%20Controller%20--%3E%0A%20%20%3Cline%20x1%3D%2221%22%20y1%3D%2244.5%22%20x2%3D%2221%22%20y2%3D%2265%22%20stroke%3D%22%234a5568%22%20stroke-width%3D%221.8%22%20/%3E%0A%3C/svg%3E;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="734" y="175" width="42" height="65" />
+        </mxCell>
+        <mxCell id="ctrl_p5_2" value="auditoria.controller" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="668" y="240" width="175" height="80" />
+        </mxCell>
+        <mxCell id="sql_p5_2_0" value="LogAuditoria.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="643" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p5_2_0" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p5_2" target="sql_p5_2_0">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sql_p5_2_1" value="Bitacora.sql" style="shape=module;align=center;spacingLeft=0;html=1;whiteSpace=wrap;rounded=1;arcSize=6;shadow=1;fillColor=#fae8e6;gradientColor=#ea9e99;strokeColor=#333333;strokeWidth=1.1;fontFamily=Segoe UI,Helvetica,Arial;fontSize=11.5;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="762" y="400" width="105" height="60" />
+        </mxCell>
+        <mxCell id="dash_p5_2_1" value="" style="dashed=1;dashPattern=5 3;endArrow=open;endSize=9;strokeColor=#4a5568;strokeWidth=1.3;html=1;rounded=0;" edge="1" parent="1" source="ctrl_p5_2" target="sql_p5_2_1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

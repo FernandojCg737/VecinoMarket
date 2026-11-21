@@ -8,6 +8,7 @@ __pycache__
 venv
 env
 media
+evidencias_privadas
 staticfiles
 db.sqlite3
 *.log

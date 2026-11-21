@@ -17,7 +17,9 @@ from apps.usuarios.models import Empresa
 from apps.usuarios.permissions import EsAdmin, TienePermisoEmpleado
 
 from .models import Factura, MetodoPago, Referido
-from .serializers import FacturaSerializer, MetodoPagoAdminSerializer, MetodoPagoEmpresaSerializer, ReferidoSerializer
+from .serializers import (
+    FacturaSerializer, MetodoPagoAdminSerializer, MetodoPagoEmpresaSerializer, ReferidoSerializer, dias_premio_referido,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -367,16 +369,56 @@ class ExportarMiFacturaView(APIView):
         )
 
 
+class ListaResumenReferidosAdminView(APIView):
+    """CU27: el SuperAdmin ve los tenants (empresas) con cuántos referidos
+    exitosos tiene cada uno y cuántos días de premio ganó, antes de entrar
+    al detalle de uno."""
+
+    permission_classes = [EsAdmin]
+
+    def get(self, request):
+        empresas = Empresa.objects.all().order_by('razon_social')
+        q = request.query_params.get('q', '').strip()
+        if q:
+            empresas = empresas.filter(razon_social__icontains=q)
+
+        resumen = {}
+        for r in Referido.objects.only('empresa_referente_id', 'estado', 'beneficio_aplicado'):
+            fila = resumen.setdefault(r.empresa_referente_id, {'confirmados': 0, 'pendientes': 0, 'dias': 0})
+            if r.estado == Referido.Estado.CONFIRMADO:
+                fila['confirmados'] += 1
+                fila['dias'] += dias_premio_referido(r.beneficio_aplicado)
+            else:
+                fila['pendientes'] += 1
+
+        resultados = []
+        for e in empresas:
+            fila = resumen.get(e.id, {'confirmados': 0, 'pendientes': 0, 'dias': 0})
+            resultados.append({
+                'id': e.id, 'razon_social': e.razon_social, 'logo_url': e.logo_url, 'ciudad': e.ciudad,
+                'referidos_confirmados': fila['confirmados'], 'referidos_pendientes': fila['pendientes'],
+                'dias_ganados': fila['dias'],
+            })
+        resultados.sort(key=lambda x: (-x['referidos_confirmados'], x['razon_social'].lower()))
+        return Response(resultados)
+
+
 class ListaReferidosAdminView(generics.ListAPIView):
-    """CU27: el SuperAdmin ve todos los referidos (qué empresa invitó a
-    cuál, y en qué estado va)."""
+    """CU27: el SuperAdmin ve los referidos (qué empresa invitó a cuál, y en
+    qué estado va) — ?empresa=<id> para los de un tenant que refirió,
+    ?estado=CONFIRMADO para solo los exitosos."""
 
     permission_classes = [EsAdmin]
     serializer_class = ReferidoSerializer
     pagination_class = None
 
     def get_queryset(self):
-        qs = Referido.objects.select_related('empresa_referente', 'empresa_referida').order_by('-creado_en')
+        qs = Referido.objects.select_related(
+            'empresa_referente', 'empresa_referida__plan'
+        ).order_by('-actualizado_en')
+        empresa_id = self.request.query_params.get('empresa')
+        if empresa_id:
+            qs = qs.filter(empresa_referente_id=empresa_id)
         estado = self.request.query_params.get('estado')
         if estado:
             qs = qs.filter(estado=estado)
@@ -405,8 +447,8 @@ class ConfirmarReferidoAdminView(APIView):
 
 class ListaMisReferidosView(generics.ListAPIView):
     """CU27: la empresa (dueño o empleado con permiso 'ver_reportes') ve
-    las empresas que ha referido y en qué estado va cada una — de solo
-    lectura, la confirmación es del SuperAdmin."""
+    las empresas que ha referido, en qué estado va cada una y el premio
+    recibido — de solo lectura, la confirmación es automática."""
 
     permission_classes = [TienePermisoEmpleado]
     permiso_requerido = 'ver_reportes'
@@ -416,7 +458,7 @@ class ListaMisReferidosView(generics.ListAPIView):
     def get_queryset(self):
         return Referido.objects.filter(
             empresa_referente=self.request.user.get_empresa()
-        ).select_related('empresa_referente', 'empresa_referida').order_by('-creado_en')
+        ).select_related('empresa_referente', 'empresa_referida__plan').order_by('-actualizado_en')
 
 
 class MetodosPagoPublicosEmpresaView(APIView):

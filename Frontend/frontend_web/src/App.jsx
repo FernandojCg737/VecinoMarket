@@ -16,6 +16,8 @@ const Home = lazy(() => import('./pages/Home'));
 const ProductListing = lazy(() => import('./pages/ProductListing'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
 const Cart = lazy(() => import('./pages/Cart'));
+const WishlistPage = lazy(() => import('./pages/WishlistPage'));
+const DemandaDeseosEmpresa = lazy(() => import('./pages/empresa/DemandaDeseosEmpresa'));
 const Checkout = lazy(() => import('./pages/Checkout'));
 const Auth = lazy(() => import('./pages/Auth'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
@@ -41,6 +43,7 @@ const MisDirecciones = lazy(() => import('./pages/MisDirecciones'));
 const Facturacion = lazy(() => import('./pages/admin/Facturacion'));
 const MisFacturas = lazy(() => import('./pages/empresa/MisFacturas'));
 const MisCompras = lazy(() => import('./pages/MisCompras'));
+const Reclamos = lazy(() => import('./pages/Reclamos'));
 const DashboardComprador = lazy(() => import('./pages/DashboardComprador'));
 const Reputacion = lazy(() => import('./pages/admin/Reputacion'));
 const MiReputacion = lazy(() => import('./pages/empresa/MiReputacion'));
@@ -94,6 +97,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/productos" element={<ProductListing />} />
           <Route path="/productos/:id" element={<ProductDetail />} />
+          <Route path="/favoritos" element={<WishlistPage />} />
+          <Route path="/lista-deseos" element={<WishlistPage />} />
+          <Route path="/mi-empresa/deseos" element={<DemandaDeseosEmpresa />} />
+          <Route path="/admin/deseos" element={<DemandaDeseosEmpresa />} />
           <Route path="/carrito" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<Auth />} />
@@ -121,6 +128,11 @@ function App() {
           <Route path="/admin/facturacion" element={<Facturacion />} />
           <Route path="/mi-empresa/facturas" element={<MisFacturas />} />
           <Route path="/mis-compras" element={<MisCompras />} />
+          <Route path="/mis-reclamos" element={<Reclamos comprador />} />
+          <Route path="/mis-reclamos/nuevo/:pedido" element={<Reclamos comprador nuevo />} />
+          <Route path="/mis-reclamos/:id" element={<Reclamos comprador />} />
+          <Route path="/reclamos" element={<Reclamos />} />
+          <Route path="/reclamos/:id" element={<Reclamos />} />
           <Route path="/mi-cuenta" element={<DashboardComprador />} />
           <Route path="/admin/reputacion" element={<Reputacion />} />
           <Route path="/mi-empresa/reputacion" element={<MiReputacion />} />

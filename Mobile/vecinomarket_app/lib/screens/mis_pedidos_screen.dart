@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/pedido.dart';
 import '../services/api_client.dart';
-import '../services/auth_service.dart';
 import '../services/pedido_service.dart';
+import 'reclamos_screen.dart';
 
 const _nombresEstado = {
   'PENDIENTE': 'Verificando pago (QR)',
@@ -13,11 +12,12 @@ const _nombresEstado = {
   'ENVIADO': 'Enviado',
   'ENTREGADO': 'Entregado',
   'CANCELADO': 'Cancelado',
+  'DEVUELTO': 'Devuelto',
 };
 
 String _formatearFechaBolivia(DateTime fecha) {
   final bt = fecha.toUtc().subtract(const Duration(hours: 4));
-  final pad = (int n) => n.toString().padLeft(2, '0');
+  String pad(int n) => n.toString().padLeft(2, '0');
   return '${bt.year}-${pad(bt.month)}-${pad(bt.day)} ${pad(bt.hour)}:${pad(bt.minute)}';
 }
 
@@ -59,15 +59,20 @@ class _MisPedidosScreenState extends State<MisPedidosScreen> {
     _pedidosFuture = _pedidoService.obtenerMisCompras();
   }
 
+  Future<void> _recargar() async {
+    final pedidos = _pedidoService.obtenerMisCompras();
+    setState(() {
+      _pedidosFuture = pedidos;
+    });
+    await pedidos.then<void>((_) {}, onError: (Object _) {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Mis pedidos')),
       body: RefreshIndicator(
-        onRefresh: () async {
-          setState(() => _pedidosFuture = _pedidoService.obtenerMisCompras());
-          await _pedidosFuture;
-        },
+        onRefresh: _recargar,
         child: FutureBuilder<List<Pedido>>(
           future: _pedidosFuture,
           builder: (context, snapshot) {
@@ -76,6 +81,7 @@ class _MisPedidosScreenState extends State<MisPedidosScreen> {
             }
             if (snapshot.hasError) {
               return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 children: const [
                   SizedBox(height: 80),
                   Center(child: Text('No se pudo cargar tu historial de pedidos.')),
@@ -89,11 +95,13 @@ class _MisPedidosScreenState extends State<MisPedidosScreen> {
                       'EN_PREPARACION',
                       'ENVIADO',
                       'ENTREGADO',
+                      'DEVUELTO',
                       'PENDIENTE',
                     }.contains(p.estado))
                 .toList();
             if (pedidos.isEmpty) {
               return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 children: const [
                   SizedBox(height: 80),
                   Center(child: Text('Todavía no tienes compras o pedidos confirmados.')),
@@ -101,10 +109,14 @@ class _MisPedidosScreenState extends State<MisPedidosScreen> {
               );
             }
             return ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(12),
               itemCount: pedidos.length,
               separatorBuilder: (_, _) => const SizedBox(height: 8),
-              itemBuilder: (context, i) => _TarjetaPedido(pedido: pedidos[i]),
+              itemBuilder: (context, i) => _TarjetaPedido(
+                pedido: pedidos[i],
+                actualizar: _recargar,
+              ),
             );
           },
         ),
@@ -114,8 +126,9 @@ class _MisPedidosScreenState extends State<MisPedidosScreen> {
 }
 
 class _TarjetaPedido extends StatelessWidget {
-  const _TarjetaPedido({required this.pedido});
+  const _TarjetaPedido({required this.pedido, required this.actualizar});
   final Pedido pedido;
+  final VoidCallback actualizar;
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +148,28 @@ class _TarjetaPedido extends StatelessWidget {
           ),
         ),
         children: [
+          if (pedido.reclamoId != null || pedido.estado == 'ENTREGADO')
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.assignment_return_outlined),
+                label: Text(pedido.reclamoId == null ? 'Solicitar devolución' : 'Ver reclamo'),
+                onPressed: () async {
+                  final existente = pedido.reclamoId;
+                  final id = existente ?? await Navigator.push<int>(
+                    context,
+                    MaterialPageRoute(builder: (_) => NuevoReclamoScreen(
+                      pedido: pedido.id, numero: pedido.numeroPedido,
+                    )),
+                  );
+                  if (id == null || !context.mounted) return;
+                  await Navigator.push<void>(context, MaterialPageRoute(
+                    builder: (_) => DetalleReclamoScreen(id: id),
+                  ));
+                  if (context.mounted) actualizar();
+                },
+              ),
+            ),
           for (final item in pedido.items)
             ListTile(
               dense: true,

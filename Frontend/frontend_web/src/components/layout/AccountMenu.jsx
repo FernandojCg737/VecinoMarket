@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { User, LogOut, ChevronDown, Wallet, ClipboardList, Truck, MapPin, Receipt, Star, Tag, Users, MessageCircle, Radio, Bot, LayoutDashboard, Sparkles, TrendingUp, UserCog, Building2, Boxes, CreditCard, Sliders, Lock } from 'lucide-react';
+import { User, LogOut, ChevronDown, Wallet, ClipboardList, Truck, MapPin, Receipt, Star, Tag, Users, MessageCircle, Radio, Bot, LayoutDashboard, Sparkles, TrendingUp, UserCog, Building2, Boxes, CreditCard, Sliders, Lock, Heart } from 'lucide-react';
 import Dropdown from '../ui/Dropdown';
 import AdminMenu from './AdminMenu';
 import { useAuth } from '../../context/AuthContext';
@@ -26,6 +26,16 @@ export default function AccountMenu() {
         <>
           <div className="px-4 py-1.5 text-xs text-gray-400 dark:text-gray-500">Hola, {usuario.nombre}</div>
           <Link to="/perfil" className="block px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">Mi perfil</Link>
+          {esEmpresaOEmpleado(usuario) && tienePermisoEmpleado(usuario, 'gestionar_pedidos') && (
+            <Link to="/reclamos" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+              <ClipboardList size={16} /> Devoluciones
+            </Link>
+          )}
+          {esStaff(usuario) && (
+            <Link to="/admin/deseos" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+              <Heart size={16} /> Lista de deseos y alertas
+            </Link>
+          )}
           {esEmpresaOEmpleado(usuario) && (
             <>
               {tienePermisoEmpleado(usuario, 'ver_reportes') && (
@@ -71,6 +81,11 @@ export default function AccountMenu() {
               {tienePermisoEmpleado(usuario, 'gestionar_promociones') && (
                 <Link to="/mi-empresa/promociones" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
                   <Tag size={16} /> Promociones
+                </Link>
+              )}
+              {tienePermisoEmpleado(usuario, 'gestionar_promociones') && (
+                <Link to="/mi-empresa/deseos" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <Heart size={16} /> Lista de deseos y alertas
                 </Link>
               )}
               {tienePermisoEmpleado(usuario, 'ver_reportes') && (
@@ -166,6 +181,9 @@ export default function AccountMenu() {
               <Link to="/mi-cuenta" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <LayoutDashboard size={16} /> Mi cuenta
               </Link>
+              <Link to="/favoritos" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <Heart size={16} /> Lista de deseos / Alertas
+              </Link>
               <Link to="/recomendados" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <Sparkles size={16} /> Recomendado para ti
               </Link>
@@ -180,6 +198,9 @@ export default function AccountMenu() {
               </Link>
               <Link to="/mis-compras" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <Receipt size={16} /> Mis compras
+              </Link>
+              <Link to="/mis-reclamos" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <ClipboardList size={16} /> Mis reclamos
               </Link>
               <Link to="/mis-resenas" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <Star size={16} /> Mis reseñas

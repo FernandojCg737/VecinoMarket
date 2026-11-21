@@ -208,6 +208,7 @@ class EditarEliminarProductoAdminView(APIView):
 
     def patch(self, request, producto_id):
         producto = get_object_or_404(Producto, id=producto_id)
+        precio_anterior = producto.precio
         precio_descuento_anterior = producto.precio_descuento
         estado_anterior = producto.estado
 
@@ -215,9 +216,11 @@ class EditarEliminarProductoAdminView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        if producto.precio_descuento is not None and producto.estado == 'ACTIVO':
-            if estado_anterior != 'ACTIVO' or precio_descuento_anterior != producto.precio_descuento:
-                _notificar_descuento_a_compradores(producto)
+        precio_efectivo_nuevo = producto.precio_descuento if producto.precio_descuento is not None else producto.precio
+        precio_efectivo_anterior = precio_descuento_anterior if precio_descuento_anterior is not None else precio_anterior
+
+        if producto.estado == 'ACTIVO' and (precio_efectivo_nuevo < precio_efectivo_anterior or (estado_anterior != 'ACTIVO' and producto.precio_descuento is not None)):
+            _notificar_descuento_a_compradores(producto)
 
         _log(request, 'EDITAR_PRODUCTO', producto.id, {'nombre': producto.nombre}, entidad_afectada='producto')
         producto_actualizado = _productos_admin_queryset().get(id=producto.id)
@@ -317,6 +320,12 @@ class ListaCrearMisProductosView(generics.ListCreateAPIView):
 def _notificar_descuento_a_compradores(producto):
     from apps.usuarios.models import Usuario
     from apps.notificaciones.models import Notificacion
+    try:
+        from apps.pedidos.wishlist_views import verificar_y_notificar_alertas_precio
+        precio_efectivo = producto.precio_descuento if producto.precio_descuento is not None else producto.precio
+        verificar_y_notificar_alertas_precio(producto, precio_efectivo)
+    except Exception as e:
+        print(f"Error verificando alertas de precio: {e}")
     
     compradores = Usuario.objects.filter(rol=Usuario.Rol.COMPRADOR, activo=True)
     notificaciones = []
@@ -350,6 +359,7 @@ class EditarEliminarMiProductoView(APIView):
         producto = get_object_or_404(Producto, id=producto_id, empresa=empresa)
         
         # Guardar estado anterior para saber si disparamos notificación de oferta
+        precio_anterior = producto.precio
         precio_descuento_anterior = producto.precio_descuento
         estado_anterior = producto.estado
 
@@ -377,10 +387,12 @@ class EditarEliminarMiProductoView(APIView):
                     with connection.cursor() as cursor:
                         cursor.execute('SELECT fn_ajustar_stock(%s, %s)', [inventario.id, delta])
 
-        # Enviar notificación si se aplicó un descuento nuevo o el producto se reactivó con descuento
-        if producto.precio_descuento is not None and producto.estado == 'ACTIVO':
-            if estado_anterior != 'ACTIVO' or precio_descuento_anterior != producto.precio_descuento:
-                _notificar_descuento_a_compradores(producto)
+        # Enviar notificación si se aplicó un descuento nuevo, bajó el precio o se reactivó
+        precio_efectivo_nuevo = producto.precio_descuento if producto.precio_descuento is not None else producto.precio
+        precio_efectivo_anterior = precio_descuento_anterior if precio_descuento_anterior is not None else precio_anterior
+
+        if producto.estado == 'ACTIVO' and (precio_efectivo_nuevo < precio_efectivo_anterior or (estado_anterior != 'ACTIVO' and producto.precio_descuento is not None)):
+            _notificar_descuento_a_compradores(producto)
 
         _log(request, 'EDITAR_PRODUCTO', producto.id, {'nombre': producto.nombre}, entidad_afectada='producto')
         producto_actualizado = _productos_admin_queryset().get(id=producto.id)

@@ -5,6 +5,7 @@ import 'services/auth_service.dart';
 import 'services/cart_service.dart';
 import 'services/notificacion_service.dart';
 import 'services/theme_service.dart';
+import 'services/wishlist_service.dart';
 
 void main() {
   runApp(const VecinoMarketApp());
@@ -19,6 +20,7 @@ class VecinoMarketApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
         ChangeNotifierProvider(create: (_) => CartService()),
+        ChangeNotifierProvider(create: (_) => WishlistService()),
         ChangeNotifierProvider(create: (_) => NotificacionService()),
         ChangeNotifierProvider(create: (_) => ThemeService()),
       ],

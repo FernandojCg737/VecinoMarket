@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/producto.dart';
+import '../screens/auth_screen.dart';
 import '../screens/product_detail_screen.dart';
+import '../services/auth_service.dart';
+import '../services/wishlist_service.dart';
 
 /// Tarjeta de producto del catálogo (antes _TarjetaProducto en home_screen).
-/// Se comparte con los carruseles de IA. `insignia` (opcional) es la etiqueta
+/// Se comparte con los carruseles de IA e incluye el corazón de la lista de
+/// deseos (CU30), arriba a la derecha. `insignia` (opcional) es la etiqueta
 /// sobre la foto ("Para ti", "0,6 km"); `nota` (opcional) una línea chica
 /// bajo el nombre ("★ 4,7 · tienda"). Sin ellas se ve igual que siempre.
 class TarjetaProducto extends StatelessWidget {
@@ -41,6 +46,7 @@ class TarjetaProducto extends StatelessWidget {
                       left: 6,
                       child: _Insignia(texto: insignia!, icono: iconoInsignia),
                     ),
+                  Positioned(top: 5, right: 5, child: _BotonDeseo(producto: producto)),
                 ],
               ),
             ),
@@ -85,6 +91,61 @@ class TarjetaProducto extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// CU30: corazón de la lista de deseos (misma lógica que tenía _TarjetaProducto en main).
+class _BotonDeseo extends StatelessWidget {
+  const _BotonDeseo({required this.producto});
+  final Producto producto;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<WishlistService>(
+      builder: (context, wishlist, _) {
+        final esFavorito = wishlist.esDeseado(producto.id);
+        return GestureDetector(
+          onTap: () async {
+            final auth = context.read<AuthService>();
+            if (auth.usuario == null) {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
+              return;
+            }
+            final rol = auth.usuario!['rol']?.toString().toUpperCase() ?? '';
+            if (rol != 'COMPRADOR') {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  icon: const Icon(Icons.warning_amber_rounded, size: 36, color: Color(0xFFD97706)),
+                  title: const Text('Acción exclusiva para compradores', textAlign: TextAlign.center, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  content: const Text('Inicia sesión con una cuenta de comprador para guardar productos en tu lista de deseos.', textAlign: TextAlign.center, style: TextStyle(fontSize: 13)),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Entendido')),
+                  ],
+                ),
+              );
+              return;
+            }
+            await wishlist.toggleDeseo(producto.id);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.92),
+              shape: BoxShape.circle,
+              boxShadow: const [
+                BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 1)),
+              ],
+            ),
+            child: Icon(
+              esFavorito ? Icons.favorite : Icons.favorite_border,
+              color: esFavorito ? const Color(0xFFE11D48) : Colors.grey.shade700,
+              size: 16,
+            ),
+          ),
+        );
+      },
     );
   }
 }

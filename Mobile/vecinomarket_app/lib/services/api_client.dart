@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -158,6 +159,12 @@ class ApiClient {
     List<http.MultipartFile>? files,
     bool autenticado = true,
   }) async {
+    final reconstruir = await Future.wait((files ?? []).map((file) async {
+      final bytes = await file.finalize().toBytes();
+      return () => http.MultipartFile.fromBytes(
+        file.field, bytes, filename: file.filename, contentType: file.contentType,
+      );
+    }));
     Future<http.Response> enviar() async {
       final request = http.MultipartRequest('POST', _uri(path));
       if (autenticado) {
@@ -165,9 +172,13 @@ class ApiClient {
         if (token != null) request.headers['Authorization'] = 'Bearer $token';
       }
       if (fields != null) request.fields.addAll(fields);
-      if (files != null) request.files.addAll(files);
-      final streamed = await request.send();
-      return http.Response.fromStream(streamed);
+      request.files.addAll(reconstruir.map((crear) => crear()));
+      final cliente = http.Client();
+      try {
+        return await http.Response.fromStream(await cliente.send(request));
+      } finally {
+        cliente.close();
+      }
     }
 
     var res = await enviar();
@@ -192,6 +203,16 @@ class ApiClient {
       // el backend no siempre devuelve JSON en errores 5xx
     }
     throw ApiException(res.statusCode, data);
+  }
+
+  Future<Uint8List> getBytes(String path) async {
+    Future<http.Response> enviar() async => http.get(_uri(path), headers: await _headers());
+    var respuesta = await enviar();
+    if (respuesta.statusCode == 401 && await _intentarRefrescarToken()) {
+      respuesta = await enviar();
+    }
+    if (respuesta.statusCode != 200) _procesar(respuesta);
+    return respuesta.bodyBytes;
   }
 }
 

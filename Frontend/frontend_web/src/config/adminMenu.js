@@ -112,6 +112,12 @@ export const GRUPOS_ADMIN = [
         to: '/admin/facturacion',
         implementado: true,
       },
+      {
+        cu: 'CU29',
+        titulo: 'Devoluciones',
+        to: '/reclamos',
+        implementado: true,
+      },
     ],
   },
   {
@@ -153,6 +159,13 @@ export const GRUPOS_ADMIN = [
         titulo: 'Gestionar Programa de Referidos',
         to: '/admin/referidos',
         implementado: true,
+      },
+      {
+        cu: 'CU30',
+        titulo: 'Gestionar Lista de Deseos y Alertas de Precio',
+        to: '/admin/deseos',
+        implementado: true,
+        descripcion: 'Supervisión multi-tenant de productos guardados por compradores en lista de deseos y alertas de rebajas.',
       },
     ],
   },

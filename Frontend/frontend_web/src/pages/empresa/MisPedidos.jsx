@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { ClipboardList, ChevronDown, ChevronUp, Eye, X, FileText, Printer } from 'lucide-react';
 import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
@@ -12,6 +12,7 @@ const ESTADOS_PEDIDO = [
   { value: 'ENVIADO', label: 'Enviado' },
   { value: 'ENTREGADO', label: 'Entregado' },
   { value: 'CANCELADO', label: 'Cancelado' },
+  { value: 'DEVUELTO', label: 'Devuelto' },
 ];
 
 function badgeEstado(estado) {
@@ -177,10 +178,11 @@ export default function MisPedidos() {
                   <td className="px-4 py-3">
                     <select
                       value={p.estado}
+                      disabled={Boolean(p.reclamo_id)}
                       onChange={(e) => cambiarEstado(p, e.target.value)}
                       className={`rounded-full border-0 px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-300 ${badgeEstado(p.estado)}`}
                     >
-                      {ESTADOS_PEDIDO.map((op) => <option key={op.value} value={op.value} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">{op.label}</option>)}
+                      {ESTADOS_PEDIDO.filter((op) => op.value !== 'DEVUELTO' || p.estado === 'DEVUELTO').map((op) => <option key={op.value} value={op.value} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">{op.label}</option>)}
                     </select>
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -195,12 +197,12 @@ export default function MisPedidos() {
                           ✓ Confirmar
                         </button>
                       )}
-                      <button
+                      {p.reclamo_id ? <Link to={'/reclamos/' + p.reclamo_id} className="text-xs font-semibold text-brand-600 dark:text-brand-400">Ver reclamo</Link> : <button
                         onClick={() => eliminar(p)}
                         className="rounded-md border border-gray-300 dark:border-gray-700 px-2 py-1 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                       >
                         Eliminar
-                      </button>
+                      </button>}
                     </div>
                   </td>
                 </tr>

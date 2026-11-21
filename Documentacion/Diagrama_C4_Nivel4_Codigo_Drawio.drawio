@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-02T03:50:00.000Z" agent="Antigravity C4 Generator" version="24.0.0" type="device">
+  <diagram id="c4_level4_code_vecinomarket" name="C4 Nivel 4 - Codigo VecinoMarket">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ETIQUETA SUPERIOR IZQUIERDA -->
+        <mxCell id="tag_nivel4" value="&lt;b&gt;NIVEL 4 :&lt;br&gt;CÓDIGO&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;align=center;verticalAlign=middle;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="80" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- 4 CONTENEDORES MODULARES (CAJAS ESTABLES SIN AUTO-LAYOUT)     -->
+        <!-- ============================================================ -->
+        
+        <!-- CONTENEDOR 1: GESTIÓN COMERCIAL Y PEDIDOS -->
+        <mxCell id="box_col_1" value="&lt;b&gt;Gestión Comercial y Pedidos&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCE5CD;strokeColor=#E0B084;verticalAlign=top;fontStyle=1;fontSize=13;fontFamily=Helvetica;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="70" width="370" height="840" as="geometry" />
+        </mxCell>
+
+        <!-- CONTENEDOR 2: CATÁLOGO E INVENTARIO -->
+        <mxCell id="box_col_2" value="&lt;b&gt;Gestión de Catálogo e Inventario&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#CFE2F3;strokeColor=#8FAADC;verticalAlign=top;fontStyle=1;fontSize=13;fontFamily=Helvetica;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="450" y="70" width="370" height="840" as="geometry" />
+        </mxCell>
+
+        <!-- CONTENEDOR 3: ADMINISTRACIÓN SAAS MULTI-TENANT -->
+        <mxCell id="box_col_3" value="&lt;b&gt;Administración SaaS Multi-Tenant&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A2C4C9;strokeColor=#5B8A90;verticalAlign=top;fontStyle=1;fontSize=13;fontFamily=Helvetica;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="70" width="370" height="840" as="geometry" />
+        </mxCell>
+
+        <!-- CONTENEDOR 4: AUDITORÍA, BACKUPS Y VALORACIÓN -->
+        <mxCell id="box_col_4" value="&lt;b&gt;Auditoría, Backups y Reportes&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D9EAD3;strokeColor=#82B366;verticalAlign=top;fontStyle=1;fontSize=13;fontFamily=Helvetica;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="70" width="370" height="840" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- CLASES UML DE LA COLUMNA 1                                   -->
+        <!-- ============================================================ -->
+        
+        <!-- Cliente -->
+        <mxCell id="cls_cliente" value="&lt;center&gt;&lt;b&gt;Cliente&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- nombre: String&lt;br&gt;- apellido: String&lt;br&gt;- telefono: String&lt;br&gt;- email: String&lt;br&gt;- direccion: String&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ registrarCliente()&lt;br&gt;+ actualizarCliente()&lt;br&gt;+ listarClientes()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="65" y="130" width="320" height="195" as="geometry" />
+        </mxCell>
+
+        <!-- Pedido -->
+        <mxCell id="cls_pedido" value="&lt;center&gt;&lt;b&gt;Pedido&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- numeroPedido: String&lt;br&gt;- fecha: Date&lt;br&gt;- montoTotal: Decimal&lt;br&gt;- estado: String&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ generarPedido()&lt;br&gt;+ aprobarPedido()&lt;br&gt;+ calcularTotal()&lt;br&gt;+ cancelarPedido()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="65" y="370" width="320" height="185" as="geometry" />
+        </mxCell>
+
+        <!-- Detalle_Pedido -->
+        <mxCell id="cls_detalle_pedido" value="&lt;center&gt;&lt;b&gt;Detalle_Pedido&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- cantidad: Integer&lt;br&gt;- precioUnitario: Decimal&lt;br&gt;- subtotal: Decimal&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ calcularSubtotal()&lt;br&gt;+ actualizarDetalle()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="65" y="600" width="320" height="170" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- CLASES UML DE LA COLUMNA 2                                   -->
+        <!-- ============================================================ -->
+
+        <!-- Producto -->
+        <mxCell id="cls_producto" value="&lt;center&gt;&lt;b&gt;Producto&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- nombre: String&lt;br&gt;- sku: String&lt;br&gt;- precio: Decimal&lt;br&gt;- stockActual: Integer&lt;br&gt;- totalVistas: Integer [RF42]&lt;br&gt;- estado: String&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ registrarProducto()&lt;br&gt;+ actualizarStock()&lt;br&gt;+ registrarVista()&lt;br&gt;+ verificarDisponibilidad()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="475" y="130" width="320" height="225" as="geometry" />
+        </mxCell>
+
+        <!-- Categoria -->
+        <mxCell id="cls_categoria" value="&lt;center&gt;&lt;b&gt;Categoria&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- nombre: String&lt;br&gt;- slug: String&lt;br&gt;- descripcion: String&lt;br&gt;- estado: String&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ registrarCategoria()&lt;br&gt;+ actualizarCategoria()&lt;br&gt;+ listarCategorias()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="475" y="390" width="320" height="175" as="geometry" />
+        </mxCell>
+
+        <!-- Movimiento_Inventario -->
+        <mxCell id="cls_movimiento" value="&lt;center&gt;&lt;b&gt;Movimiento_Inventario&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- tipoMovimiento: String&lt;br&gt;- cantidad: Integer&lt;br&gt;- motivo: String&lt;br&gt;- fecha: Date&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ registrarMovimiento()&lt;br&gt;+ consultarKardex()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="475" y="600" width="320" height="170" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- CLASES UML DE LA COLUMNA 3                                   -->
+        <!-- ============================================================ -->
+
+        <!-- Tenant (Empresa) -->
+        <mxCell id="cls_tenant" value="&lt;center&gt;&lt;b&gt;Tenant (Empresa)&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- nombreEmpresa: String&lt;br&gt;- subdominio: String&lt;br&gt;- ruc: String&lt;br&gt;- planSaaS: String&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ registrarTenant()&lt;br&gt;+ validarSuscripcion()&lt;br&gt;+ actualizarTenant()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="885" y="130" width="320" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Usuario -->
+        <mxCell id="cls_usuario" value="&lt;center&gt;&lt;b&gt;Usuario&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- nombre: String&lt;br&gt;- email: String&lt;br&gt;- password: String&lt;br&gt;- isStaff: Boolean&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ iniciarSesion()&lt;br&gt;+ cerrarSesion()&lt;br&gt;+ cambiarPassword()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="885" y="350" width="320" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Rol -->
+        <mxCell id="cls_rol" value="&lt;center&gt;&lt;b&gt;Rol&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- nombre: String&lt;br&gt;- codigo: String&lt;br&gt;- descripcion: String&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ crearRol()&lt;br&gt;+ actualizarRol()&lt;br&gt;+ listarRoles()&lt;br&gt;+ verificarPermiso()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="885" y="570" width="320" height="180" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- CLASES UML DE LA COLUMNA 4                                   -->
+        <!-- ============================================================ -->
+
+        <!-- Backup_Sistema -->
+        <mxCell id="cls_backup" value="&lt;center&gt;&lt;b&gt;Backup_Sistema&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- nombreArchivo: String&lt;br&gt;- tipo: String&lt;br&gt;- rutaStorage: String&lt;br&gt;- tamanoMB: Decimal&lt;br&gt;- fechaCreacion: Date&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ ejecutarBackup()&lt;br&gt;+ restaurarBackup()&lt;br&gt;+ descargarBackup()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="1295" y="130" width="320" height="195" as="geometry" />
+        </mxCell>
+
+        <!-- Log_Auditoria -->
+        <mxCell id="cls_auditoria" value="&lt;center&gt;&lt;b&gt;Log_Auditoria&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- usuario: String&lt;br&gt;- accion: String&lt;br&gt;- ipAddress: String&lt;br&gt;- fechaHora: Date&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ registrarEvento()&lt;br&gt;+ consultarLogs()&lt;br&gt;+ exportarLogsCSV()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="1295" y="360" width="320" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Valoracion_Reporte -->
+        <mxCell id="cls_valoracion" value="&lt;center&gt;&lt;b&gt;Valoracion_Reporte&lt;/b&gt;&lt;/center&gt;&lt;hr style=&quot;margin: 5px 0;&quot;&gt;- id: UUID&lt;br&gt;- puntuacion: Integer&lt;br&gt;- comentario: String&lt;br&gt;- fecha: Date&lt;hr style=&quot;margin: 5px 0;&quot;&gt;+ registrarValoracion()&lt;br&gt;+ calcularPromedio()&lt;br&gt;+ generarReporteTop()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontFamily=Helvetica;spacingTop=6;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="1295" y="580" width="320" height="180" as="geometry" />
+        </mxCell>
+
+
+        <!-- ============================================================ -->
+        <!-- FLECHAS Y CONECTORES ORTOGONALES                             -->
+        <!-- ============================================================ -->
+
+        <!-- CONTENEDOR 1: Conectores -->
+        <!-- Cliente -> Pedido -->
+        <mxCell id="edge_c1_cli_ped" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_cliente" target="cls_pedido">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="395" y="247" />
+              <mxPoint x="395" y="425" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Cliente -> Detalle_Pedido -->
+        <mxCell id="edge_c1_cli_det" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=0;exitY=0.8;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_cliente" target="cls_detalle_pedido">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="50" y="286" />
+              <mxPoint x="50" y="685" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Detalle_Pedido -> Pedido -->
+        <mxCell id="edge_c1_det_ped" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_detalle_pedido" target="cls_pedido">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- FLECHA TRANSVERSAL (Detalle_Pedido -> Producto) -->
+        <mxCell id="edge_cross_det_prod" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_detalle_pedido" target="cls_producto">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="685" />
+              <mxPoint x="430" y="242" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- CONTENEDOR 2: Conectores -->
+        <!-- Categoria -> Producto -->
+        <mxCell id="edge_c2_cat_prod" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_categoria" target="cls_producto">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Producto -> Movimiento_Inventario -->
+        <mxCell id="edge_c2_prod_mov" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_producto" target="cls_movimiento">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="805" y="287" />
+              <mxPoint x="805" y="685" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- CONTENEDOR 3: Conectores -->
+        <!-- Tenant -> Usuario -->
+        <mxCell id="edge_c3_ten_usr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_tenant" target="cls_usuario">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1215" y="238" />
+              <mxPoint x="1215" y="404" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Rol -> Usuario -->
+        <mxCell id="edge_c3_rol_usr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=1;exitY=0.4;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_rol" target="cls_usuario">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1215" y="642" />
+              <mxPoint x="1215" y="476" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- CONTENEDOR 4: Conectores -->
+        <!-- Backup_Sistema -> Log_Auditoria -->
+        <mxCell id="edge_c4_bac_aud" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_backup" target="cls_auditoria">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1625" y="247" />
+              <mxPoint x="1625" y="414" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Log_Auditoria -> Valoracion_Reporte -->
+        <mxCell id="edge_c4_aud_val" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1;endArrow=open;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="cls_auditoria" target="cls_valoracion">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

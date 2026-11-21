@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 import StarRating from './StarRating';
+import WishlistButton from './WishlistButton';
 import { useCart } from '../../context/CartContext';
 
 // insignia (opcional): { texto, icono } — etiqueta arriba a la izquierda
@@ -29,10 +30,14 @@ export default function ProductCard({ producto, insignia = null, nota = '' }) {
           </span>
         )}
         {tieneDescuento && (
-          <span className={`absolute top-2 ${insignia ? 'right-2' : 'left-2'} rounded-full bg-brand-600 px-2 py-0.5 text-xs font-bold text-white`}>
+          // Con insignia, el descuento va debajo de ella (arriba a la derecha está el corazón de CU30).
+          <span className={`absolute ${insignia ? 'top-9' : 'top-2'} left-2 rounded-full bg-brand-600 px-2 py-0.5 text-xs font-bold text-white`}>
             -{porcentaje}%
           </span>
         )}
+        <div className="absolute top-2 right-2 z-10">
+          <WishlistButton producto={producto} className="h-8 w-8" size={16} />
+        </div>
       </Link>
 
       <div className="flex flex-1 flex-col gap-1.5 p-3">

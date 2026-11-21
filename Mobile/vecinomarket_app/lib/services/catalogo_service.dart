@@ -18,4 +18,13 @@ class CatalogoService {
     final results = data['results'] as List<dynamic>;
     return results.map((p) => Producto.fromJson(p as Map<String, dynamic>)).toList();
   }
+
+  Future<Producto?> obtenerProductoPorId(int id) async {
+    try {
+      final data = await ApiClient.instance.get('catalogo/productos/$id/', autenticado: false);
+      return Producto.fromJson(data as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
 }

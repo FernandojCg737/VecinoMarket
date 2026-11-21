@@ -6,7 +6,9 @@ from django.db import connection, transaction
 from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from requests.exceptions import RequestException
 from rest_framework import generics, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
@@ -22,7 +24,9 @@ from apps.usuarios.models import Comprador, Direccion
 from apps.usuarios.permissions import EsAdmin, EsComprador, TienePermisoEmpleado
 
 from .models import Carrito, CarritoItem, Entrega, OrdenCompra, Pago, Pedido, PedidoItem
+from .devoluciones import ORDEN_PAGADA
 from .serializers import CarritoDetalleAdminSerializer, EntregaSerializer, PedidoSerializer
+from .stock import _restituir_stock_orden, descontar_stock
 
 
 def _log(request, accion, entidad_id, detalle=None, entidad_afectada='pedido'):
@@ -191,7 +195,7 @@ class PedidoPagination(PageNumberPagination):
 
 def _pedidos_queryset():
     return (
-        Pedido.objects.select_related('empresa', 'orden_compra__comprador__usuario')
+        Pedido.objects.select_related('empresa', 'orden_compra__comprador__usuario', 'devolucion')
         .prefetch_related('items__producto')
         .order_by('-creado_en')
     )
@@ -210,7 +214,7 @@ def _filtrar_pedidos(qs, params):
         )
     elif tipo == 'venta':
         qs = qs.filter(
-            orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO,
+            orden_compra__estado_pago__in=ORDEN_PAGADA,
             estado__in=[
                 Pedido.Estado.CONFIRMADO,
                 Pedido.Estado.EN_PREPARACION,
@@ -222,14 +226,14 @@ def _filtrar_pedidos(qs, params):
         # Excluir órdenes de pasarelas de pago no concluidas o abandonadas
         qs = qs.filter(
             Q(
-                orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO,
+                orden_compra__estado_pago__in=ORDEN_PAGADA,
                 estado__in=[
                     Pedido.Estado.CONFIRMADO,
                     Pedido.Estado.EN_PREPARACION,
                     Pedido.Estado.ENVIADO,
                     Pedido.Estado.ENTREGADO,
                 ],
-            ) |
+            ) | Q(estado=Pedido.Estado.DEVUELTO) |
             Q(
                 orden_compra__metodo_pago=OrdenCompra.MetodoPago.QR,
                 orden_compra__estado_pago=OrdenCompra.EstadoPago.PENDIENTE,
@@ -265,6 +269,17 @@ def _aplicar_cambios_pedido(request, pedido):
     empresa_nombre = pedido.empresa.razon_social if pedido.empresa else 'la tienda'
 
     nuevo_estado = request.data.get('estado')
+    nuevo_estado_pago = request.data.get('estado_pago')
+    if nuevo_estado == Pedido.Estado.DEVUELTO or nuevo_estado_pago in (
+        OrdenCompra.EstadoPago.REEMBOLSADO, OrdenCompra.EstadoPago.REEMBOLSO_PARCIAL,
+    ):
+        raise ValueError('Gestiona los reembolsos desde Reclamos.')
+    if nuevo_estado and nuevo_estado != pedido.estado and hasattr(pedido, 'devolucion'):
+        raise ValueError('El estado del pedido está vinculado a un reclamo.')
+    if nuevo_estado_pago and nuevo_estado_pago != pedido.orden_compra.estado_pago and (
+        pedido.orden_compra.pedidos.filter(devolucion__isnull=False).exists()
+    ):
+        raise ValueError('El pago está vinculado a un reclamo.')
     if nuevo_estado:
         if nuevo_estado not in Pedido.Estado.values:
             raise ValueError('Estado de pedido inválido.')
@@ -314,7 +329,6 @@ def _aplicar_cambios_pedido(request, pedido):
                     enlace='/perfil',
                 )
 
-    nuevo_estado_pago = request.data.get('estado_pago')
     if nuevo_estado_pago:
         if nuevo_estado_pago not in OrdenCompra.EstadoPago.values:
             raise ValueError('Estado de pago inválido.')
@@ -368,14 +382,31 @@ class ListaPedidosAdminView(generics.ListAPIView):
         return qs
 
 
+def _bloquear_pedido(pedido):
+    orden = OrdenCompra.objects.select_for_update().get(pk=pedido.orden_compra_id)
+    pedido = get_object_or_404(Pedido.objects.select_for_update(), pk=pedido.pk, orden_compra=orden)
+    pedido.orden_compra = orden
+    return pedido
+
+
+def _eliminar_pedido(pedido):
+    pedido = _bloquear_pedido(pedido)
+    if hasattr(pedido, 'devolucion'):
+        raise ValidationError('Este pedido tiene un reclamo y debe conservarse en el historial.')
+    if pedido.orden_compra.pedidos.filter(devolucion__isnull=False).exists():
+        raise ValidationError('Esta compra tiene un reclamo y debe conservar su historial.')
+    pedido.delete()
+
+
 class EditarEliminarPedidoAdminView(APIView):
     """CU12: edita (estado del pedido y/o estado de pago) o elimina
     cualquier pedido/venta."""
 
     permission_classes = [EsAdmin]
 
+    @transaction.atomic
     def patch(self, request, pedido_id):
-        pedido = get_object_or_404(Pedido.objects.select_related('orden_compra'), id=pedido_id)
+        pedido = _bloquear_pedido(get_object_or_404(Pedido, id=pedido_id))
         try:
             _aplicar_cambios_pedido(request, pedido)
         except ValueError as exc:
@@ -383,10 +414,11 @@ class EditarEliminarPedidoAdminView(APIView):
         _log(request, 'EDITAR_PEDIDO', pedido.id, {'numero_pedido': pedido.numero_pedido, 'estado': pedido.estado})
         return Response(PedidoSerializer(pedido).data)
 
+    @transaction.atomic
     def delete(self, request, pedido_id):
         pedido = get_object_or_404(Pedido, id=pedido_id)
         numero = pedido.numero_pedido
-        pedido.delete()
+        _eliminar_pedido(pedido)
         _log(request, 'ELIMINAR_PEDIDO', pedido_id, {'numero_pedido': numero})
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -412,10 +444,11 @@ class EditarEliminarMiPedidoView(APIView):
     permission_classes = [TienePermisoEmpleado]
     permiso_requerido = 'gestionar_pedidos'
 
+    @transaction.atomic
     def patch(self, request, pedido_id):
-        pedido = get_object_or_404(
+        pedido = _bloquear_pedido(get_object_or_404(
             Pedido.objects.select_related('orden_compra'), id=pedido_id, empresa=request.user.get_empresa()
-        )
+        ))
         try:
             _aplicar_cambios_pedido(request, pedido)
         except ValueError as exc:
@@ -423,10 +456,11 @@ class EditarEliminarMiPedidoView(APIView):
         _log(request, 'EDITAR_PEDIDO', pedido.id, {'numero_pedido': pedido.numero_pedido, 'estado': pedido.estado})
         return Response(PedidoSerializer(pedido).data)
 
+    @transaction.atomic
     def delete(self, request, pedido_id):
         pedido = get_object_or_404(Pedido, id=pedido_id, empresa=request.user.get_empresa())
         numero = pedido.numero_pedido
-        pedido.delete()
+        _eliminar_pedido(pedido)
         _log(request, 'ELIMINAR_PEDIDO', pedido_id, {'numero_pedido': numero})
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -438,7 +472,11 @@ def _entregas_queryset():
     ).order_by('-id')
 
 
+@transaction.atomic
 def _marcar_entregada(entrega):
+    pedido = _bloquear_pedido(entrega.pedido)
+    if pedido.estado == Pedido.Estado.DEVUELTO:
+        raise ValidationError('Este pedido ya fue devuelto.')
     with connection.cursor() as cursor:
         cursor.execute('SELECT fn_marcar_entregada(%s)', [entrega.pedido_id])
     entrega.refresh_from_db()
@@ -463,7 +501,7 @@ class ListaEntregasAdminView(generics.ListAPIView):
     pagination_class = PedidoPagination
 
     def get_queryset(self):
-        qs = _entregas_queryset().filter(pedido__orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO)
+        qs = _entregas_queryset().filter(pedido__orden_compra__estado_pago__in=ORDEN_PAGADA)
         empresa_id = self.request.query_params.get('empresa')
         if empresa_id:
             qs = qs.filter(pedido__empresa_id=empresa_id)
@@ -520,7 +558,7 @@ class ListaMisEntregasView(generics.ListAPIView):
     def get_queryset(self):
         qs = _entregas_queryset().filter(
             pedido__empresa=self.request.user.get_empresa(),
-            pedido__orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO,
+            pedido__orden_compra__estado_pago__in=ORDEN_PAGADA,
         )
         estado = self.request.query_params.get('estado')
         if estado:
@@ -578,14 +616,14 @@ class ListaMisComprasView(generics.ListAPIView):
             orden_compra__comprador__usuario=self.request.user,
         ).filter(
             Q(
-                orden_compra__estado_pago=OrdenCompra.EstadoPago.PAGADO,
+                orden_compra__estado_pago__in=ORDEN_PAGADA,
                 estado__in=[
                     Pedido.Estado.CONFIRMADO,
                     Pedido.Estado.EN_PREPARACION,
                     Pedido.Estado.ENVIADO,
                     Pedido.Estado.ENTREGADO,
                 ],
-            ) |
+            ) | Q(estado=Pedido.Estado.DEVUELTO) |
             Q(
                 orden_compra__metodo_pago=OrdenCompra.MetodoPago.QR,
                 orden_compra__estado_pago=OrdenCompra.EstadoPago.PENDIENTE,
@@ -604,31 +642,6 @@ def _stock_disponible(producto_id):
     return InventarioSucursal.objects.filter(producto_id=producto_id).aggregate(
         total=Sum('cantidad_disponible')
     )['total'] or 0
-
-
-def _descontar_stock(producto_id, cantidad, sucursal_id=None):
-    """Descuenta stock atómicamente bloqueando la fila con select_for_update()."""
-    qs = InventarioSucursal.objects.select_for_update().filter(producto_id=producto_id, cantidad_disponible__gte=cantidad)
-    registro = qs.filter(sucursal_id=sucursal_id).first() if sucursal_id else qs.order_by('-cantidad_disponible').first()
-    if not registro:
-        return False
-    registro.cantidad_disponible -= cantidad
-    registro.save(update_fields=['cantidad_disponible'])
-    return True
-
-
-def _restituir_stock_orden(orden):
-    """Restaura el stock reservado de una orden si la transacción de pago falla o es rechazada."""
-    for pedido in orden.pedidos.prefetch_related('items__producto'):
-        for item in pedido.items.all():
-            qs = InventarioSucursal.objects.filter(producto=item.producto)
-            if pedido.sucursal_recojo_id:
-                reg = qs.filter(sucursal_id=pedido.sucursal_recojo_id).first()
-            else:
-                reg = qs.order_by('-cantidad_disponible').first()
-            if reg:
-                reg.cantidad_disponible += item.cantidad
-                reg.save(update_fields=['cantidad_disponible'])
 
 
 class IniciarCheckoutView(APIView):
@@ -724,16 +737,19 @@ class IniciarCheckoutView(APIView):
                         sucursal_recojo=sucursal, direccion_envio=direccion,
                     )
                     Entrega.objects.create(pedido=pedido, estado=Entrega.Estado.PENDIENTE)
-                    PedidoItem.objects.bulk_create([
-                        PedidoItem(
+                    items_pedido = []
+                    for it in sorted(grupo['items'], key=lambda item: item['producto'].pk):
+                        sucursal_stock_id = descontar_stock(
+                            it['producto'].pk, it['cantidad'], sucursal.pk if sucursal else None,
+                        )
+                        if sucursal_stock_id is None:
+                            raise ValueError(f'"{it["producto"].nombre}" ya no tiene suficiente stock.')
+                        items_pedido.append(PedidoItem(
                             pedido=pedido, producto=it['producto'], cantidad=it['cantidad'],
                             precio_unitario=it['precio_unitario'], subtotal=it['cantidad'] * it['precio_unitario'],
-                        )
-                        for it in grupo['items']
-                    ])
-                    for it in grupo['items']:
-                        if not _descontar_stock(it['producto'].id, it['cantidad'], sucursal.id if sucursal else None):
-                            raise ValueError(f'"{it["producto"].nombre}" ya no tiene suficiente stock.')
+                            sucursal_stock_id=sucursal_stock_id,
+                        ))
+                    PedidoItem.objects.bulk_create(items_pedido)
 
                 if metodo_orden == OrdenCompra.MetodoPago.QR:
                     Pago.objects.create(
@@ -776,22 +792,26 @@ class IniciarCheckoutView(APIView):
 
         # Flujo PayPal:
         monto_usd = (monto_total / settings.TASA_CAMBIO_USD_BOB).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        referencia = paypal_client.referencia_checkout(orden.pk)
         try:
             if plataforma == 'movil':
                 paypal_orden = paypal_client.crear_orden(
                     monto_usd, payment_token_id,
                     return_url='vecinomarket://pago-exitoso',
                     cancel_url='vecinomarket://pago-cancelado',
+                    referencia=referencia,
                 )
             else:
-                paypal_orden = paypal_client.crear_orden(monto_usd, payment_token_id)
-        except PaypalError as exc:
+                paypal_orden = paypal_client.crear_orden(monto_usd, payment_token_id, referencia=referencia)
+        except (PaypalError, RequestException):
             with transaction.atomic():
                 _restituir_stock_orden(orden)
                 orden.estado_pago = OrdenCompra.EstadoPago.FALLIDO
                 orden.save(update_fields=['estado_pago'])
-            return Response({'detail': str(exc), 'paypal': exc.detalle}, status=status.HTTP_502_BAD_GATEWAY)
+            return Response({'detail': 'No se pudo abrir el pago de PayPal.'}, status=status.HTTP_502_BAD_GATEWAY)
 
+        orden.paypal_orden_id = paypal_orden['id']
+        orden.save(update_fields=['paypal_orden_id'])
         _log(request, 'INICIAR_CHECKOUT', orden.id, {'monto_total': str(monto_total), 'monto_usd': str(monto_usd)}, entidad_afectada='orden_compra')
         enlace_aprobacion = next(
             (l['href'] for l in paypal_orden.get('links', []) if l.get('rel') == 'approve'), None
@@ -813,18 +833,37 @@ class ConfirmarPagoCheckoutView(APIView):
 
     permission_classes = [EsComprador]
 
+    @transaction.atomic
     def post(self, request, orden_compra_id):
         orden = get_object_or_404(
-            OrdenCompra, id=orden_compra_id, comprador__usuario=request.user,
-            estado_pago=OrdenCompra.EstadoPago.PENDIENTE,
+            OrdenCompra.objects.select_for_update(of=('self',)),
+            id=orden_compra_id, comprador__usuario=request.user,
+            estado_pago=OrdenCompra.EstadoPago.PENDIENTE, metodo_pago=OrdenCompra.MetodoPago.PAYPAL,
         )
         paypal_order_id = request.data.get('paypal_order_id')
         if not paypal_order_id:
             return Response({'detail': 'Falta paypal_order_id.'}, status=status.HTTP_400_BAD_REQUEST)
+        if orden.paypal_orden_id != paypal_order_id:
+            return Response(
+                {'detail': 'La orden de PayPal no coincide. Inicia el pago de nuevo.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
-            resultado = paypal_client.capturar_orden(paypal_order_id)
+            resultado = paypal_client.capturar_orden(
+                paypal_order_id, idempotency_key=paypal_client.referencia_checkout(orden.pk)[:36],
+            )
+        except RequestException:
+            return Response(
+                {'detail': 'PayPal no respondió. Vuelve a consultar el mismo pago.'},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
         except PaypalError as exc:
+            if exc.detalle.get('name') in {'INTERNAL_SERVER_ERROR', 'SERVICE_UNAVAILABLE'}:
+                return Response(
+                    {'detail': 'PayPal no confirmó el pago. Vuelve a consultar el mismo pago.'},
+                    status=status.HTTP_502_BAD_GATEWAY,
+                )
             with transaction.atomic():
                 orden.estado_pago = OrdenCompra.EstadoPago.FALLIDO
                 orden.save(update_fields=['estado_pago'])
@@ -835,7 +874,13 @@ class ConfirmarPagoCheckoutView(APIView):
                 )
             return Response({'detail': str(exc), 'paypal': exc.detalle}, status=status.HTTP_502_BAD_GATEWAY)
 
-        aprobado = resultado.get('status') == 'COMPLETED'
+        captura = paypal_client.captura_completada(resultado)
+        if captura is None and resultado.get('status') in {'COMPLETED', 'PENDING', 'APPROVED'}:
+            return Response(
+                {'detail': 'La captura aún no está confirmada. Vuelve a consultar el mismo pago.'},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+        aprobado = captura is not None
 
         with transaction.atomic():
             if aprobado:
@@ -848,6 +893,9 @@ class ConfirmarPagoCheckoutView(APIView):
             Pago.objects.create(
                 orden_compra=orden, monto=orden.monto_total, metodo=Pago.Metodo.PAYPAL,
                 referencia_pasarela=paypal_order_id,
+                paypal_captura_id=captura['id'] if captura else '',
+                paypal_monto_capturado=captura['amount']['value'] if captura else None,
+                paypal_moneda=captura['amount']['currency_code'] if captura else '',
                 estado=Pago.Estado.APROBADO if aprobado else Pago.Estado.RECHAZADO,
                 fecha_pago=timezone.now() if aprobado else None,
             )
