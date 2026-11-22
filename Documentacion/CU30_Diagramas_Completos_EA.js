@@ -57,7 +57,7 @@ function main() {
         return;
     }
 
-    var cu30Pkg = currentPackage.Packages.AddNew("CU30 - Gestionar Lista de Deseos y Alertas de Precio", "");
+    var cu30Pkg = obtenerOLimpiarPaquete(currentPackage, "CU30 - Gestionar Lista de Deseos y Alertas de Precio");
     cu30Pkg.Update();
 
     Repository.WriteOutput("Script", "[1/3] Generando ANL-CU30: Diagrama de Análisis de Clases (BCE)...", 0);
@@ -75,6 +75,25 @@ function main() {
 
     Repository.WriteOutput("Script", "=== [OK] LOS 3 DIAGRAMAS DEL CU30 FUERON GENERADOS EXITOSAMENTE ===", 0);
     Session.Prompt("¡Los 3 diagramas del Caso de Uso 30 han sido generados exitosamente en 100% Español formal!", 0);
+}
+
+function obtenerOLimpiarPaquete(parentPkg, nombre) {
+    for (var i = parentPkg.Packages.Count - 1; i >= 0; i--) {
+        var p = parentPkg.Packages.GetAt(i);
+        if (p.Name == nombre) {
+            for (var e = p.Elements.Count - 1; e >= 0; e--) { p.Elements.Delete(e); }
+            for (var d = p.Diagrams.Count - 1; d >= 0; d--) { p.Diagrams.Delete(d); }
+            for (var s = p.Packages.Count - 1; s >= 0; s--) { p.Packages.Delete(s); }
+            p.Elements.Refresh();
+            p.Diagrams.Refresh();
+            p.Packages.Refresh();
+            p.Update();
+            return p;
+        }
+    }
+    var nuevo = parentPkg.Packages.AddNew(nombre, "Package");
+    nuevo.Update();
+    return nuevo;
 }
 
 /* ==============================================================================
@@ -294,89 +313,95 @@ function generarSecuenciaCU30(parentPkg) {
     var diag = pkg.Diagrams.AddNew("SQ-CU30 - Gestionar Lista de Deseos y Alertas", "Sequence");
     diag.Update();
 
-    // 1. Creación de Lifelines en Español formal (Exactamente las 6 clases del CU30)
+    // 1. Creación de Lifelines en Español formal (Exactamente las 7 clases del CU30 con sus 4 Entidades)
     var act   = crearLifeline(pkg, "Comprador", "actor");
     var ui    = crearLifeline(pkg, "MisDeseosView", "boundary");
     var ctrl  = crearLifeline(pkg, "ListaDeseosController", "control");
     var e1    = crearLifeline(pkg, "ListaDeseoItem", "entity");
     var e2    = crearLifeline(pkg, "Producto", "entity");
     var e3    = crearLifeline(pkg, "Carrito", "entity");
+    var e4    = crearLifeline(pkg, "Notificacion", "entity");
 
     // 2. Posicionamiento horizontal de Lifelines (Inicia limpio en X=60)
-    colocarLifeline(diag, act,   60,  150,  -30, -1180, C_OBJ_BG);
-    colocarLifeline(diag, ui,    240, 350,  -30, -1180, C_OBJ_BG);
-    colocarLifeline(diag, ctrl,  450, 560,  -30, -1180, C_OBJ_BG);
-    colocarLifeline(diag, e1,    660, 770,  -30, -1180, C_OBJ_BG);
-    colocarLifeline(diag, e2,    870, 980,  -30, -1180, C_OBJ_BG);
-    colocarLifeline(diag, e3,    1080, 1190,-30, -1180, C_OBJ_BG);
+    colocarLifeline(diag, act,   60,  150,  -30, -1480, C_OBJ_BG);
+    colocarLifeline(diag, ui,    240, 350,  -30, -1480, C_OBJ_BG);
+    colocarLifeline(diag, ctrl,  450, 560,  -30, -1480, C_OBJ_BG);
+    colocarLifeline(diag, e1,    660, 770,  -30, -1480, C_OBJ_BG);
+    colocarLifeline(diag, e2,    870, 980,  -30, -1480, C_OBJ_BG);
+    colocarLifeline(diag, e3,    1080, 1190,-30, -1480, C_OBJ_BG);
+    colocarLifeline(diag, e4,    1290, 1400,-30, -1480, C_OBJ_BG);
 
     // =========================================================================
-    // FLUJO 1: Consultar Lista de Deseos (listarDeseos) - Ida y Vuelta Completa
+    // FLUJO 1: Consultar Lista de Deseos (abrirListaDeseos) - Ida y Vuelta Completa
     // =========================================================================
-    crearMsgSeq(act, ui, diag, "1", "accederSeccionDeseos()", false, 1, -100, C_LINEA_NEGRO);
-    crearMsgSeq(ui, ctrl, diag, "1.1", "listarDeseos(comprador)", false, 2, -130, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, e1, diag, "1.2", "ListaDeseoItem.objects.filter(comprador=comprador)", false, 3, -160, C_LINEA_NEGRO);
-    crearMsgSeq(e1, ctrl, diag, "1.3", "retorno: [ListaDeseoItem]", true, 4, -190, C_LINEA_NEGRO);
+    crearMsgSeq(act, ui, diag, "1", "abrirListaDeseos()", false, 1, -80, C_LINEA_NEGRO);
+    crearMsgSeq(ui, ctrl, diag, "1.1", "listarDeseos(comprador)", false, 2, -110, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, e1, diag, "1.2", "ListaDeseoItem.objects.filter(comprador=comprador)", false, 3, -140, C_LINEA_NEGRO);
+    crearMsgSeq(e1, ctrl, diag, "1.3", "retorno: [ListaDeseoItem]", true, 4, -170, C_LINEA_NEGRO);
 
-    // Fragmento loop: INICIA SOLO DESDE CONTROL (ctrl: 430 hasta e2: 1000)
-    crearFragmento(pkg, diag, "[por cada producto guardado]", "loop", 430, 1000, -210, -290);
-    crearMsgSeq(ctrl, e2, diag, "1.4", "obtenerPrecioActual(producto)", false, 5, -230, C_LINEA_NEGRO);
-    crearMsgSeq(e2, ctrl, diag, "1.5", "retorno: precioActual", true, 6, -260, C_LINEA_NEGRO);
+    // Fragmento loop: Bucle interno en el controlador (inicia en Control)
+    crearFragmento(pkg, diag, "[por cada producto guardado]", "loop", 430, 1000, -190, -270);
+    crearMsgSeq(ctrl, e2, diag, "1.4", "obtenerPrecioActual(producto)", false, 5, -210, C_LINEA_NEGRO);
+    crearMsgSeq(e2, ctrl, diag, "1.5", "retorno: precioActual", true, 6, -240, C_LINEA_NEGRO);
 
     // Retornos hasta el Actor
-    crearMsgSeq(ctrl, ui, diag, "1.6", "retornarListaDeseos(items, alertasBaja)", true, 7, -310, C_LINEA_NEGRO);
-    crearMsgSeq(ui, act, diag, "1.7", "renderizarGrillaDeseos(items)", true, 8, -340, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, ui, diag, "1.6", "retornarListaDeseos(items, alertasBaja)", true, 7, -290, C_LINEA_NEGRO);
+    crearMsgSeq(ui, act, diag, "1.7", "renderizarItemsYAlertas(deseos)", true, 8, -320, C_LINEA_NEGRO);
 
     // =========================================================================
     // FLUJO 2: Alternar Favorito Toggle (alternarDeseo) - Ida y Vuelta Completa
     // =========================================================================
-    crearMsgSeq(act, ui, diag, "2", "presionarBotonFavorito(productoId)", false, 9, -380, C_LINEA_NEGRO);
+    crearMsgSeq(act, ui, diag, "2", "alternarDeseo(productoId)", false, 9, -390, C_LINEA_NEGRO);
 
     // Fragmento alt: INICIA DESDE LA INTERFAZ (ui: 220 hasta e1: 790)
-    crearFragmento(pkg, diag, "[producto no guardado | else: producto ya en lista]", "alt", 220, 790, -400, -600);
+    crearFragmento(pkg, diag, "[producto no guardado | else: producto ya en lista]", "alt", 220, 790, -415, -680);
     // Rama 1: Guardar nuevo
-    crearMsgSeq(ui, ctrl, diag, "2.1a", "alternarDeseo(productoId)", false, 10, -420, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, e1, diag, "2.2a", "ListaDeseoItem.objects.create(comprador, producto, precioActual)", false, 11, -440, C_LINEA_NEGRO);
-    crearMsgSeq(e1, ctrl, diag, "2.3a", "confirmacion(+id)", true, 12, -460, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, ui, diag, "2.4a", "mostrarMensaje('Guardado en favoritos')", true, 13, -480, C_LINEA_NEGRO);
-    crearMsgSeq(ui, act, diag, "2.5a", "actualizarIconoFavorito(activo=true)", true, 14, -500, C_LINEA_NEGRO);
+    crearMsgSeq(ui, ctrl, diag, "2.1a", "alternarDeseo(productoId)", false, 10, -440, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, e1, diag, "2.2a", "ListaDeseoItem.objects.create(comprador, producto, precioActual)", false, 11, -465, C_LINEA_NEGRO);
+    crearMsgSeq(e1, ctrl, diag, "2.3a", "confirmacion(+id)", true, 12, -490, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, ui, diag, "2.4a", "mostrarMensaje('Guardado en favoritos')", true, 13, -515, C_LINEA_NEGRO);
+    crearMsgSeq(ui, act, diag, "2.5a", "actualizarIconoFavorito(activo=true)", true, 14, -540, C_LINEA_NEGRO);
 
-    // Rama 2: Quitar existente
-    crearMsgSeq(ui, ctrl, diag, "2.1b", "alternarDeseo(productoId)", false, 15, -520, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, e1, diag, "2.2b", "ListaDeseoItem.objects.filter(comprador, producto).delete()", false, 16, -540, C_LINEA_NEGRO);
-    crearMsgSeq(e1, ctrl, diag, "2.3b", "confirmacion(eliminado)", true, 17, -560, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, ui, diag, "2.4b", "mostrarMensaje('Eliminado de favoritos')", true, 18, -580, C_LINEA_NEGRO);
-    crearMsgSeq(ui, act, diag, "2.5b", "actualizarIconoFavorito(activo=false)", true, 19, -600, C_LINEA_NEGRO);
+    // Rama 2: Quitar existente (else)
+    crearMsgSeq(ui, ctrl, diag, "2.1b", "alternarDeseo(productoId)", false, 15, -570, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, e1, diag, "2.2b", "ListaDeseoItem.objects.filter(comprador, producto).delete()", false, 16, -595, C_LINEA_NEGRO);
+    crearMsgSeq(e1, ctrl, diag, "2.3b", "confirmacion(eliminado)", true, 17, -620, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, ui, diag, "2.4b", "mostrarMensaje('Eliminado de favoritos')", true, 18, -645, C_LINEA_NEGRO);
+    crearMsgSeq(ui, act, diag, "2.5b", "actualizarIconoFavorito(activo=false)", true, 19, -670, C_LINEA_NEGRO);
 
     // =========================================================================
-    // FLUJO 3: Configurar Alerta de Precio Meta (actualizarAlertaPrecio) - Ida y Vuelta
+    // FLUJO 3: Configurar Alerta de Precio Meta (configurarPrecioMeta) - Ida y Vuelta
     // =========================================================================
-    crearMsgSeq(act, ui, diag, "3", "configurarPrecioMeta(itemId, nuevoPrecioObjetivo)", false, 20, -640, C_LINEA_NEGRO);
+    // Espacio amplio: el mensaje del usuario va en Y=-750 y el fragmento opt inicia en Y=-780
+    crearMsgSeq(act, ui, diag, "3", "configurarPrecioMeta(itemId, precioMeta)", false, 20, -750, C_LINEA_NEGRO);
 
-    // Fragmento opt: INICIA DESDE LA INTERFAZ (ui: 220 hasta e1: 790)
-    crearFragmento(pkg, diag, "[precio meta válido > 0]", "opt", 220, 790, -660, -780);
-    crearMsgSeq(ui, ctrl, diag, "3.1", "actualizarAlertaPrecio(itemId, nuevoPrecioObjetivo)", false, 21, -680, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, e1, diag, "3.2", "item.save(update_fields=['precio_objetivo'])", false, 22, -710, C_LINEA_NEGRO);
-    crearMsgSeq(e1, ctrl, diag, "3.3", "confirmacion(actualizado)", true, 23, -730, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, ui, diag, "3.4", "mostrarNotificacionExito('Alerta configurada')", true, 24, -750, C_LINEA_NEGRO);
-    crearMsgSeq(ui, act, diag, "3.5", "mostrarToastExito('Alerta configurada')", true, 25, -770, C_LINEA_NEGRO);
+    // Fragmento opt: INICIA DESDE LA INTERFAZ (ui: 220 hasta e4: 1420)
+    crearFragmento(pkg, diag, "[precio meta válido > 0]", "opt", 220, 1420, -780, -980);
+    crearMsgSeq(ui, ctrl, diag, "3.1", "actualizarAlertaPrecio(itemId, precioMeta)", false, 21, -805, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, e1, diag, "3.2", "item.save(update_fields=['precio_objetivo'])", false, 22, -835, C_LINEA_NEGRO);
+    crearMsgSeq(e1, ctrl, diag, "3.3", "confirmacion(actualizado)", true, 23, -865, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, e4, diag, "3.4", "Notificacion.objects.create(usuario, 'ALERTA_PRECIO')", false, 24, -895, C_LINEA_NEGRO);
+    crearMsgSeq(e4, ctrl, diag, "3.5", "confirmacion(notificacionId)", true, 25, -920, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, ui, diag, "3.6", "mostrarNotificacionExito('Alerta configurada')", true, 26, -945, C_LINEA_NEGRO);
+    crearMsgSeq(ui, act, diag, "3.7", "mostrarToastExito('Alerta configurada')", true, 27, -970, C_LINEA_NEGRO);
 
     // =========================================================================
     // FLUJO 4: Mover Producto al Carrito (moverAlCarrito) - Ida y Vuelta Completa
     // =========================================================================
-    crearMsgSeq(act, ui, diag, "4", "presionarMoverAlCarrito(itemId)", false, 26, -810, C_LINEA_NEGRO);
+    crearMsgSeq(act, ui, diag, "4", "moverAlCarrito(itemId)", false, 28, -1040, C_LINEA_NEGRO);
 
     // Fragmento opt: INICIA DESDE LA INTERFAZ (ui: 220 hasta e3: 1210)
-    crearFragmento(pkg, diag, "[producto disponible con stock activo]", "opt", 220, 1210, -830, -1120);
-    crearMsgSeq(ui, ctrl, diag, "4.1", "moverAlCarrito(itemId, mantener=false)", false, 27, -850, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, e2, diag, "4.2", "validarStockDisponible(producto)", false, 28, -880, C_LINEA_NEGRO);
-    crearMsgSeq(e2, ctrl, diag, "4.3", "confirmacionStock(disponible=true)", true, 29, -910, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, e3, diag, "4.4", "Carrito.objects.get_or_create(comprador, ABIERTO)", false, 30, -940, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, e3, diag, "4.5", "CarritoItem.objects.create(carrito, producto, cantidad=1)", false, 31, -970, C_LINEA_NEGRO);
-    crearMsgSeq(e3, ctrl, diag, "4.6", "confirmacionCarrito(+itemId)", true, 32, -1000, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, e1, diag, "4.7", "ListaDeseoItem.objects.filter(id=itemId).delete()", false, 33, -1030, C_LINEA_NEGRO);
-    crearMsgSeq(ctrl, ui, diag, "4.8", "mostrarMensaje('Movido al carrito')", true, 34, -1060, C_LINEA_NEGRO);
-    crearMsgSeq(ui, act, diag, "4.9", "actualizarBadgeCarritoYQuitarFila()", true, 35, -1090, C_LINEA_NEGRO);
+    crearFragmento(pkg, diag, "[producto disponible con stock activo]", "opt", 220, 1210, -1070, -1400);
+    crearMsgSeq(ui, ctrl, diag, "4.1", "moverAlCarrito(itemId, mantener=false)", false, 29, -1095, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, e2, diag, "4.2", "validarStockDisponible(producto)", false, 30, -1125, C_LINEA_NEGRO);
+    crearMsgSeq(e2, ctrl, diag, "4.3", "confirmacionStock(disponible=true)", true, 31, -1155, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, e3, diag, "4.4", "Carrito.objects.get_or_create(comprador, ABIERTO)", false, 32, -1185, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, e3, diag, "4.5", "CarritoItem.objects.create(carrito, producto, cantidad=1)", false, 33, -1215, C_LINEA_NEGRO);
+    crearMsgSeq(e3, ctrl, diag, "4.6", "confirmacionCarrito(+itemId)", true, 34, -1245, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, e1, diag, "4.7", "ListaDeseoItem.objects.filter(id=itemId).delete()", false, 35, -1275, C_LINEA_NEGRO);
+    crearMsgSeq(e1, ctrl, diag, "4.8", "confirmacion(eliminado)", true, 36, -1305, C_LINEA_NEGRO);
+    crearMsgSeq(ctrl, ui, diag, "4.9", "mostrarMensaje('Movido al carrito')", true, 37, -1340, C_LINEA_NEGRO);
+    crearMsgSeq(ui, act, diag, "4.10", "actualizarBadgeCarritoYQuitarFila()", true, 38, -1370, C_LINEA_NEGRO);
 
     finalizarDiag(diag);
 }

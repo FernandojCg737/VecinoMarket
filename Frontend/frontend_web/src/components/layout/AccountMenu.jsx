@@ -31,11 +31,6 @@ export default function AccountMenu() {
               <ClipboardList size={16} /> Devoluciones
             </Link>
           )}
-          {esStaff(usuario) && (
-            <Link to="/admin/deseos" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">
-              <Heart size={16} /> Lista de deseos y alertas
-            </Link>
-          )}
           {esEmpresaOEmpleado(usuario) && (
             <>
               {tienePermisoEmpleado(usuario, 'ver_reportes') && (
