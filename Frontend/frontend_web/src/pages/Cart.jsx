@@ -2,10 +2,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useCurrency } from '../context/CurrencyContext';
 
 export default function Cart() {
   const { items, actualizarCantidad, quitarDelCarrito, subtotal } = useCart();
   const { usuario } = useAuth();
+  const { formatearPrecio } = useCurrency();
   const navigate = useNavigate();
 
   function irACheckout() {
@@ -52,7 +54,7 @@ export default function Cart() {
                 <Link to={`/productos/${item.id}`} className="block font-medium text-gray-800 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400">
                   {item.nombre}
                 </Link>
-                <span className="text-sm font-bold text-gray-900 dark:text-gray-100">Bs {item.precio}</span>
+                <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{formatearPrecio(item.precio)}</span>
               </div>
               <div className="flex flex-col items-end justify-between">
                 <button onClick={() => quitarDelCarrito(item.id)} className="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400">
@@ -82,7 +84,7 @@ export default function Cart() {
           <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Resumen</h2>
           <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
             <span>Subtotal</span>
-            <span>Bs {subtotal.toFixed(2)}</span>
+            <span>{formatearPrecio(subtotal)}</span>
           </div>
           <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">El costo de envío se calcula en el siguiente paso.</p>
           <button

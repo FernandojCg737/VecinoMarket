@@ -1,3 +1,4 @@
+import { useCurrency } from '../context/CurrencyContext';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -28,6 +29,7 @@ export default function WishlistPage() {
   } = useWishlist();
 
   const [editandoAlertaId, setEditandoAlertaId] = useState(null);
+  const { formatearPrecio } = useCurrency();
   const [precioMetaInput, setPrecioMetaInput] = useState('');
   const [mensajeExito, setMensajeExito] = useState('');
   const [procesandoId, setProcesandoId] = useState(null);
@@ -230,16 +232,16 @@ export default function WishlistPage() {
                       <div>
                         <div className="flex items-baseline gap-2">
                           <span className="text-xl font-extrabold text-brand-600 dark:text-brand-400">
-                            Bs {item.precio_actual}
+                            {formatearPrecio(item.precio_actual)}
                           </span>
                           {tieneBaja && (
                             <span className="text-xs text-gray-400 dark:text-gray-500 line-through">
-                              Bs {item.precio_al_guardar}
+                              {formatearPrecio(item.precio_al_guardar)}
                             </span>
                           )}
                         </div>
                         <span className="text-[11px] text-gray-400">
-                          Guardado inicialmente en: Bs {item.precio_al_guardar}
+                          Guardado inicialmente en: {formatearPrecio(item.precio_al_guardar)}
                         </span>
                       </div>
 

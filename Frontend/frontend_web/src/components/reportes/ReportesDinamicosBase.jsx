@@ -1,3 +1,4 @@
+import ModoMachineLearning from './ModoMachineLearning';
 import { useEffect, useMemo, useState } from 'react';
 import {
   Sliders, FileText, FileSpreadsheet, FileType, Globe, Mail,
@@ -59,12 +60,12 @@ export default function ReportesDinamicosBase({
   const [escuchandoVoz, setEscuchandoVoz] = useState(false);
   const [transcripcionVoz, setTranscripcionVoz] = useState('');
   const [consultaEscrita, setConsultaEscrita] = useState('');
+  const [usarML, setUsarML] = useState(false);
   const [consultandoIA, setConsultandoIA] = useState(false);
   const [hablando, setHablando] = useState(false);
-  const [vozHabilitada, setVozHabilitada] = useState(true);
 
   function hablar(texto) {
-    if (!vozHabilitada || !('speechSynthesis' in window)) return;
+    if (!('speechSynthesis' in window)) return;
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(texto);
@@ -198,7 +199,7 @@ export default function ReportesDinamicosBase({
     detenerVoz();
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      window.alert('Tu navegador no tiene soporte para la API de voz. Te recomendamos usar Google Chrome o Microsoft Edge.');
+      setTranscripcionVoz('El navegador no admite comandos de voz. Puedes escribir la consulta.');
       return;
     }
 
@@ -212,7 +213,7 @@ export default function ReportesDinamicosBase({
 
     recognition.onresult = (event) => {
       const texto = event.results[0][0].transcript;
-      setTranscripcionVoz(`Comando IA reconocido: "${texto}"`);
+      setTranscripcionVoz(`Comando reconocido: "${texto}"`);
       procesarComandoVoz(texto);
     };
 
@@ -225,17 +226,22 @@ export default function ReportesDinamicosBase({
       setEscuchandoVoz(false);
     };
 
-    recognition.start();
+    try {
+      recognition.start();
+    } catch {
+      setEscuchandoVoz(false);
+      setTranscripcionVoz('No se pudo iniciar el micrófono. Puedes escribir la consulta.');
+    }
   }
 
   async function procesarComandoVoz(texto) {
-    if (!texto || !texto.trim()) return;
+    if (!texto?.trim() || consultandoIA) return;
     detenerVoz();
     setConsultandoIA(true);
     setTranscripcionVoz(`Consultando analítica para: "${texto}"...`);
 
     try {
-      const payload = { pregunta: texto };
+      const payload = { pregunta: texto, modo: usarML ? 'ml' : 'reglas' };
       if (permiteFiltrarEmpresa && empresaSel) {
         payload.empresa = empresaSel.id;
       }
@@ -243,26 +249,6 @@ export default function ReportesDinamicosBase({
       const res = await API.post('reportes/asistente-voz/', payload);
       const data = res.data;
       const respuesta = data.respuesta || 'Consulta analítica procesada.';
-      const nuevoDataset = data.dataset;
-      const nuevasCols = data.columnas;
-      const fIni = data.fecha_inicio;
-      const fFin = data.fecha_fin;
-
-      // Validar que el dataset sugerido pertenezca al catálogo disponible del usuario
-      const dsEncontrado = catalogo.find((c) => c.clave === nuevoDataset);
-      const datasetFinal = dsEncontrado ? dsEncontrado.clave : (catalogo[0]?.clave || datasetKey);
-
-      let colsFinales = nuevasCols;
-      if (!Array.isArray(colsFinales) || colsFinales.length === 0 || !dsEncontrado) {
-        const itemCat = catalogo.find((c) => c.clave === datasetFinal);
-        colsFinales = itemCat ? itemCat.columnas.map((c) => c.clave) : columnas;
-      }
-
-      setDatasetKey(datasetFinal);
-      setColumnas(colsFinales);
-      setFechaInicio(fIni || '');
-      setFechaFin(fFin || '');
-
       setTranscripcionVoz(respuesta);
 
       // Reproducir por voz la respuesta analítica descriptiva (limpiando asteriscos markdown)
@@ -271,6 +257,26 @@ export default function ReportesDinamicosBase({
         .replace(/\*/g, '')
         .replace(/Bs\s?/g, 'Bolivianos ');
       hablar(textoLimpio);
+
+      const dsEncontrado = catalogo.find((c) => c.clave === data.dataset);
+      if (!dsEncontrado) {
+        setTablaDatos(null);
+        return;
+      }
+      const datasetFinal = dsEncontrado.clave;
+      const permitidas = dsEncontrado.columnas.map((c) => c.clave);
+      const solicitadas = Array.isArray(data.columnas)
+        ? data.columnas.filter((c) => permitidas.includes(c))
+        : [];
+      const colsFinales = solicitadas.length ? solicitadas : permitidas;
+      const fIni = data.fecha_inicio;
+      const fFin = data.fecha_fin;
+
+      setDatasetKey(datasetFinal);
+      setColumnas(colsFinales);
+      setFiltrosExtra({});
+      setFechaInicio(fIni || '');
+      setFechaFin(fFin || '');
 
       // Cargar la tabla de datos correspondiente
       const directParams = {
@@ -285,8 +291,11 @@ export default function ReportesDinamicosBase({
 
       cargarTabla(directParams);
     } catch (err) {
-      console.warn('Error en asistente analítico por voz, usando fallback local:', err);
-      ejecutarFallbackLocal(texto);
+      if (usarML || (err.response && err.response.status < 500)) {
+        setTranscripcionVoz(err.response?.data?.detail || 'No se pudo procesar la consulta. Intenta nuevamente.');
+      } else {
+        ejecutarFallbackLocal(texto);
+      }
     } finally {
       setConsultandoIA(false);
     }
@@ -314,33 +323,29 @@ export default function ReportesDinamicosBase({
 
     let fIni = fechaInicio;
     let fFin = fechaFin;
-    let periodoTexto = '';
     const hoy = new Date();
     if (textoNorm.includes('hoy')) {
       fIni = hoy.toISOString().split('T')[0];
       fFin = fIni;
-      periodoTexto = 'de hoy';
     } else if (textoNorm.includes('semana')) {
       const hace7 = new Date();
       hace7.setDate(hoy.getDate() - 7);
       fIni = hace7.toISOString().split('T')[0];
       fFin = hoy.toISOString().split('T')[0];
-      periodoTexto = 'de la última semana';
     } else if (textoNorm.includes('mes')) {
       const hace30 = new Date();
       hace30.setDate(hoy.getDate() - 30);
       fIni = hace30.toISOString().split('T')[0];
       fFin = hoy.toISOString().split('T')[0];
-      periodoTexto = 'del último mes';
     } else if (textoNorm.includes('año')) {
       fIni = `${hoy.getFullYear()}-01-01`;
       fFin = hoy.toISOString().split('T')[0];
-      periodoTexto = 'de este año';
     }
 
     setFechaInicio(fIni);
     setFechaFin(fFin);
 
+    setFiltrosExtra({});
     const etiquetaFinal = encontrado ? encontrado.etiqueta : (catalogo.find((it) => it.clave === nuevoDataset)?.etiqueta || 'reporte');
     const directParams = {
       dataset: nuevoDataset,
@@ -350,6 +355,8 @@ export default function ReportesDinamicosBase({
     };
     if (fIni) directParams.fecha_inicio = fIni;
     if (fFin) directParams.fecha_fin = fFin;
+
+    if (permiteFiltrarEmpresa && empresaSel) directParams.empresa = empresaSel.id;
 
     cargarTabla(directParams, (data) => {
       const total = data?.total ?? data?.filas?.length ?? 0;
@@ -513,7 +520,7 @@ export default function ReportesDinamicosBase({
           {/* Barra del Asistente Analítico IA (voz y texto) */}
           {permiteVoz && (
             <div className="rounded-xl border border-purple-200 dark:border-purple-800/60 bg-gradient-to-r from-purple-50/70 via-indigo-50/40 to-purple-50/70 dark:from-purple-950/20 dark:via-gray-900 dark:to-purple-950/20 p-3.5 shadow-sm space-y-2.5">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-2">
                 <div className="relative flex-1 flex items-center bg-white dark:bg-gray-800 rounded-lg border border-purple-200 dark:border-purple-700/60 px-3 py-1.5 focus-within:ring-2 focus-within:ring-purple-400">
                   <Sparkles size={16} className="text-purple-600 dark:text-purple-400 shrink-0 mr-2" />
                   <input
@@ -521,12 +528,14 @@ export default function ReportesDinamicosBase({
                     value={consultaEscrita}
                     onChange={(e) => setConsultaEscrita(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' && consultaEscrita.trim()) {
+                      if (e.key === 'Enter' && !consultandoIA && !escuchandoVoz && consultaEscrita.trim()) {
                         procesarComandoVoz(consultaEscrita);
                         setConsultaEscrita('');
                       }
                     }}
                     placeholder="Pregúntale a la IA (ej: ¿cuál es el producto más vendido?, ¿cuánto vendí este mes?)..."
+                    aria-label="Consulta de reportes"
+                    maxLength={500}
                     className="w-full text-xs sm:text-sm bg-transparent border-none text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none"
                   />
                   {consultaEscrita.trim() && (
@@ -536,7 +545,7 @@ export default function ReportesDinamicosBase({
                         procesarComandoVoz(consultaEscrita);
                         setConsultaEscrita('');
                       }}
-                      disabled={consultandoIA}
+                      disabled={consultandoIA || escuchandoVoz}
                       className="text-xs font-semibold bg-purple-600 text-white rounded px-2.5 py-1 hover:bg-purple-700 transition shrink-0"
                     >
                       Preguntar
@@ -545,39 +554,51 @@ export default function ReportesDinamicosBase({
                 </div>
 
                 <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    onClick={iniciarComandoVoz}
-                    disabled={escuchandoVoz || consultandoIA}
-                    className={`inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-2 text-xs sm:text-sm font-semibold transition shadow-sm ${
-                      escuchandoVoz
-                        ? 'border-red-500 bg-red-50 dark:bg-red-950/40 text-red-600 animate-pulse'
-                        : hablando
-                        ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 animate-pulse'
-                        : consultandoIA
-                        ? 'border-purple-400 bg-purple-100 dark:bg-purple-900 text-purple-700'
-                        : 'border-purple-600 bg-purple-600 text-white hover:bg-purple-700'
-                    }`}
-                    title="Comando por voz IA (pulsa y habla)"
-                  >
-                    {escuchandoVoz ? (
-                      <MicOff size={15} />
-                    ) : hablando ? (
-                      <Volume2 size={15} className="animate-bounce" />
-                    ) : consultandoIA ? (
-                      <RefreshCw size={15} className="animate-spin" />
-                    ) : (
-                      <Mic size={15} />
-                    )}
-                    <span>
-                      {escuchandoVoz
-                        ? 'Escuchando voz...'
-                        : hablando
-                        ? 'IA respondiendo...'
-                        : consultandoIA
-                        ? 'Analizando datos...'
-                        : 'Comando por voz (IA)'}
-                    </span>
-                  </button>
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <button
+                      type="button"
+                      onClick={iniciarComandoVoz}
+                      disabled={escuchandoVoz || consultandoIA}
+                      className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3.5 py-2 text-xs sm:text-sm font-semibold transition shadow-sm ${
+                        escuchandoVoz
+                          ? 'border-red-500 bg-red-50 dark:bg-red-950/40 text-red-600 animate-pulse'
+                          : hablando
+                          ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 animate-pulse'
+                          : consultandoIA
+                          ? 'border-purple-400 bg-purple-100 dark:bg-purple-900 text-purple-700'
+                          : 'border-purple-600 bg-purple-600 text-white hover:bg-purple-700'
+                      }`}
+                      title="Iniciar consulta por voz"
+                    >
+                      {escuchandoVoz ? (
+                        <MicOff size={15} />
+                      ) : hablando ? (
+                        <Volume2 size={15} className="animate-bounce" />
+                      ) : consultandoIA ? (
+                        <RefreshCw size={15} className="animate-spin" />
+                      ) : (
+                        <Mic size={15} />
+                      )}
+                      <span>
+                        {escuchandoVoz
+                          ? 'Escuchando voz...'
+                          : hablando
+                          ? 'Asistente respondiendo...'
+                          : consultandoIA
+                          ? 'Analizando datos...'
+                          : usarML ? 'Comando por voz (ML)' : 'Comando por voz (IA)'}
+                      </span>
+                    </button>
+                    <ModoMachineLearning
+                      activo={usarML}
+                      ocupado={escuchandoVoz || consultandoIA}
+                      onToggle={() => {
+                        detenerVoz();
+                        setUsarML((activo) => !activo);
+                        setTranscripcionVoz('');
+                      }}
+                    />
+                  </div>
 
                   {hablando && (
                     <button
@@ -605,7 +626,7 @@ export default function ReportesDinamicosBase({
                     )}
                     <div className="space-y-1">
                       <p className="font-bold text-[11px] text-purple-700 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
-                        Respuesta del Asistente Analítico IA
+                        {usarML ? 'Respuesta de Machine Learning' : 'Respuesta del Asistente Analítico IA'}
                         {hablando && <span className="inline-block w-2 h-2 rounded-full bg-purple-500 animate-ping" />}
                       </p>
                       <p className="leading-relaxed text-xs sm:text-sm">

@@ -1,0 +1,521 @@
+texto,intencion,familia,origen
+¿cuanta plata se hizo con las ventas?,ventas,ventas-8,sintetico
+¿cuanta plata se hizo con las ventas ayer?,ventas,ventas-8,sintetico
+¿cuanta plata se hizo con las ventas la semana pasada?,ventas,ventas-8,sintetico
+¿cuanta plata se hizo con las ventas del 3 al 8 de abril?,ventas,ventas-8,sintetico
+"¿para el panel, cuanta plata se hizo con las ventas?",ventas,ventas-8,sintetico
+"¿para el panel, cuanta plata se hizo con las ventas ayer?",ventas,ventas-8,sintetico
+"¿para el panel, cuanta plata se hizo con las ventas la semana pasada?",ventas,ventas-8,sintetico
+"¿para el panel, cuanta plata se hizo con las ventas del 3 al 8 de abril?",ventas,ventas-8,sintetico
+¿me ayudas a consultar: cuanta plata se hizo con las ventas?,ventas,ventas-8,sintetico
+¿me ayudas a consultar: cuanta plata se hizo con las ventas ayer?,ventas,ventas-8,sintetico
+¿me ayudas a consultar: cuanta plata se hizo con las ventas la semana pasada?,ventas,ventas-8,sintetico
+¿me ayudas a consultar: cuanta plata se hizo con las ventas del 3 al 8 de abril?,ventas,ventas-8,sintetico
+¿tengo una pregunta: cuanta plata se hizo con las ventas?,ventas,ventas-8,sintetico
+¿tengo una pregunta: cuanta plata se hizo con las ventas ayer?,ventas,ventas-8,sintetico
+¿tengo una pregunta: cuanta plata se hizo con las ventas la semana pasada?,ventas,ventas-8,sintetico
+¿tengo una pregunta: cuanta plata se hizo con las ventas del 3 al 8 de abril?,ventas,ventas-8,sintetico
+¿quedo atento a saber: cuanta plata se hizo con las ventas?,ventas,ventas-8,sintetico
+¿quedo atento a saber: cuanta plata se hizo con las ventas ayer?,ventas,ventas-8,sintetico
+¿quedo atento a saber: cuanta plata se hizo con las ventas la semana pasada?,ventas,ventas-8,sintetico
+¿quedo atento a saber: cuanta plata se hizo con las ventas del 3 al 8 de abril?,ventas,ventas-8,sintetico
+¿dame el acumulado de pedidos y su importe?,ventas,ventas-9,sintetico
+¿dame el acumulado de pedidos y su importe ayer?,ventas,ventas-9,sintetico
+¿dame el acumulado de pedidos y su importe la semana pasada?,ventas,ventas-9,sintetico
+¿dame el acumulado de pedidos y su importe del 3 al 8 de abril?,ventas,ventas-9,sintetico
+"¿para el panel, dame el acumulado de pedidos y su importe?",ventas,ventas-9,sintetico
+"¿para el panel, dame el acumulado de pedidos y su importe ayer?",ventas,ventas-9,sintetico
+"¿para el panel, dame el acumulado de pedidos y su importe la semana pasada?",ventas,ventas-9,sintetico
+"¿para el panel, dame el acumulado de pedidos y su importe del 3 al 8 de abril?",ventas,ventas-9,sintetico
+¿me ayudas a consultar: dame el acumulado de pedidos y su importe?,ventas,ventas-9,sintetico
+¿me ayudas a consultar: dame el acumulado de pedidos y su importe ayer?,ventas,ventas-9,sintetico
+¿me ayudas a consultar: dame el acumulado de pedidos y su importe la semana pasada?,ventas,ventas-9,sintetico
+¿me ayudas a consultar: dame el acumulado de pedidos y su importe del 3 al 8 de abril?,ventas,ventas-9,sintetico
+¿tengo una pregunta: dame el acumulado de pedidos y su importe?,ventas,ventas-9,sintetico
+¿tengo una pregunta: dame el acumulado de pedidos y su importe ayer?,ventas,ventas-9,sintetico
+¿tengo una pregunta: dame el acumulado de pedidos y su importe la semana pasada?,ventas,ventas-9,sintetico
+¿tengo una pregunta: dame el acumulado de pedidos y su importe del 3 al 8 de abril?,ventas,ventas-9,sintetico
+¿quedo atento a saber: dame el acumulado de pedidos y su importe?,ventas,ventas-9,sintetico
+¿quedo atento a saber: dame el acumulado de pedidos y su importe ayer?,ventas,ventas-9,sintetico
+¿quedo atento a saber: dame el acumulado de pedidos y su importe la semana pasada?,ventas,ventas-9,sintetico
+¿quedo atento a saber: dame el acumulado de pedidos y su importe del 3 al 8 de abril?,ventas,ventas-9,sintetico
+¿cual es el articulo de mayor rotacion por ventas?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿cual es el articulo de mayor rotacion por ventas ayer?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿cual es el articulo de mayor rotacion por ventas la semana pasada?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿cual es el articulo de mayor rotacion por ventas del 3 al 8 de abril?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+"¿para el panel, cual es el articulo de mayor rotacion por ventas?",producto_mas_vendido,producto_mas_vendido-8,sintetico
+"¿para el panel, cual es el articulo de mayor rotacion por ventas ayer?",producto_mas_vendido,producto_mas_vendido-8,sintetico
+"¿para el panel, cual es el articulo de mayor rotacion por ventas la semana pasada?",producto_mas_vendido,producto_mas_vendido-8,sintetico
+"¿para el panel, cual es el articulo de mayor rotacion por ventas del 3 al 8 de abril?",producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿me ayudas a consultar: cual es el articulo de mayor rotacion por ventas?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿me ayudas a consultar: cual es el articulo de mayor rotacion por ventas ayer?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿me ayudas a consultar: cual es el articulo de mayor rotacion por ventas la semana pasada?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿me ayudas a consultar: cual es el articulo de mayor rotacion por ventas del 3 al 8 de abril?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿tengo una pregunta: cual es el articulo de mayor rotacion por ventas?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿tengo una pregunta: cual es el articulo de mayor rotacion por ventas ayer?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿tengo una pregunta: cual es el articulo de mayor rotacion por ventas la semana pasada?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿tengo una pregunta: cual es el articulo de mayor rotacion por ventas del 3 al 8 de abril?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿quedo atento a saber: cual es el articulo de mayor rotacion por ventas?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿quedo atento a saber: cual es el articulo de mayor rotacion por ventas ayer?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿quedo atento a saber: cual es el articulo de mayor rotacion por ventas la semana pasada?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿quedo atento a saber: cual es el articulo de mayor rotacion por ventas del 3 al 8 de abril?,producto_mas_vendido,producto_mas_vendido-8,sintetico
+¿dime que producto es el mas comprado?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿dime que producto es el mas comprado ayer?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿dime que producto es el mas comprado la semana pasada?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿dime que producto es el mas comprado del 3 al 8 de abril?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+"¿para el panel, dime que producto es el mas comprado?",producto_mas_vendido,producto_mas_vendido-9,sintetico
+"¿para el panel, dime que producto es el mas comprado ayer?",producto_mas_vendido,producto_mas_vendido-9,sintetico
+"¿para el panel, dime que producto es el mas comprado la semana pasada?",producto_mas_vendido,producto_mas_vendido-9,sintetico
+"¿para el panel, dime que producto es el mas comprado del 3 al 8 de abril?",producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿me ayudas a consultar: dime que producto es el mas comprado?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿me ayudas a consultar: dime que producto es el mas comprado ayer?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿me ayudas a consultar: dime que producto es el mas comprado la semana pasada?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿me ayudas a consultar: dime que producto es el mas comprado del 3 al 8 de abril?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿tengo una pregunta: dime que producto es el mas comprado?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿tengo una pregunta: dime que producto es el mas comprado ayer?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿tengo una pregunta: dime que producto es el mas comprado la semana pasada?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿tengo una pregunta: dime que producto es el mas comprado del 3 al 8 de abril?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿quedo atento a saber: dime que producto es el mas comprado?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿quedo atento a saber: dime que producto es el mas comprado ayer?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿quedo atento a saber: dime que producto es el mas comprado la semana pasada?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿quedo atento a saber: dime que producto es el mas comprado del 3 al 8 de abril?,producto_mas_vendido,producto_mas_vendido-9,sintetico
+¿que empresa quedo primera por monto vendido?,empresa_lider,empresa_lider-8,sintetico
+¿que empresa quedo primera por monto vendido ayer?,empresa_lider,empresa_lider-8,sintetico
+¿que empresa quedo primera por monto vendido la semana pasada?,empresa_lider,empresa_lider-8,sintetico
+¿que empresa quedo primera por monto vendido del 3 al 8 de abril?,empresa_lider,empresa_lider-8,sintetico
+"¿para el panel, que empresa quedo primera por monto vendido?",empresa_lider,empresa_lider-8,sintetico
+"¿para el panel, que empresa quedo primera por monto vendido ayer?",empresa_lider,empresa_lider-8,sintetico
+"¿para el panel, que empresa quedo primera por monto vendido la semana pasada?",empresa_lider,empresa_lider-8,sintetico
+"¿para el panel, que empresa quedo primera por monto vendido del 3 al 8 de abril?",empresa_lider,empresa_lider-8,sintetico
+¿me ayudas a consultar: que empresa quedo primera por monto vendido?,empresa_lider,empresa_lider-8,sintetico
+¿me ayudas a consultar: que empresa quedo primera por monto vendido ayer?,empresa_lider,empresa_lider-8,sintetico
+¿me ayudas a consultar: que empresa quedo primera por monto vendido la semana pasada?,empresa_lider,empresa_lider-8,sintetico
+¿me ayudas a consultar: que empresa quedo primera por monto vendido del 3 al 8 de abril?,empresa_lider,empresa_lider-8,sintetico
+¿tengo una pregunta: que empresa quedo primera por monto vendido?,empresa_lider,empresa_lider-8,sintetico
+¿tengo una pregunta: que empresa quedo primera por monto vendido ayer?,empresa_lider,empresa_lider-8,sintetico
+¿tengo una pregunta: que empresa quedo primera por monto vendido la semana pasada?,empresa_lider,empresa_lider-8,sintetico
+¿tengo una pregunta: que empresa quedo primera por monto vendido del 3 al 8 de abril?,empresa_lider,empresa_lider-8,sintetico
+¿quedo atento a saber: que empresa quedo primera por monto vendido?,empresa_lider,empresa_lider-8,sintetico
+¿quedo atento a saber: que empresa quedo primera por monto vendido ayer?,empresa_lider,empresa_lider-8,sintetico
+¿quedo atento a saber: que empresa quedo primera por monto vendido la semana pasada?,empresa_lider,empresa_lider-8,sintetico
+¿quedo atento a saber: que empresa quedo primera por monto vendido del 3 al 8 de abril?,empresa_lider,empresa_lider-8,sintetico
+¿dime quienes son las tiendas mas vendedoras?,empresa_lider,empresa_lider-9,sintetico
+¿dime quienes son las tiendas mas vendedoras ayer?,empresa_lider,empresa_lider-9,sintetico
+¿dime quienes son las tiendas mas vendedoras la semana pasada?,empresa_lider,empresa_lider-9,sintetico
+¿dime quienes son las tiendas mas vendedoras del 3 al 8 de abril?,empresa_lider,empresa_lider-9,sintetico
+"¿para el panel, dime quienes son las tiendas mas vendedoras?",empresa_lider,empresa_lider-9,sintetico
+"¿para el panel, dime quienes son las tiendas mas vendedoras ayer?",empresa_lider,empresa_lider-9,sintetico
+"¿para el panel, dime quienes son las tiendas mas vendedoras la semana pasada?",empresa_lider,empresa_lider-9,sintetico
+"¿para el panel, dime quienes son las tiendas mas vendedoras del 3 al 8 de abril?",empresa_lider,empresa_lider-9,sintetico
+¿me ayudas a consultar: dime quienes son las tiendas mas vendedoras?,empresa_lider,empresa_lider-9,sintetico
+¿me ayudas a consultar: dime quienes son las tiendas mas vendedoras ayer?,empresa_lider,empresa_lider-9,sintetico
+¿me ayudas a consultar: dime quienes son las tiendas mas vendedoras la semana pasada?,empresa_lider,empresa_lider-9,sintetico
+¿me ayudas a consultar: dime quienes son las tiendas mas vendedoras del 3 al 8 de abril?,empresa_lider,empresa_lider-9,sintetico
+¿tengo una pregunta: dime quienes son las tiendas mas vendedoras?,empresa_lider,empresa_lider-9,sintetico
+¿tengo una pregunta: dime quienes son las tiendas mas vendedoras ayer?,empresa_lider,empresa_lider-9,sintetico
+¿tengo una pregunta: dime quienes son las tiendas mas vendedoras la semana pasada?,empresa_lider,empresa_lider-9,sintetico
+¿tengo una pregunta: dime quienes son las tiendas mas vendedoras del 3 al 8 de abril?,empresa_lider,empresa_lider-9,sintetico
+¿quedo atento a saber: dime quienes son las tiendas mas vendedoras?,empresa_lider,empresa_lider-9,sintetico
+¿quedo atento a saber: dime quienes son las tiendas mas vendedoras ayer?,empresa_lider,empresa_lider-9,sintetico
+¿quedo atento a saber: dime quienes son las tiendas mas vendedoras la semana pasada?,empresa_lider,empresa_lider-9,sintetico
+¿quedo atento a saber: dime quienes son las tiendas mas vendedoras del 3 al 8 de abril?,empresa_lider,empresa_lider-9,sintetico
+¿a cuanto ascienden las tarifas por intermediacion?,comisiones,comisiones-8,sintetico
+¿a cuanto ascienden las tarifas por intermediacion ayer?,comisiones,comisiones-8,sintetico
+¿a cuanto ascienden las tarifas por intermediacion la semana pasada?,comisiones,comisiones-8,sintetico
+¿a cuanto ascienden las tarifas por intermediacion del 3 al 8 de abril?,comisiones,comisiones-8,sintetico
+"¿para el panel, a cuanto ascienden las tarifas por intermediacion?",comisiones,comisiones-8,sintetico
+"¿para el panel, a cuanto ascienden las tarifas por intermediacion ayer?",comisiones,comisiones-8,sintetico
+"¿para el panel, a cuanto ascienden las tarifas por intermediacion la semana pasada?",comisiones,comisiones-8,sintetico
+"¿para el panel, a cuanto ascienden las tarifas por intermediacion del 3 al 8 de abril?",comisiones,comisiones-8,sintetico
+¿me ayudas a consultar: a cuanto ascienden las tarifas por intermediacion?,comisiones,comisiones-8,sintetico
+¿me ayudas a consultar: a cuanto ascienden las tarifas por intermediacion ayer?,comisiones,comisiones-8,sintetico
+¿me ayudas a consultar: a cuanto ascienden las tarifas por intermediacion la semana pasada?,comisiones,comisiones-8,sintetico
+¿me ayudas a consultar: a cuanto ascienden las tarifas por intermediacion del 3 al 8 de abril?,comisiones,comisiones-8,sintetico
+¿tengo una pregunta: a cuanto ascienden las tarifas por intermediacion?,comisiones,comisiones-8,sintetico
+¿tengo una pregunta: a cuanto ascienden las tarifas por intermediacion ayer?,comisiones,comisiones-8,sintetico
+¿tengo una pregunta: a cuanto ascienden las tarifas por intermediacion la semana pasada?,comisiones,comisiones-8,sintetico
+¿tengo una pregunta: a cuanto ascienden las tarifas por intermediacion del 3 al 8 de abril?,comisiones,comisiones-8,sintetico
+¿quedo atento a saber: a cuanto ascienden las tarifas por intermediacion?,comisiones,comisiones-8,sintetico
+¿quedo atento a saber: a cuanto ascienden las tarifas por intermediacion ayer?,comisiones,comisiones-8,sintetico
+¿quedo atento a saber: a cuanto ascienden las tarifas por intermediacion la semana pasada?,comisiones,comisiones-8,sintetico
+¿quedo atento a saber: a cuanto ascienden las tarifas por intermediacion del 3 al 8 de abril?,comisiones,comisiones-8,sintetico
+¿que comision retuvo vecinomarket por las ventas?,comisiones,comisiones-9,sintetico
+¿que comision retuvo vecinomarket por las ventas ayer?,comisiones,comisiones-9,sintetico
+¿que comision retuvo vecinomarket por las ventas la semana pasada?,comisiones,comisiones-9,sintetico
+¿que comision retuvo vecinomarket por las ventas del 3 al 8 de abril?,comisiones,comisiones-9,sintetico
+"¿para el panel, que comision retuvo vecinomarket por las ventas?",comisiones,comisiones-9,sintetico
+"¿para el panel, que comision retuvo vecinomarket por las ventas ayer?",comisiones,comisiones-9,sintetico
+"¿para el panel, que comision retuvo vecinomarket por las ventas la semana pasada?",comisiones,comisiones-9,sintetico
+"¿para el panel, que comision retuvo vecinomarket por las ventas del 3 al 8 de abril?",comisiones,comisiones-9,sintetico
+¿me ayudas a consultar: que comision retuvo vecinomarket por las ventas?,comisiones,comisiones-9,sintetico
+¿me ayudas a consultar: que comision retuvo vecinomarket por las ventas ayer?,comisiones,comisiones-9,sintetico
+¿me ayudas a consultar: que comision retuvo vecinomarket por las ventas la semana pasada?,comisiones,comisiones-9,sintetico
+¿me ayudas a consultar: que comision retuvo vecinomarket por las ventas del 3 al 8 de abril?,comisiones,comisiones-9,sintetico
+¿tengo una pregunta: que comision retuvo vecinomarket por las ventas?,comisiones,comisiones-9,sintetico
+¿tengo una pregunta: que comision retuvo vecinomarket por las ventas ayer?,comisiones,comisiones-9,sintetico
+¿tengo una pregunta: que comision retuvo vecinomarket por las ventas la semana pasada?,comisiones,comisiones-9,sintetico
+¿tengo una pregunta: que comision retuvo vecinomarket por las ventas del 3 al 8 de abril?,comisiones,comisiones-9,sintetico
+¿quedo atento a saber: que comision retuvo vecinomarket por las ventas?,comisiones,comisiones-9,sintetico
+¿quedo atento a saber: que comision retuvo vecinomarket por las ventas ayer?,comisiones,comisiones-9,sintetico
+¿quedo atento a saber: que comision retuvo vecinomarket por las ventas la semana pasada?,comisiones,comisiones-9,sintetico
+¿quedo atento a saber: que comision retuvo vecinomarket por las ventas del 3 al 8 de abril?,comisiones,comisiones-9,sintetico
+¿cuantos usuarios se encuentran activos en el portal?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿cuantos usuarios se encuentran activos en el portal ayer?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿cuantos usuarios se encuentran activos en el portal la semana pasada?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿cuantos usuarios se encuentran activos en el portal del 3 al 8 de abril?,resumen_plataforma,resumen_plataforma-8,sintetico
+"¿para el panel, cuantos usuarios se encuentran activos en el portal?",resumen_plataforma,resumen_plataforma-8,sintetico
+"¿para el panel, cuantos usuarios se encuentran activos en el portal ayer?",resumen_plataforma,resumen_plataforma-8,sintetico
+"¿para el panel, cuantos usuarios se encuentran activos en el portal la semana pasada?",resumen_plataforma,resumen_plataforma-8,sintetico
+"¿para el panel, cuantos usuarios se encuentran activos en el portal del 3 al 8 de abril?",resumen_plataforma,resumen_plataforma-8,sintetico
+¿me ayudas a consultar: cuantos usuarios se encuentran activos en el portal?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿me ayudas a consultar: cuantos usuarios se encuentran activos en el portal ayer?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿me ayudas a consultar: cuantos usuarios se encuentran activos en el portal la semana pasada?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿me ayudas a consultar: cuantos usuarios se encuentran activos en el portal del 3 al 8 de abril?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿tengo una pregunta: cuantos usuarios se encuentran activos en el portal?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿tengo una pregunta: cuantos usuarios se encuentran activos en el portal ayer?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿tengo una pregunta: cuantos usuarios se encuentran activos en el portal la semana pasada?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿tengo una pregunta: cuantos usuarios se encuentran activos en el portal del 3 al 8 de abril?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿quedo atento a saber: cuantos usuarios se encuentran activos en el portal?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿quedo atento a saber: cuantos usuarios se encuentran activos en el portal ayer?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿quedo atento a saber: cuantos usuarios se encuentran activos en el portal la semana pasada?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿quedo atento a saber: cuantos usuarios se encuentran activos en el portal del 3 al 8 de abril?,resumen_plataforma,resumen_plataforma-8,sintetico
+¿necesito el numero de comercios registrados?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿necesito el numero de comercios registrados ayer?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿necesito el numero de comercios registrados la semana pasada?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿necesito el numero de comercios registrados del 3 al 8 de abril?,resumen_plataforma,resumen_plataforma-9,sintetico
+"¿para el panel, necesito el numero de comercios registrados?",resumen_plataforma,resumen_plataforma-9,sintetico
+"¿para el panel, necesito el numero de comercios registrados ayer?",resumen_plataforma,resumen_plataforma-9,sintetico
+"¿para el panel, necesito el numero de comercios registrados la semana pasada?",resumen_plataforma,resumen_plataforma-9,sintetico
+"¿para el panel, necesito el numero de comercios registrados del 3 al 8 de abril?",resumen_plataforma,resumen_plataforma-9,sintetico
+¿me ayudas a consultar: necesito el numero de comercios registrados?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿me ayudas a consultar: necesito el numero de comercios registrados ayer?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿me ayudas a consultar: necesito el numero de comercios registrados la semana pasada?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿me ayudas a consultar: necesito el numero de comercios registrados del 3 al 8 de abril?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿tengo una pregunta: necesito el numero de comercios registrados?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿tengo una pregunta: necesito el numero de comercios registrados ayer?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿tengo una pregunta: necesito el numero de comercios registrados la semana pasada?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿tengo una pregunta: necesito el numero de comercios registrados del 3 al 8 de abril?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿quedo atento a saber: necesito el numero de comercios registrados?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿quedo atento a saber: necesito el numero de comercios registrados ayer?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿quedo atento a saber: necesito el numero de comercios registrados la semana pasada?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿quedo atento a saber: necesito el numero de comercios registrados del 3 al 8 de abril?,resumen_plataforma,resumen_plataforma-9,sintetico
+¿que mercaderia tiene el costo de venta mas alto?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿que mercaderia tiene el costo de venta mas alto ayer?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿que mercaderia tiene el costo de venta mas alto la semana pasada?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿que mercaderia tiene el costo de venta mas alto del 3 al 8 de abril?,producto_mas_caro,producto_mas_caro-8,sintetico
+"¿para el panel, que mercaderia tiene el costo de venta mas alto?",producto_mas_caro,producto_mas_caro-8,sintetico
+"¿para el panel, que mercaderia tiene el costo de venta mas alto ayer?",producto_mas_caro,producto_mas_caro-8,sintetico
+"¿para el panel, que mercaderia tiene el costo de venta mas alto la semana pasada?",producto_mas_caro,producto_mas_caro-8,sintetico
+"¿para el panel, que mercaderia tiene el costo de venta mas alto del 3 al 8 de abril?",producto_mas_caro,producto_mas_caro-8,sintetico
+¿me ayudas a consultar: que mercaderia tiene el costo de venta mas alto?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿me ayudas a consultar: que mercaderia tiene el costo de venta mas alto ayer?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿me ayudas a consultar: que mercaderia tiene el costo de venta mas alto la semana pasada?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿me ayudas a consultar: que mercaderia tiene el costo de venta mas alto del 3 al 8 de abril?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿tengo una pregunta: que mercaderia tiene el costo de venta mas alto?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿tengo una pregunta: que mercaderia tiene el costo de venta mas alto ayer?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿tengo una pregunta: que mercaderia tiene el costo de venta mas alto la semana pasada?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿tengo una pregunta: que mercaderia tiene el costo de venta mas alto del 3 al 8 de abril?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿quedo atento a saber: que mercaderia tiene el costo de venta mas alto?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿quedo atento a saber: que mercaderia tiene el costo de venta mas alto ayer?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿quedo atento a saber: que mercaderia tiene el costo de venta mas alto la semana pasada?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿quedo atento a saber: que mercaderia tiene el costo de venta mas alto del 3 al 8 de abril?,producto_mas_caro,producto_mas_caro-8,sintetico
+¿cual es el precio maximo entre los productos?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿cual es el precio maximo entre los productos ayer?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿cual es el precio maximo entre los productos la semana pasada?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿cual es el precio maximo entre los productos del 3 al 8 de abril?,producto_mas_caro,producto_mas_caro-9,sintetico
+"¿para el panel, cual es el precio maximo entre los productos?",producto_mas_caro,producto_mas_caro-9,sintetico
+"¿para el panel, cual es el precio maximo entre los productos ayer?",producto_mas_caro,producto_mas_caro-9,sintetico
+"¿para el panel, cual es el precio maximo entre los productos la semana pasada?",producto_mas_caro,producto_mas_caro-9,sintetico
+"¿para el panel, cual es el precio maximo entre los productos del 3 al 8 de abril?",producto_mas_caro,producto_mas_caro-9,sintetico
+¿me ayudas a consultar: cual es el precio maximo entre los productos?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿me ayudas a consultar: cual es el precio maximo entre los productos ayer?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿me ayudas a consultar: cual es el precio maximo entre los productos la semana pasada?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿me ayudas a consultar: cual es el precio maximo entre los productos del 3 al 8 de abril?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿tengo una pregunta: cual es el precio maximo entre los productos?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿tengo una pregunta: cual es el precio maximo entre los productos ayer?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿tengo una pregunta: cual es el precio maximo entre los productos la semana pasada?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿tengo una pregunta: cual es el precio maximo entre los productos del 3 al 8 de abril?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿quedo atento a saber: cual es el precio maximo entre los productos?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿quedo atento a saber: cual es el precio maximo entre los productos ayer?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿quedo atento a saber: cual es el precio maximo entre los productos la semana pasada?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿quedo atento a saber: cual es el precio maximo entre los productos del 3 al 8 de abril?,producto_mas_caro,producto_mas_caro-9,sintetico
+¿que mercaderia tiene el precio mas accesible?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿que mercaderia tiene el precio mas accesible ayer?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿que mercaderia tiene el precio mas accesible la semana pasada?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿que mercaderia tiene el precio mas accesible del 3 al 8 de abril?,producto_mas_barato,producto_mas_barato-8,sintetico
+"¿para el panel, que mercaderia tiene el precio mas accesible?",producto_mas_barato,producto_mas_barato-8,sintetico
+"¿para el panel, que mercaderia tiene el precio mas accesible ayer?",producto_mas_barato,producto_mas_barato-8,sintetico
+"¿para el panel, que mercaderia tiene el precio mas accesible la semana pasada?",producto_mas_barato,producto_mas_barato-8,sintetico
+"¿para el panel, que mercaderia tiene el precio mas accesible del 3 al 8 de abril?",producto_mas_barato,producto_mas_barato-8,sintetico
+¿me ayudas a consultar: que mercaderia tiene el precio mas accesible?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿me ayudas a consultar: que mercaderia tiene el precio mas accesible ayer?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿me ayudas a consultar: que mercaderia tiene el precio mas accesible la semana pasada?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿me ayudas a consultar: que mercaderia tiene el precio mas accesible del 3 al 8 de abril?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿tengo una pregunta: que mercaderia tiene el precio mas accesible?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿tengo una pregunta: que mercaderia tiene el precio mas accesible ayer?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿tengo una pregunta: que mercaderia tiene el precio mas accesible la semana pasada?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿tengo una pregunta: que mercaderia tiene el precio mas accesible del 3 al 8 de abril?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿quedo atento a saber: que mercaderia tiene el precio mas accesible?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿quedo atento a saber: que mercaderia tiene el precio mas accesible ayer?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿quedo atento a saber: que mercaderia tiene el precio mas accesible la semana pasada?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿quedo atento a saber: que mercaderia tiene el precio mas accesible del 3 al 8 de abril?,producto_mas_barato,producto_mas_barato-8,sintetico
+¿cual es el precio minimo entre los productos?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿cual es el precio minimo entre los productos ayer?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿cual es el precio minimo entre los productos la semana pasada?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿cual es el precio minimo entre los productos del 3 al 8 de abril?,producto_mas_barato,producto_mas_barato-9,sintetico
+"¿para el panel, cual es el precio minimo entre los productos?",producto_mas_barato,producto_mas_barato-9,sintetico
+"¿para el panel, cual es el precio minimo entre los productos ayer?",producto_mas_barato,producto_mas_barato-9,sintetico
+"¿para el panel, cual es el precio minimo entre los productos la semana pasada?",producto_mas_barato,producto_mas_barato-9,sintetico
+"¿para el panel, cual es el precio minimo entre los productos del 3 al 8 de abril?",producto_mas_barato,producto_mas_barato-9,sintetico
+¿me ayudas a consultar: cual es el precio minimo entre los productos?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿me ayudas a consultar: cual es el precio minimo entre los productos ayer?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿me ayudas a consultar: cual es el precio minimo entre los productos la semana pasada?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿me ayudas a consultar: cual es el precio minimo entre los productos del 3 al 8 de abril?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿tengo una pregunta: cual es el precio minimo entre los productos?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿tengo una pregunta: cual es el precio minimo entre los productos ayer?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿tengo una pregunta: cual es el precio minimo entre los productos la semana pasada?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿tengo una pregunta: cual es el precio minimo entre los productos del 3 al 8 de abril?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿quedo atento a saber: cual es el precio minimo entre los productos?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿quedo atento a saber: cual es el precio minimo entre los productos ayer?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿quedo atento a saber: cual es el precio minimo entre los productos la semana pasada?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿quedo atento a saber: cual es el precio minimo entre los productos del 3 al 8 de abril?,producto_mas_barato,producto_mas_barato-9,sintetico
+¿que item esta cerca de quedarse sin existencias?,stock_bajo,stock_bajo-8,sintetico
+¿que item esta cerca de quedarse sin existencias ayer?,stock_bajo,stock_bajo-8,sintetico
+¿que item esta cerca de quedarse sin existencias la semana pasada?,stock_bajo,stock_bajo-8,sintetico
+¿que item esta cerca de quedarse sin existencias del 3 al 8 de abril?,stock_bajo,stock_bajo-8,sintetico
+"¿para el panel, que item esta cerca de quedarse sin existencias?",stock_bajo,stock_bajo-8,sintetico
+"¿para el panel, que item esta cerca de quedarse sin existencias ayer?",stock_bajo,stock_bajo-8,sintetico
+"¿para el panel, que item esta cerca de quedarse sin existencias la semana pasada?",stock_bajo,stock_bajo-8,sintetico
+"¿para el panel, que item esta cerca de quedarse sin existencias del 3 al 8 de abril?",stock_bajo,stock_bajo-8,sintetico
+¿me ayudas a consultar: que item esta cerca de quedarse sin existencias?,stock_bajo,stock_bajo-8,sintetico
+¿me ayudas a consultar: que item esta cerca de quedarse sin existencias ayer?,stock_bajo,stock_bajo-8,sintetico
+¿me ayudas a consultar: que item esta cerca de quedarse sin existencias la semana pasada?,stock_bajo,stock_bajo-8,sintetico
+¿me ayudas a consultar: que item esta cerca de quedarse sin existencias del 3 al 8 de abril?,stock_bajo,stock_bajo-8,sintetico
+¿tengo una pregunta: que item esta cerca de quedarse sin existencias?,stock_bajo,stock_bajo-8,sintetico
+¿tengo una pregunta: que item esta cerca de quedarse sin existencias ayer?,stock_bajo,stock_bajo-8,sintetico
+¿tengo una pregunta: que item esta cerca de quedarse sin existencias la semana pasada?,stock_bajo,stock_bajo-8,sintetico
+¿tengo una pregunta: que item esta cerca de quedarse sin existencias del 3 al 8 de abril?,stock_bajo,stock_bajo-8,sintetico
+¿quedo atento a saber: que item esta cerca de quedarse sin existencias?,stock_bajo,stock_bajo-8,sintetico
+¿quedo atento a saber: que item esta cerca de quedarse sin existencias ayer?,stock_bajo,stock_bajo-8,sintetico
+¿quedo atento a saber: que item esta cerca de quedarse sin existencias la semana pasada?,stock_bajo,stock_bajo-8,sintetico
+¿quedo atento a saber: que item esta cerca de quedarse sin existencias del 3 al 8 de abril?,stock_bajo,stock_bajo-8,sintetico
+¿cuales productos tienen bajo stock en sucursal?,stock_bajo,stock_bajo-9,sintetico
+¿cuales productos tienen bajo stock en sucursal ayer?,stock_bajo,stock_bajo-9,sintetico
+¿cuales productos tienen bajo stock en sucursal la semana pasada?,stock_bajo,stock_bajo-9,sintetico
+¿cuales productos tienen bajo stock en sucursal del 3 al 8 de abril?,stock_bajo,stock_bajo-9,sintetico
+"¿para el panel, cuales productos tienen bajo stock en sucursal?",stock_bajo,stock_bajo-9,sintetico
+"¿para el panel, cuales productos tienen bajo stock en sucursal ayer?",stock_bajo,stock_bajo-9,sintetico
+"¿para el panel, cuales productos tienen bajo stock en sucursal la semana pasada?",stock_bajo,stock_bajo-9,sintetico
+"¿para el panel, cuales productos tienen bajo stock en sucursal del 3 al 8 de abril?",stock_bajo,stock_bajo-9,sintetico
+¿me ayudas a consultar: cuales productos tienen bajo stock en sucursal?,stock_bajo,stock_bajo-9,sintetico
+¿me ayudas a consultar: cuales productos tienen bajo stock en sucursal ayer?,stock_bajo,stock_bajo-9,sintetico
+¿me ayudas a consultar: cuales productos tienen bajo stock en sucursal la semana pasada?,stock_bajo,stock_bajo-9,sintetico
+¿me ayudas a consultar: cuales productos tienen bajo stock en sucursal del 3 al 8 de abril?,stock_bajo,stock_bajo-9,sintetico
+¿tengo una pregunta: cuales productos tienen bajo stock en sucursal?,stock_bajo,stock_bajo-9,sintetico
+¿tengo una pregunta: cuales productos tienen bajo stock en sucursal ayer?,stock_bajo,stock_bajo-9,sintetico
+¿tengo una pregunta: cuales productos tienen bajo stock en sucursal la semana pasada?,stock_bajo,stock_bajo-9,sintetico
+¿tengo una pregunta: cuales productos tienen bajo stock en sucursal del 3 al 8 de abril?,stock_bajo,stock_bajo-9,sintetico
+¿quedo atento a saber: cuales productos tienen bajo stock en sucursal?,stock_bajo,stock_bajo-9,sintetico
+¿quedo atento a saber: cuales productos tienen bajo stock en sucursal ayer?,stock_bajo,stock_bajo-9,sintetico
+¿quedo atento a saber: cuales productos tienen bajo stock en sucursal la semana pasada?,stock_bajo,stock_bajo-9,sintetico
+¿quedo atento a saber: cuales productos tienen bajo stock en sucursal del 3 al 8 de abril?,stock_bajo,stock_bajo-9,sintetico
+¿que cliente lidera el total gastado?,clientes_principales,clientes_principales-8,sintetico
+¿que cliente lidera el total gastado ayer?,clientes_principales,clientes_principales-8,sintetico
+¿que cliente lidera el total gastado la semana pasada?,clientes_principales,clientes_principales-8,sintetico
+¿que cliente lidera el total gastado del 3 al 8 de abril?,clientes_principales,clientes_principales-8,sintetico
+"¿para el panel, que cliente lidera el total gastado?",clientes_principales,clientes_principales-8,sintetico
+"¿para el panel, que cliente lidera el total gastado ayer?",clientes_principales,clientes_principales-8,sintetico
+"¿para el panel, que cliente lidera el total gastado la semana pasada?",clientes_principales,clientes_principales-8,sintetico
+"¿para el panel, que cliente lidera el total gastado del 3 al 8 de abril?",clientes_principales,clientes_principales-8,sintetico
+¿me ayudas a consultar: que cliente lidera el total gastado?,clientes_principales,clientes_principales-8,sintetico
+¿me ayudas a consultar: que cliente lidera el total gastado ayer?,clientes_principales,clientes_principales-8,sintetico
+¿me ayudas a consultar: que cliente lidera el total gastado la semana pasada?,clientes_principales,clientes_principales-8,sintetico
+¿me ayudas a consultar: que cliente lidera el total gastado del 3 al 8 de abril?,clientes_principales,clientes_principales-8,sintetico
+¿tengo una pregunta: que cliente lidera el total gastado?,clientes_principales,clientes_principales-8,sintetico
+¿tengo una pregunta: que cliente lidera el total gastado ayer?,clientes_principales,clientes_principales-8,sintetico
+¿tengo una pregunta: que cliente lidera el total gastado la semana pasada?,clientes_principales,clientes_principales-8,sintetico
+¿tengo una pregunta: que cliente lidera el total gastado del 3 al 8 de abril?,clientes_principales,clientes_principales-8,sintetico
+¿quedo atento a saber: que cliente lidera el total gastado?,clientes_principales,clientes_principales-8,sintetico
+¿quedo atento a saber: que cliente lidera el total gastado ayer?,clientes_principales,clientes_principales-8,sintetico
+¿quedo atento a saber: que cliente lidera el total gastado la semana pasada?,clientes_principales,clientes_principales-8,sintetico
+¿quedo atento a saber: que cliente lidera el total gastado del 3 al 8 de abril?,clientes_principales,clientes_principales-8,sintetico
+¿dime quien es el comprador destacado?,clientes_principales,clientes_principales-9,sintetico
+¿dime quien es el comprador destacado ayer?,clientes_principales,clientes_principales-9,sintetico
+¿dime quien es el comprador destacado la semana pasada?,clientes_principales,clientes_principales-9,sintetico
+¿dime quien es el comprador destacado del 3 al 8 de abril?,clientes_principales,clientes_principales-9,sintetico
+"¿para el panel, dime quien es el comprador destacado?",clientes_principales,clientes_principales-9,sintetico
+"¿para el panel, dime quien es el comprador destacado ayer?",clientes_principales,clientes_principales-9,sintetico
+"¿para el panel, dime quien es el comprador destacado la semana pasada?",clientes_principales,clientes_principales-9,sintetico
+"¿para el panel, dime quien es el comprador destacado del 3 al 8 de abril?",clientes_principales,clientes_principales-9,sintetico
+¿me ayudas a consultar: dime quien es el comprador destacado?,clientes_principales,clientes_principales-9,sintetico
+¿me ayudas a consultar: dime quien es el comprador destacado ayer?,clientes_principales,clientes_principales-9,sintetico
+¿me ayudas a consultar: dime quien es el comprador destacado la semana pasada?,clientes_principales,clientes_principales-9,sintetico
+¿me ayudas a consultar: dime quien es el comprador destacado del 3 al 8 de abril?,clientes_principales,clientes_principales-9,sintetico
+¿tengo una pregunta: dime quien es el comprador destacado?,clientes_principales,clientes_principales-9,sintetico
+¿tengo una pregunta: dime quien es el comprador destacado ayer?,clientes_principales,clientes_principales-9,sintetico
+¿tengo una pregunta: dime quien es el comprador destacado la semana pasada?,clientes_principales,clientes_principales-9,sintetico
+¿tengo una pregunta: dime quien es el comprador destacado del 3 al 8 de abril?,clientes_principales,clientes_principales-9,sintetico
+¿quedo atento a saber: dime quien es el comprador destacado?,clientes_principales,clientes_principales-9,sintetico
+¿quedo atento a saber: dime quien es el comprador destacado ayer?,clientes_principales,clientes_principales-9,sintetico
+¿quedo atento a saber: dime quien es el comprador destacado la semana pasada?,clientes_principales,clientes_principales-9,sintetico
+¿quedo atento a saber: dime quien es el comprador destacado del 3 al 8 de abril?,clientes_principales,clientes_principales-9,sintetico
+¿muestrame los items que aparecen en el escaparate?,catalogo,catalogo-8,sintetico
+¿muestrame los items que aparecen en el escaparate ayer?,catalogo,catalogo-8,sintetico
+¿muestrame los items que aparecen en el escaparate la semana pasada?,catalogo,catalogo-8,sintetico
+¿muestrame los items que aparecen en el escaparate del 3 al 8 de abril?,catalogo,catalogo-8,sintetico
+"¿para el panel, muestrame los items que aparecen en el escaparate?",catalogo,catalogo-8,sintetico
+"¿para el panel, muestrame los items que aparecen en el escaparate ayer?",catalogo,catalogo-8,sintetico
+"¿para el panel, muestrame los items que aparecen en el escaparate la semana pasada?",catalogo,catalogo-8,sintetico
+"¿para el panel, muestrame los items que aparecen en el escaparate del 3 al 8 de abril?",catalogo,catalogo-8,sintetico
+¿me ayudas a consultar: muestrame los items que aparecen en el escaparate?,catalogo,catalogo-8,sintetico
+¿me ayudas a consultar: muestrame los items que aparecen en el escaparate ayer?,catalogo,catalogo-8,sintetico
+¿me ayudas a consultar: muestrame los items que aparecen en el escaparate la semana pasada?,catalogo,catalogo-8,sintetico
+¿me ayudas a consultar: muestrame los items que aparecen en el escaparate del 3 al 8 de abril?,catalogo,catalogo-8,sintetico
+¿tengo una pregunta: muestrame los items que aparecen en el escaparate?,catalogo,catalogo-8,sintetico
+¿tengo una pregunta: muestrame los items que aparecen en el escaparate ayer?,catalogo,catalogo-8,sintetico
+¿tengo una pregunta: muestrame los items que aparecen en el escaparate la semana pasada?,catalogo,catalogo-8,sintetico
+¿tengo una pregunta: muestrame los items que aparecen en el escaparate del 3 al 8 de abril?,catalogo,catalogo-8,sintetico
+¿quedo atento a saber: muestrame los items que aparecen en el escaparate?,catalogo,catalogo-8,sintetico
+¿quedo atento a saber: muestrame los items que aparecen en el escaparate ayer?,catalogo,catalogo-8,sintetico
+¿quedo atento a saber: muestrame los items que aparecen en el escaparate la semana pasada?,catalogo,catalogo-8,sintetico
+¿quedo atento a saber: muestrame los items que aparecen en el escaparate del 3 al 8 de abril?,catalogo,catalogo-8,sintetico
+¿dame la lista de productos ofertados?,catalogo,catalogo-9,sintetico
+¿dame la lista de productos ofertados ayer?,catalogo,catalogo-9,sintetico
+¿dame la lista de productos ofertados la semana pasada?,catalogo,catalogo-9,sintetico
+¿dame la lista de productos ofertados del 3 al 8 de abril?,catalogo,catalogo-9,sintetico
+"¿para el panel, dame la lista de productos ofertados?",catalogo,catalogo-9,sintetico
+"¿para el panel, dame la lista de productos ofertados ayer?",catalogo,catalogo-9,sintetico
+"¿para el panel, dame la lista de productos ofertados la semana pasada?",catalogo,catalogo-9,sintetico
+"¿para el panel, dame la lista de productos ofertados del 3 al 8 de abril?",catalogo,catalogo-9,sintetico
+¿me ayudas a consultar: dame la lista de productos ofertados?,catalogo,catalogo-9,sintetico
+¿me ayudas a consultar: dame la lista de productos ofertados ayer?,catalogo,catalogo-9,sintetico
+¿me ayudas a consultar: dame la lista de productos ofertados la semana pasada?,catalogo,catalogo-9,sintetico
+¿me ayudas a consultar: dame la lista de productos ofertados del 3 al 8 de abril?,catalogo,catalogo-9,sintetico
+¿tengo una pregunta: dame la lista de productos ofertados?,catalogo,catalogo-9,sintetico
+¿tengo una pregunta: dame la lista de productos ofertados ayer?,catalogo,catalogo-9,sintetico
+¿tengo una pregunta: dame la lista de productos ofertados la semana pasada?,catalogo,catalogo-9,sintetico
+¿tengo una pregunta: dame la lista de productos ofertados del 3 al 8 de abril?,catalogo,catalogo-9,sintetico
+¿quedo atento a saber: dame la lista de productos ofertados?,catalogo,catalogo-9,sintetico
+¿quedo atento a saber: dame la lista de productos ofertados ayer?,catalogo,catalogo-9,sintetico
+¿quedo atento a saber: dame la lista de productos ofertados la semana pasada?,catalogo,catalogo-9,sintetico
+¿quedo atento a saber: dame la lista de productos ofertados del 3 al 8 de abril?,catalogo,catalogo-9,sintetico
+¿ensename el estado general de existencias?,inventario,inventario-8,sintetico
+¿ensename el estado general de existencias ayer?,inventario,inventario-8,sintetico
+¿ensename el estado general de existencias la semana pasada?,inventario,inventario-8,sintetico
+¿ensename el estado general de existencias del 3 al 8 de abril?,inventario,inventario-8,sintetico
+"¿para el panel, ensename el estado general de existencias?",inventario,inventario-8,sintetico
+"¿para el panel, ensename el estado general de existencias ayer?",inventario,inventario-8,sintetico
+"¿para el panel, ensename el estado general de existencias la semana pasada?",inventario,inventario-8,sintetico
+"¿para el panel, ensename el estado general de existencias del 3 al 8 de abril?",inventario,inventario-8,sintetico
+¿me ayudas a consultar: ensename el estado general de existencias?,inventario,inventario-8,sintetico
+¿me ayudas a consultar: ensename el estado general de existencias ayer?,inventario,inventario-8,sintetico
+¿me ayudas a consultar: ensename el estado general de existencias la semana pasada?,inventario,inventario-8,sintetico
+¿me ayudas a consultar: ensename el estado general de existencias del 3 al 8 de abril?,inventario,inventario-8,sintetico
+¿tengo una pregunta: ensename el estado general de existencias?,inventario,inventario-8,sintetico
+¿tengo una pregunta: ensename el estado general de existencias ayer?,inventario,inventario-8,sintetico
+¿tengo una pregunta: ensename el estado general de existencias la semana pasada?,inventario,inventario-8,sintetico
+¿tengo una pregunta: ensename el estado general de existencias del 3 al 8 de abril?,inventario,inventario-8,sintetico
+¿quedo atento a saber: ensename el estado general de existencias?,inventario,inventario-8,sintetico
+¿quedo atento a saber: ensename el estado general de existencias ayer?,inventario,inventario-8,sintetico
+¿quedo atento a saber: ensename el estado general de existencias la semana pasada?,inventario,inventario-8,sintetico
+¿quedo atento a saber: ensename el estado general de existencias del 3 al 8 de abril?,inventario,inventario-8,sintetico
+¿como esta el stock de mercaderia?,inventario,inventario-9,sintetico
+¿como esta el stock de mercaderia ayer?,inventario,inventario-9,sintetico
+¿como esta el stock de mercaderia la semana pasada?,inventario,inventario-9,sintetico
+¿como esta el stock de mercaderia del 3 al 8 de abril?,inventario,inventario-9,sintetico
+"¿para el panel, como esta el stock de mercaderia?",inventario,inventario-9,sintetico
+"¿para el panel, como esta el stock de mercaderia ayer?",inventario,inventario-9,sintetico
+"¿para el panel, como esta el stock de mercaderia la semana pasada?",inventario,inventario-9,sintetico
+"¿para el panel, como esta el stock de mercaderia del 3 al 8 de abril?",inventario,inventario-9,sintetico
+¿me ayudas a consultar: como esta el stock de mercaderia?,inventario,inventario-9,sintetico
+¿me ayudas a consultar: como esta el stock de mercaderia ayer?,inventario,inventario-9,sintetico
+¿me ayudas a consultar: como esta el stock de mercaderia la semana pasada?,inventario,inventario-9,sintetico
+¿me ayudas a consultar: como esta el stock de mercaderia del 3 al 8 de abril?,inventario,inventario-9,sintetico
+¿tengo una pregunta: como esta el stock de mercaderia?,inventario,inventario-9,sintetico
+¿tengo una pregunta: como esta el stock de mercaderia ayer?,inventario,inventario-9,sintetico
+¿tengo una pregunta: como esta el stock de mercaderia la semana pasada?,inventario,inventario-9,sintetico
+¿tengo una pregunta: como esta el stock de mercaderia del 3 al 8 de abril?,inventario,inventario-9,sintetico
+¿quedo atento a saber: como esta el stock de mercaderia?,inventario,inventario-9,sintetico
+¿quedo atento a saber: como esta el stock de mercaderia ayer?,inventario,inventario-9,sintetico
+¿quedo atento a saber: como esta el stock de mercaderia la semana pasada?,inventario,inventario-9,sintetico
+¿quedo atento a saber: como esta el stock de mercaderia del 3 al 8 de abril?,inventario,inventario-9,sintetico
+¿que facturas pendientes de pago existen?,facturas,facturas-8,sintetico
+¿que facturas pendientes de pago existen ayer?,facturas,facturas-8,sintetico
+¿que facturas pendientes de pago existen la semana pasada?,facturas,facturas-8,sintetico
+¿que facturas pendientes de pago existen del 3 al 8 de abril?,facturas,facturas-8,sintetico
+"¿para el panel, que facturas pendientes de pago existen?",facturas,facturas-8,sintetico
+"¿para el panel, que facturas pendientes de pago existen ayer?",facturas,facturas-8,sintetico
+"¿para el panel, que facturas pendientes de pago existen la semana pasada?",facturas,facturas-8,sintetico
+"¿para el panel, que facturas pendientes de pago existen del 3 al 8 de abril?",facturas,facturas-8,sintetico
+¿me ayudas a consultar: que facturas pendientes de pago existen?,facturas,facturas-8,sintetico
+¿me ayudas a consultar: que facturas pendientes de pago existen ayer?,facturas,facturas-8,sintetico
+¿me ayudas a consultar: que facturas pendientes de pago existen la semana pasada?,facturas,facturas-8,sintetico
+¿me ayudas a consultar: que facturas pendientes de pago existen del 3 al 8 de abril?,facturas,facturas-8,sintetico
+¿tengo una pregunta: que facturas pendientes de pago existen?,facturas,facturas-8,sintetico
+¿tengo una pregunta: que facturas pendientes de pago existen ayer?,facturas,facturas-8,sintetico
+¿tengo una pregunta: que facturas pendientes de pago existen la semana pasada?,facturas,facturas-8,sintetico
+¿tengo una pregunta: que facturas pendientes de pago existen del 3 al 8 de abril?,facturas,facturas-8,sintetico
+¿quedo atento a saber: que facturas pendientes de pago existen?,facturas,facturas-8,sintetico
+¿quedo atento a saber: que facturas pendientes de pago existen ayer?,facturas,facturas-8,sintetico
+¿quedo atento a saber: que facturas pendientes de pago existen la semana pasada?,facturas,facturas-8,sintetico
+¿quedo atento a saber: que facturas pendientes de pago existen del 3 al 8 de abril?,facturas,facturas-8,sintetico
+¿ensename los documentos fiscales emitidos?,facturas,facturas-9,sintetico
+¿ensename los documentos fiscales emitidos ayer?,facturas,facturas-9,sintetico
+¿ensename los documentos fiscales emitidos la semana pasada?,facturas,facturas-9,sintetico
+¿ensename los documentos fiscales emitidos del 3 al 8 de abril?,facturas,facturas-9,sintetico
+"¿para el panel, ensename los documentos fiscales emitidos?",facturas,facturas-9,sintetico
+"¿para el panel, ensename los documentos fiscales emitidos ayer?",facturas,facturas-9,sintetico
+"¿para el panel, ensename los documentos fiscales emitidos la semana pasada?",facturas,facturas-9,sintetico
+"¿para el panel, ensename los documentos fiscales emitidos del 3 al 8 de abril?",facturas,facturas-9,sintetico
+¿me ayudas a consultar: ensename los documentos fiscales emitidos?,facturas,facturas-9,sintetico
+¿me ayudas a consultar: ensename los documentos fiscales emitidos ayer?,facturas,facturas-9,sintetico
+¿me ayudas a consultar: ensename los documentos fiscales emitidos la semana pasada?,facturas,facturas-9,sintetico
+¿me ayudas a consultar: ensename los documentos fiscales emitidos del 3 al 8 de abril?,facturas,facturas-9,sintetico
+¿tengo una pregunta: ensename los documentos fiscales emitidos?,facturas,facturas-9,sintetico
+¿tengo una pregunta: ensename los documentos fiscales emitidos ayer?,facturas,facturas-9,sintetico
+¿tengo una pregunta: ensename los documentos fiscales emitidos la semana pasada?,facturas,facturas-9,sintetico
+¿tengo una pregunta: ensename los documentos fiscales emitidos del 3 al 8 de abril?,facturas,facturas-9,sintetico
+¿quedo atento a saber: ensename los documentos fiscales emitidos?,facturas,facturas-9,sintetico
+¿quedo atento a saber: ensename los documentos fiscales emitidos ayer?,facturas,facturas-9,sintetico
+¿quedo atento a saber: ensename los documentos fiscales emitidos la semana pasada?,facturas,facturas-9,sintetico
+¿quedo atento a saber: ensename los documentos fiscales emitidos del 3 al 8 de abril?,facturas,facturas-9,sintetico
+¿borra mi cuenta de usuario?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿borra mi cuenta de usuario ayer?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿borra mi cuenta de usuario la semana pasada?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿borra mi cuenta de usuario del 3 al 8 de abril?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+"¿para el panel, borra mi cuenta de usuario?",fuera_de_alcance,fuera_de_alcance-8,sintetico
+"¿para el panel, borra mi cuenta de usuario ayer?",fuera_de_alcance,fuera_de_alcance-8,sintetico
+"¿para el panel, borra mi cuenta de usuario la semana pasada?",fuera_de_alcance,fuera_de_alcance-8,sintetico
+"¿para el panel, borra mi cuenta de usuario del 3 al 8 de abril?",fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿me ayudas a consultar: borra mi cuenta de usuario?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿me ayudas a consultar: borra mi cuenta de usuario ayer?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿me ayudas a consultar: borra mi cuenta de usuario la semana pasada?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿me ayudas a consultar: borra mi cuenta de usuario del 3 al 8 de abril?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿tengo una pregunta: borra mi cuenta de usuario?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿tengo una pregunta: borra mi cuenta de usuario ayer?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿tengo una pregunta: borra mi cuenta de usuario la semana pasada?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿tengo una pregunta: borra mi cuenta de usuario del 3 al 8 de abril?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿quedo atento a saber: borra mi cuenta de usuario?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿quedo atento a saber: borra mi cuenta de usuario ayer?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿quedo atento a saber: borra mi cuenta de usuario la semana pasada?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿quedo atento a saber: borra mi cuenta de usuario del 3 al 8 de abril?,fuera_de_alcance,fuera_de_alcance-8,sintetico
+¿que noticias hay de deportes?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿que noticias hay de deportes ayer?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿que noticias hay de deportes la semana pasada?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿que noticias hay de deportes del 3 al 8 de abril?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+"¿para el panel, que noticias hay de deportes?",fuera_de_alcance,fuera_de_alcance-9,sintetico
+"¿para el panel, que noticias hay de deportes ayer?",fuera_de_alcance,fuera_de_alcance-9,sintetico
+"¿para el panel, que noticias hay de deportes la semana pasada?",fuera_de_alcance,fuera_de_alcance-9,sintetico
+"¿para el panel, que noticias hay de deportes del 3 al 8 de abril?",fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿me ayudas a consultar: que noticias hay de deportes?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿me ayudas a consultar: que noticias hay de deportes ayer?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿me ayudas a consultar: que noticias hay de deportes la semana pasada?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿me ayudas a consultar: que noticias hay de deportes del 3 al 8 de abril?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿tengo una pregunta: que noticias hay de deportes?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿tengo una pregunta: que noticias hay de deportes ayer?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿tengo una pregunta: que noticias hay de deportes la semana pasada?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿tengo una pregunta: que noticias hay de deportes del 3 al 8 de abril?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿quedo atento a saber: que noticias hay de deportes?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿quedo atento a saber: que noticias hay de deportes ayer?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿quedo atento a saber: que noticias hay de deportes la semana pasada?,fuera_de_alcance,fuera_de_alcance-9,sintetico
+¿quedo atento a saber: que noticias hay de deportes del 3 al 8 de abril?,fuera_de_alcance,fuera_de_alcance-9,sintetico

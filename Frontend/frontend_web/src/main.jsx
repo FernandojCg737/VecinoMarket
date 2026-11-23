@@ -10,24 +10,27 @@ import { CatalogoProvider } from './context/CatalogoContext.jsx'
 import { LocationProvider } from './context/LocationContext.jsx'
 import { NotificacionesProvider } from './context/NotificacionesContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
+import { CurrencyProvider } from './context/CurrencyContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <ThemeProvider>
-        <AuthProvider>
-          <NotificacionesProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <CatalogoProvider>
-                  <LocationProvider>
-                    <App />
-                  </LocationProvider>
-                </CatalogoProvider>
-              </WishlistProvider>
-            </CartProvider>
-          </NotificacionesProvider>
-        </AuthProvider>
+        <CurrencyProvider>
+          <AuthProvider>
+            <NotificacionesProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <CatalogoProvider>
+                    <LocationProvider>
+                      <App />
+                    </LocationProvider>
+                  </CatalogoProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </NotificacionesProvider>
+          </AuthProvider>
+        </CurrencyProvider>
       </ThemeProvider>
     </BrowserRouter>
   </StrictMode>,

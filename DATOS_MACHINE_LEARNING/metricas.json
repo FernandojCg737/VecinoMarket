@@ -1,0 +1,89 @@
+{
+  "version_entrenamiento_scikit_learn": "1.7.2",
+  "ejemplos": {
+    "entrenamiento": 7098,
+    "validacion": 520,
+    "prueba": 520
+  },
+  "clases_entrenamiento": {
+    "catalogo": 546,
+    "clientes_principales": 546,
+    "comisiones": 546,
+    "empresa_lider": 546,
+    "facturas": 546,
+    "fuera_de_alcance": 546,
+    "inventario": 546,
+    "producto_mas_barato": 546,
+    "producto_mas_caro": 546,
+    "producto_mas_vendido": 546,
+    "resumen_plataforma": 546,
+    "stock_bajo": 546,
+    "ventas": 546
+  },
+  "prueba_sintetica": {
+    "exactitud_sin_umbral": 0.8826923076923077,
+    "f1_macro_sin_umbral": 0.8807708067584381,
+    "clasificaciones_emitidas": 441,
+    "clasificaciones_correctas_emitidas": 441,
+    "consultas_de_reporte": 480,
+    "fuera_de_alcance": 40,
+    "fuera_de_alcance_rechazadas": 40,
+    "por_clase": {
+      "catalogo": {
+        "n": 40,
+        "correctas": 40
+      },
+      "clientes_principales": {
+        "n": 40,
+        "correctas": 28
+      },
+      "comisiones": {
+        "n": 40,
+        "correctas": 40
+      },
+      "empresa_lider": {
+        "n": 40,
+        "correctas": 40
+      },
+      "facturas": {
+        "n": 40,
+        "correctas": 40
+      },
+      "fuera_de_alcance": {
+        "n": 40,
+        "correctas": 40
+      },
+      "inventario": {
+        "n": 40,
+        "correctas": 40
+      },
+      "producto_mas_barato": {
+        "n": 40,
+        "correctas": 34
+      },
+      "producto_mas_caro": {
+        "n": 40,
+        "correctas": 20
+      },
+      "producto_mas_vendido": {
+        "n": 40,
+        "correctas": 39
+      },
+      "resumen_plataforma": {
+        "n": 40,
+        "correctas": 40
+      },
+      "stock_bajo": {
+        "n": 40,
+        "correctas": 40
+      },
+      "ventas": {
+        "n": 40,
+        "correctas": 40
+      }
+    }
+  },
+  "umbral": 0.3,
+  "margen": 0.16,
+  "sha256_modelo": "6ebca0d6013141ad89a981e7daff53c7896fe626930f47032581211c6a200287"
+}

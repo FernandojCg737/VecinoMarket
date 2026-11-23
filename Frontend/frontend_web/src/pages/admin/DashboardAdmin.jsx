@@ -1,3 +1,4 @@
+import ModoMachineLearning from '../../components/reportes/ModoMachineLearning';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import {
@@ -49,12 +50,12 @@ export default function DashboardAdmin() {
   const [escuchandoVoz, setEscuchandoVoz] = useState(false);
   const [transcripcionVoz, setTranscripcionVoz] = useState('');
   const [consultaEscrita, setConsultaEscrita] = useState('');
+  const [usarML, setUsarML] = useState(false);
   const [consultandoIA, setConsultandoIA] = useState(false);
   const [hablando, setHablando] = useState(false);
-  const [vozHabilitada] = useState(true);
 
   function hablar(texto) {
-    if (!vozHabilitada || !('speechSynthesis' in window)) return;
+    if (!('speechSynthesis' in window)) return;
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(texto);
@@ -88,7 +89,7 @@ export default function DashboardAdmin() {
     detenerVoz();
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      window.alert('Tu navegador no tiene soporte para la API de voz. Te recomendamos usar Google Chrome o Microsoft Edge.');
+      setTranscripcionVoz('El navegador no admite comandos de voz. Puedes escribir la consulta.');
       return;
     }
 
@@ -102,7 +103,7 @@ export default function DashboardAdmin() {
 
     recognition.onresult = (event) => {
       const texto = event.results[0][0].transcript;
-      setTranscripcionVoz(`Comando IA reconocido: "${texto}"`);
+      setTranscripcionVoz(`Comando reconocido: "${texto}"`);
       procesarComandoVoz(texto);
     };
 
@@ -115,17 +116,22 @@ export default function DashboardAdmin() {
       setEscuchandoVoz(false);
     };
 
-    recognition.start();
+    try {
+      recognition.start();
+    } catch {
+      setEscuchandoVoz(false);
+      setTranscripcionVoz('No se pudo iniciar el micrófono. Puedes escribir la consulta.');
+    }
   }
 
   async function procesarComandoVoz(texto) {
-    if (!texto || !texto.trim()) return;
+    if (!texto?.trim() || consultandoIA) return;
     detenerVoz();
     setConsultandoIA(true);
     setTranscripcionVoz(`Consultando métricas de la plataforma para: "${texto}"...`);
 
     try {
-      const res = await API.post('reportes/asistente-voz/', { pregunta: texto });
+      const res = await API.post('reportes/asistente-voz/', { pregunta: texto, modo: usarML ? 'ml' : 'reglas' });
       const respuesta = res.data?.respuesta || 'Consulta analítica procesada.';
       setTranscripcionVoz(respuesta);
 
@@ -141,7 +147,7 @@ export default function DashboardAdmin() {
         .catch(() => {});
     } catch (err) {
       console.warn('Error en asistente analítico por voz:', err);
-      setTranscripcionVoz('No se pudo procesar la consulta por voz. Intenta nuevamente.');
+      setTranscripcionVoz(err.response?.data?.detail || 'No se pudo procesar la consulta. Intenta nuevamente.');
     } finally {
       setConsultandoIA(false);
     }
@@ -155,7 +161,7 @@ export default function DashboardAdmin() {
   }, [usuario]);
 
   if (cargandoAuth) return null;
-  if (!usuario) return <Navigate to="/login?next=/admin/dashboard" replace />;
+  if (!usuario) return <Navigate to="/login?next=/admin/reportes-admin" replace />;
   if (!esStaff(usuario)) return <Navigate to="/" replace />;
 
   return (
@@ -171,7 +177,7 @@ export default function DashboardAdmin() {
 
       {/* Asistente Analítico por Voz y Texto para todo el Sistema */}
       <div className="rounded-xl border border-purple-200 dark:border-purple-800/60 bg-gradient-to-r from-purple-50/80 via-indigo-50/50 to-purple-50/80 dark:from-purple-950/30 dark:via-gray-900 dark:to-purple-950/30 p-3.5 shadow-sm space-y-2.5 mb-6">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-2">
           <div className="relative flex-1 flex items-center bg-white dark:bg-gray-800 rounded-lg border border-purple-200 dark:border-purple-700/60 px-3 py-1.5 focus-within:ring-2 focus-within:ring-purple-400">
             <Sparkles size={16} className="text-purple-600 dark:text-purple-400 shrink-0 mr-2" />
             <input
@@ -179,12 +185,14 @@ export default function DashboardAdmin() {
               value={consultaEscrita}
               onChange={(e) => setConsultaEscrita(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && consultaEscrita.trim()) {
+                if (e.key === 'Enter' && !consultandoIA && !escuchandoVoz && consultaEscrita.trim()) {
                   procesarComandoVoz(consultaEscrita);
                   setConsultaEscrita('');
                 }
               }}
               placeholder="Pregúntale a la IA del sistema (ej: ¿cuál es el producto más vendido?, ¿qué empresa vende más?, ¿cuánto se vendió en total?)..."
+              aria-label="Consulta de reportes"
+              maxLength={500}
               className="w-full text-xs sm:text-sm bg-transparent border-none text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none"
             />
             {consultaEscrita.trim() && (
@@ -194,7 +202,7 @@ export default function DashboardAdmin() {
                   procesarComandoVoz(consultaEscrita);
                   setConsultaEscrita('');
                 }}
-                disabled={consultandoIA}
+                disabled={consultandoIA || escuchandoVoz}
                 className="text-xs font-semibold bg-purple-600 text-white rounded px-2.5 py-1 hover:bg-purple-700 transition shrink-0"
               >
                 Preguntar
@@ -203,39 +211,51 @@ export default function DashboardAdmin() {
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              onClick={iniciarComandoVoz}
-              disabled={escuchandoVoz || consultandoIA}
-              className={`inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-2 text-xs sm:text-sm font-semibold transition shadow-sm ${
-                escuchandoVoz
-                  ? 'border-red-500 bg-red-50 dark:bg-red-950/40 text-red-600 animate-pulse'
-                  : hablando
-                  ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 animate-pulse'
-                  : consultandoIA
-                  ? 'border-purple-400 bg-purple-100 dark:bg-purple-900 text-purple-700'
-                  : 'border-purple-600 bg-purple-600 text-white hover:bg-purple-700'
-              }`}
-              title="Comando por voz IA para toda la plataforma"
-            >
-              {escuchandoVoz ? (
-                <MicOff size={15} />
-              ) : hablando ? (
-                <Volume2 size={15} className="animate-bounce" />
-              ) : consultandoIA ? (
-                <RefreshCw size={15} className="animate-spin" />
-              ) : (
-                <Mic size={15} />
-              )}
-              <span>
-                {escuchandoVoz
-                  ? 'Escuchando voz...'
-                  : hablando
-                  ? 'IA respondiendo...'
-                  : consultandoIA
-                  ? 'Analizando sistema...'
-                  : 'Comando por voz (IA)'}
-              </span>
-            </button>
+            <div className="flex flex-1 flex-col gap-1.5">
+              <button
+                type="button"
+                onClick={iniciarComandoVoz}
+                disabled={escuchandoVoz || consultandoIA}
+                className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3.5 py-2 text-xs sm:text-sm font-semibold transition shadow-sm ${
+                  escuchandoVoz
+                    ? 'border-red-500 bg-red-50 dark:bg-red-950/40 text-red-600 animate-pulse'
+                    : hablando
+                    ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 animate-pulse'
+                    : consultandoIA
+                    ? 'border-purple-400 bg-purple-100 dark:bg-purple-900 text-purple-700'
+                    : 'border-purple-600 bg-purple-600 text-white hover:bg-purple-700'
+                }`}
+                title="Iniciar consulta por voz"
+              >
+                {escuchandoVoz ? (
+                  <MicOff size={15} />
+                ) : hablando ? (
+                  <Volume2 size={15} className="animate-bounce" />
+                ) : consultandoIA ? (
+                  <RefreshCw size={15} className="animate-spin" />
+                ) : (
+                  <Mic size={15} />
+                )}
+                <span>
+                  {escuchandoVoz
+                    ? 'Escuchando voz...'
+                    : hablando
+                    ? 'Asistente respondiendo...'
+                    : consultandoIA
+                    ? 'Analizando sistema...'
+                    : usarML ? 'Comando por voz (ML)' : 'Comando por voz (IA)'}
+                </span>
+              </button>
+              <ModoMachineLearning
+                activo={usarML}
+                ocupado={escuchandoVoz || consultandoIA}
+                onToggle={() => {
+                  detenerVoz();
+                  setUsarML((activo) => !activo);
+                  setTranscripcionVoz('');
+                }}
+              />
+            </div>
 
             {hablando && (
               <button
@@ -263,7 +283,7 @@ export default function DashboardAdmin() {
               )}
               <div className="space-y-1">
                 <p className="font-bold text-[11px] text-purple-700 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
-                  Asistente IA del Sistema Global
+                  {usarML ? 'Asistente Machine Learning' : 'Asistente IA del Sistema Global'}
                   {hablando && <span className="inline-block w-2 h-2 rounded-full bg-purple-500 animate-ping" />}
                 </p>
                 <p className="leading-relaxed text-xs sm:text-sm">

@@ -6,10 +6,12 @@ import { useAuth } from '../context/AuthContext';
 import { esEmpresaOEmpleado } from '../utils/roles';
 import { ICE_SERVERS, urlSenalizacion } from '../utils/liveSignaling';
 import ChatLive from '../components/live/ChatLive';
+import { useCurrency } from '../context/CurrencyContext';
 
 export default function LiveViewer() {
   const { id } = useParams();
   const { usuario } = useAuth();
+  const { formatearPrecio } = useCurrency();
   const [sesion, setSesion] = useState(null);
   const [error, setError] = useState('');
   const [conectado, setConectado] = useState(false);
@@ -230,7 +232,7 @@ export default function LiveViewer() {
                 className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-2.5 hover:border-brand-400 dark:hover:border-brand-500"
               >
                 <span className="text-sm text-gray-800 dark:text-gray-200">{p.nombre}</span>
-                <span className="text-sm font-semibold text-brand-600 dark:text-brand-400">Bs {p.precio}</span>
+                <span className="text-sm font-semibold text-brand-600 dark:text-brand-400">{formatearPrecio(p.precio)}</span>
               </Link>
             ))}
           </div>

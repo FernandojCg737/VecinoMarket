@@ -13,6 +13,7 @@ import DepartamentoMenu from './DepartamentoMenu';
 import AccountMenu from './AccountMenu';
 import ThemeToggle from './ThemeToggle';
 import NotificationBell from './NotificationBell';
+import CurrencySelector from './CurrencySelector';
 
 export default function Header() {
   const [query, setQuery] = useState('');
@@ -150,6 +151,7 @@ export default function Header() {
                 </span>
               )}
             </button>
+            <CurrencySelector className="ml-1.5" />
           </div>
 
           {/* Íconos compactos: solo mobile */}
@@ -197,6 +199,7 @@ export default function Header() {
                 </span>
               )}
             </button>
+            <CurrencySelector className="ml-0.5 px-2 py-1 text-[11px]" />
           </div>
         </div>
 

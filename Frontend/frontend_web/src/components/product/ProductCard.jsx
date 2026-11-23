@@ -3,9 +3,11 @@ import { ShoppingCart } from 'lucide-react';
 import StarRating from './StarRating';
 import WishlistButton from './WishlistButton';
 import { useCart } from '../../context/CartContext';
+import { useCurrency } from '../../context/CurrencyContext';
 
 export default function ProductCard({ producto }) {
   const { agregarAlCarrito } = useCart();
+  const { formatearPrecio } = useCurrency();
   const tieneDescuento = Boolean(producto.precio_descuento);
   const porcentaje = tieneDescuento
     ? Math.round(100 - (producto.precio_descuento / producto.precio) * 100)
@@ -53,11 +55,11 @@ export default function ProductCard({ producto }) {
           <div>
             {tieneDescuento ? (
               <div className="flex items-baseline gap-1.5">
-                <span className="text-lg font-bold text-brand-600 dark:text-brand-400">Bs {producto.precio_descuento}</span>
-                <span className="text-xs text-gray-400 dark:text-gray-500 line-through">Bs {producto.precio}</span>
+                <span className="text-lg font-bold text-brand-600 dark:text-brand-400">{formatearPrecio(producto.precio_descuento)}</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500 line-through">{formatearPrecio(producto.precio)}</span>
               </div>
             ) : (
-              <span className="text-lg font-bold text-gray-900 dark:text-gray-100">Bs {producto.precio}</span>
+              <span className="text-lg font-bold text-gray-900 dark:text-gray-100">{formatearPrecio(producto.precio)}</span>
             )}
           </div>
           <button

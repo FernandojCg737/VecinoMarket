@@ -7,6 +7,7 @@ export default function Dropdown({
   panelClassName = '',
   triggerClassName = '',
   panelPositionClassName,
+  ariaLabel,
 }) {
   const [abierto, setAbierto] = useState(false);
   const ref = useRef(null);
@@ -24,6 +25,8 @@ export default function Dropdown({
       <button
         type="button"
         onClick={() => setAbierto((v) => !v)}
+        aria-label={ariaLabel}
+        aria-expanded={abierto}
         className={`flex items-center gap-1 ${triggerClassName}`}
       >
         {trigger}

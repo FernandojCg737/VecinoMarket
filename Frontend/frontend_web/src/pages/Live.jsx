@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Radio, PlayCircle, Store } from 'lucide-react';
 import API from '../api/axios';
+import { useCurrency } from '../context/CurrencyContext';
 
 export default function Live() {
   const [lives, setLives] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
+  const { formatearPrecio } = useCurrency();
 
   useEffect(() => {
-    setCargando(true);
     API.get('promociones/lives/')
       .then((res) => setLives(res.data))
       .catch(() => setError('No se pudo cargar las transmisiones en vivo.'))
@@ -62,7 +63,7 @@ export default function Live() {
                     {l.productos_detalle.slice(0, 3).map((p) => (
                       <div key={p.id} className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                         <span className="truncate">{p.nombre}</span>
-                        <span className="shrink-0">Bs {p.precio}</span>
+                        <span className="shrink-0">{formatearPrecio(p.precio)}</span>
                       </div>
                     ))}
                   </div>

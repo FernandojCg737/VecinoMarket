@@ -9,6 +9,7 @@ import { esComprador } from '../utils/roles';
 import StarRating from '../components/product/StarRating';
 import WishlistButton from '../components/product/WishlistButton';
 import { useCart } from '../context/CartContext';
+import { useCurrency } from '../context/CurrencyContext';
 import ChatbotWidget from '../components/chat/ChatbotWidget';
 
 export default function ProductDetail() {
@@ -24,6 +25,7 @@ export default function ProductDetail() {
   const [mostrarChatbot, setMostrarChatbot] = useState(false);
   const [iniciandoChat, setIniciandoChat] = useState(false);
   const { agregarAlCarrito } = useCart();
+  const { formatearPrecio } = useCurrency();
 
   // Igual que en ProductListing: si cambia el id (navegar de un producto a
   // otro), se resetea el estado durante el render, no en el efecto.
@@ -122,11 +124,11 @@ export default function ProductDetail() {
           <div className="mt-4 mb-2">
             {tieneDescuento ? (
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-brand-600 dark:text-brand-400">Bs {producto.precio_descuento}</span>
-                <span className="text-base text-gray-400 dark:text-gray-500 line-through">Bs {producto.precio}</span>
+                <span className="text-3xl font-bold text-brand-600 dark:text-brand-400">{formatearPrecio(producto.precio_descuento)}</span>
+                <span className="text-base text-gray-400 dark:text-gray-500 line-through">{formatearPrecio(producto.precio)}</span>
               </div>
             ) : (
-              <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">Bs {producto.precio}</span>
+              <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">{formatearPrecio(producto.precio)}</span>
             )}
           </div>
 

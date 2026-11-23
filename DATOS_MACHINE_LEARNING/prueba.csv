@@ -1,0 +1,521 @@
+texto,intencion,familia,origen
+¿a cuanto ascendio el total vendido?,ventas,ventas-10,sintetico
+¿a cuanto ascendio el total vendido este mes?,ventas,ventas-10,sintetico
+¿a cuanto ascendio el total vendido del 2 al 13 de octubre?,ventas,ventas-10,sintetico
+¿a cuanto ascendio el total vendido en los ultimos 14 dias?,ventas,ventas-10,sintetico
+"¿hola, dime: a cuanto ascendio el total vendido?",ventas,ventas-10,sintetico
+"¿hola, dime: a cuanto ascendio el total vendido este mes?",ventas,ventas-10,sintetico
+"¿hola, dime: a cuanto ascendio el total vendido del 2 al 13 de octubre?",ventas,ventas-10,sintetico
+"¿hola, dime: a cuanto ascendio el total vendido en los ultimos 14 dias?",ventas,ventas-10,sintetico
+"¿para revisar, a cuanto ascendio el total vendido?",ventas,ventas-10,sintetico
+"¿para revisar, a cuanto ascendio el total vendido este mes?",ventas,ventas-10,sintetico
+"¿para revisar, a cuanto ascendio el total vendido del 2 al 13 de octubre?",ventas,ventas-10,sintetico
+"¿para revisar, a cuanto ascendio el total vendido en los ultimos 14 dias?",ventas,ventas-10,sintetico
+¿quisiera averiguar: a cuanto ascendio el total vendido?,ventas,ventas-10,sintetico
+¿quisiera averiguar: a cuanto ascendio el total vendido este mes?,ventas,ventas-10,sintetico
+¿quisiera averiguar: a cuanto ascendio el total vendido del 2 al 13 de octubre?,ventas,ventas-10,sintetico
+¿quisiera averiguar: a cuanto ascendio el total vendido en los ultimos 14 dias?,ventas,ventas-10,sintetico
+¿una duda: a cuanto ascendio el total vendido?,ventas,ventas-10,sintetico
+¿una duda: a cuanto ascendio el total vendido este mes?,ventas,ventas-10,sintetico
+¿una duda: a cuanto ascendio el total vendido del 2 al 13 de octubre?,ventas,ventas-10,sintetico
+¿una duda: a cuanto ascendio el total vendido en los ultimos 14 dias?,ventas,ventas-10,sintetico
+¿cuanto vendimos?,ventas,ventas-11,sintetico
+¿cuanto vendimos este mes?,ventas,ventas-11,sintetico
+¿cuanto vendimos del 2 al 13 de octubre?,ventas,ventas-11,sintetico
+¿cuanto vendimos en los ultimos 14 dias?,ventas,ventas-11,sintetico
+"¿hola, dime: cuanto vendimos?",ventas,ventas-11,sintetico
+"¿hola, dime: cuanto vendimos este mes?",ventas,ventas-11,sintetico
+"¿hola, dime: cuanto vendimos del 2 al 13 de octubre?",ventas,ventas-11,sintetico
+"¿hola, dime: cuanto vendimos en los ultimos 14 dias?",ventas,ventas-11,sintetico
+"¿para revisar, cuanto vendimos?",ventas,ventas-11,sintetico
+"¿para revisar, cuanto vendimos este mes?",ventas,ventas-11,sintetico
+"¿para revisar, cuanto vendimos del 2 al 13 de octubre?",ventas,ventas-11,sintetico
+"¿para revisar, cuanto vendimos en los ultimos 14 dias?",ventas,ventas-11,sintetico
+¿quisiera averiguar: cuanto vendimos?,ventas,ventas-11,sintetico
+¿quisiera averiguar: cuanto vendimos este mes?,ventas,ventas-11,sintetico
+¿quisiera averiguar: cuanto vendimos del 2 al 13 de octubre?,ventas,ventas-11,sintetico
+¿quisiera averiguar: cuanto vendimos en los ultimos 14 dias?,ventas,ventas-11,sintetico
+¿una duda: cuanto vendimos?,ventas,ventas-11,sintetico
+¿una duda: cuanto vendimos este mes?,ventas,ventas-11,sintetico
+¿una duda: cuanto vendimos del 2 al 13 de octubre?,ventas,ventas-11,sintetico
+¿una duda: cuanto vendimos en los ultimos 14 dias?,ventas,ventas-11,sintetico
+¿que productos salieron mas?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿que productos salieron mas este mes?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿que productos salieron mas del 2 al 13 de octubre?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿que productos salieron mas en los ultimos 14 dias?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+"¿hola, dime: que productos salieron mas?",producto_mas_vendido,producto_mas_vendido-10,sintetico
+"¿hola, dime: que productos salieron mas este mes?",producto_mas_vendido,producto_mas_vendido-10,sintetico
+"¿hola, dime: que productos salieron mas del 2 al 13 de octubre?",producto_mas_vendido,producto_mas_vendido-10,sintetico
+"¿hola, dime: que productos salieron mas en los ultimos 14 dias?",producto_mas_vendido,producto_mas_vendido-10,sintetico
+"¿para revisar, que productos salieron mas?",producto_mas_vendido,producto_mas_vendido-10,sintetico
+"¿para revisar, que productos salieron mas este mes?",producto_mas_vendido,producto_mas_vendido-10,sintetico
+"¿para revisar, que productos salieron mas del 2 al 13 de octubre?",producto_mas_vendido,producto_mas_vendido-10,sintetico
+"¿para revisar, que productos salieron mas en los ultimos 14 dias?",producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿quisiera averiguar: que productos salieron mas?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿quisiera averiguar: que productos salieron mas este mes?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿quisiera averiguar: que productos salieron mas del 2 al 13 de octubre?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿quisiera averiguar: que productos salieron mas en los ultimos 14 dias?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿una duda: que productos salieron mas?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿una duda: que productos salieron mas este mes?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿una duda: que productos salieron mas del 2 al 13 de octubre?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿una duda: que productos salieron mas en los ultimos 14 dias?,producto_mas_vendido,producto_mas_vendido-10,sintetico
+¿cual es el producto que mas se vende?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿cual es el producto que mas se vende este mes?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿cual es el producto que mas se vende del 2 al 13 de octubre?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿cual es el producto que mas se vende en los ultimos 14 dias?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+"¿hola, dime: cual es el producto que mas se vende?",producto_mas_vendido,producto_mas_vendido-11,sintetico
+"¿hola, dime: cual es el producto que mas se vende este mes?",producto_mas_vendido,producto_mas_vendido-11,sintetico
+"¿hola, dime: cual es el producto que mas se vende del 2 al 13 de octubre?",producto_mas_vendido,producto_mas_vendido-11,sintetico
+"¿hola, dime: cual es el producto que mas se vende en los ultimos 14 dias?",producto_mas_vendido,producto_mas_vendido-11,sintetico
+"¿para revisar, cual es el producto que mas se vende?",producto_mas_vendido,producto_mas_vendido-11,sintetico
+"¿para revisar, cual es el producto que mas se vende este mes?",producto_mas_vendido,producto_mas_vendido-11,sintetico
+"¿para revisar, cual es el producto que mas se vende del 2 al 13 de octubre?",producto_mas_vendido,producto_mas_vendido-11,sintetico
+"¿para revisar, cual es el producto que mas se vende en los ultimos 14 dias?",producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿quisiera averiguar: cual es el producto que mas se vende?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿quisiera averiguar: cual es el producto que mas se vende este mes?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿quisiera averiguar: cual es el producto que mas se vende del 2 al 13 de octubre?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿quisiera averiguar: cual es el producto que mas se vende en los ultimos 14 dias?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿una duda: cual es el producto que mas se vende?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿una duda: cual es el producto que mas se vende este mes?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿una duda: cual es el producto que mas se vende del 2 al 13 de octubre?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿una duda: cual es el producto que mas se vende en los ultimos 14 dias?,producto_mas_vendido,producto_mas_vendido-11,sintetico
+¿cual es la empresa con mas ventas?,empresa_lider,empresa_lider-10,sintetico
+¿cual es la empresa con mas ventas este mes?,empresa_lider,empresa_lider-10,sintetico
+¿cual es la empresa con mas ventas del 2 al 13 de octubre?,empresa_lider,empresa_lider-10,sintetico
+¿cual es la empresa con mas ventas en los ultimos 14 dias?,empresa_lider,empresa_lider-10,sintetico
+"¿hola, dime: cual es la empresa con mas ventas?",empresa_lider,empresa_lider-10,sintetico
+"¿hola, dime: cual es la empresa con mas ventas este mes?",empresa_lider,empresa_lider-10,sintetico
+"¿hola, dime: cual es la empresa con mas ventas del 2 al 13 de octubre?",empresa_lider,empresa_lider-10,sintetico
+"¿hola, dime: cual es la empresa con mas ventas en los ultimos 14 dias?",empresa_lider,empresa_lider-10,sintetico
+"¿para revisar, cual es la empresa con mas ventas?",empresa_lider,empresa_lider-10,sintetico
+"¿para revisar, cual es la empresa con mas ventas este mes?",empresa_lider,empresa_lider-10,sintetico
+"¿para revisar, cual es la empresa con mas ventas del 2 al 13 de octubre?",empresa_lider,empresa_lider-10,sintetico
+"¿para revisar, cual es la empresa con mas ventas en los ultimos 14 dias?",empresa_lider,empresa_lider-10,sintetico
+¿quisiera averiguar: cual es la empresa con mas ventas?,empresa_lider,empresa_lider-10,sintetico
+¿quisiera averiguar: cual es la empresa con mas ventas este mes?,empresa_lider,empresa_lider-10,sintetico
+¿quisiera averiguar: cual es la empresa con mas ventas del 2 al 13 de octubre?,empresa_lider,empresa_lider-10,sintetico
+¿quisiera averiguar: cual es la empresa con mas ventas en los ultimos 14 dias?,empresa_lider,empresa_lider-10,sintetico
+¿una duda: cual es la empresa con mas ventas?,empresa_lider,empresa_lider-10,sintetico
+¿una duda: cual es la empresa con mas ventas este mes?,empresa_lider,empresa_lider-10,sintetico
+¿una duda: cual es la empresa con mas ventas del 2 al 13 de octubre?,empresa_lider,empresa_lider-10,sintetico
+¿una duda: cual es la empresa con mas ventas en los ultimos 14 dias?,empresa_lider,empresa_lider-10,sintetico
+¿que vendedor comercial lidera las ventas entre empresas?,empresa_lider,empresa_lider-11,sintetico
+¿que vendedor comercial lidera las ventas entre empresas este mes?,empresa_lider,empresa_lider-11,sintetico
+¿que vendedor comercial lidera las ventas entre empresas del 2 al 13 de octubre?,empresa_lider,empresa_lider-11,sintetico
+¿que vendedor comercial lidera las ventas entre empresas en los ultimos 14 dias?,empresa_lider,empresa_lider-11,sintetico
+"¿hola, dime: que vendedor comercial lidera las ventas entre empresas?",empresa_lider,empresa_lider-11,sintetico
+"¿hola, dime: que vendedor comercial lidera las ventas entre empresas este mes?",empresa_lider,empresa_lider-11,sintetico
+"¿hola, dime: que vendedor comercial lidera las ventas entre empresas del 2 al 13 de octubre?",empresa_lider,empresa_lider-11,sintetico
+"¿hola, dime: que vendedor comercial lidera las ventas entre empresas en los ultimos 14 dias?",empresa_lider,empresa_lider-11,sintetico
+"¿para revisar, que vendedor comercial lidera las ventas entre empresas?",empresa_lider,empresa_lider-11,sintetico
+"¿para revisar, que vendedor comercial lidera las ventas entre empresas este mes?",empresa_lider,empresa_lider-11,sintetico
+"¿para revisar, que vendedor comercial lidera las ventas entre empresas del 2 al 13 de octubre?",empresa_lider,empresa_lider-11,sintetico
+"¿para revisar, que vendedor comercial lidera las ventas entre empresas en los ultimos 14 dias?",empresa_lider,empresa_lider-11,sintetico
+¿quisiera averiguar: que vendedor comercial lidera las ventas entre empresas?,empresa_lider,empresa_lider-11,sintetico
+¿quisiera averiguar: que vendedor comercial lidera las ventas entre empresas este mes?,empresa_lider,empresa_lider-11,sintetico
+¿quisiera averiguar: que vendedor comercial lidera las ventas entre empresas del 2 al 13 de octubre?,empresa_lider,empresa_lider-11,sintetico
+¿quisiera averiguar: que vendedor comercial lidera las ventas entre empresas en los ultimos 14 dias?,empresa_lider,empresa_lider-11,sintetico
+¿una duda: que vendedor comercial lidera las ventas entre empresas?,empresa_lider,empresa_lider-11,sintetico
+¿una duda: que vendedor comercial lidera las ventas entre empresas este mes?,empresa_lider,empresa_lider-11,sintetico
+¿una duda: que vendedor comercial lidera las ventas entre empresas del 2 al 13 de octubre?,empresa_lider,empresa_lider-11,sintetico
+¿una duda: que vendedor comercial lidera las ventas entre empresas en los ultimos 14 dias?,empresa_lider,empresa_lider-11,sintetico
+¿cuanto genero la plataforma por comisiones?,comisiones,comisiones-10,sintetico
+¿cuanto genero la plataforma por comisiones este mes?,comisiones,comisiones-10,sintetico
+¿cuanto genero la plataforma por comisiones del 2 al 13 de octubre?,comisiones,comisiones-10,sintetico
+¿cuanto genero la plataforma por comisiones en los ultimos 14 dias?,comisiones,comisiones-10,sintetico
+"¿hola, dime: cuanto genero la plataforma por comisiones?",comisiones,comisiones-10,sintetico
+"¿hola, dime: cuanto genero la plataforma por comisiones este mes?",comisiones,comisiones-10,sintetico
+"¿hola, dime: cuanto genero la plataforma por comisiones del 2 al 13 de octubre?",comisiones,comisiones-10,sintetico
+"¿hola, dime: cuanto genero la plataforma por comisiones en los ultimos 14 dias?",comisiones,comisiones-10,sintetico
+"¿para revisar, cuanto genero la plataforma por comisiones?",comisiones,comisiones-10,sintetico
+"¿para revisar, cuanto genero la plataforma por comisiones este mes?",comisiones,comisiones-10,sintetico
+"¿para revisar, cuanto genero la plataforma por comisiones del 2 al 13 de octubre?",comisiones,comisiones-10,sintetico
+"¿para revisar, cuanto genero la plataforma por comisiones en los ultimos 14 dias?",comisiones,comisiones-10,sintetico
+¿quisiera averiguar: cuanto genero la plataforma por comisiones?,comisiones,comisiones-10,sintetico
+¿quisiera averiguar: cuanto genero la plataforma por comisiones este mes?,comisiones,comisiones-10,sintetico
+¿quisiera averiguar: cuanto genero la plataforma por comisiones del 2 al 13 de octubre?,comisiones,comisiones-10,sintetico
+¿quisiera averiguar: cuanto genero la plataforma por comisiones en los ultimos 14 dias?,comisiones,comisiones-10,sintetico
+¿una duda: cuanto genero la plataforma por comisiones?,comisiones,comisiones-10,sintetico
+¿una duda: cuanto genero la plataforma por comisiones este mes?,comisiones,comisiones-10,sintetico
+¿una duda: cuanto genero la plataforma por comisiones del 2 al 13 de octubre?,comisiones,comisiones-10,sintetico
+¿una duda: cuanto genero la plataforma por comisiones en los ultimos 14 dias?,comisiones,comisiones-10,sintetico
+¿muestrame el monto de comisiones cobradas?,comisiones,comisiones-11,sintetico
+¿muestrame el monto de comisiones cobradas este mes?,comisiones,comisiones-11,sintetico
+¿muestrame el monto de comisiones cobradas del 2 al 13 de octubre?,comisiones,comisiones-11,sintetico
+¿muestrame el monto de comisiones cobradas en los ultimos 14 dias?,comisiones,comisiones-11,sintetico
+"¿hola, dime: muestrame el monto de comisiones cobradas?",comisiones,comisiones-11,sintetico
+"¿hola, dime: muestrame el monto de comisiones cobradas este mes?",comisiones,comisiones-11,sintetico
+"¿hola, dime: muestrame el monto de comisiones cobradas del 2 al 13 de octubre?",comisiones,comisiones-11,sintetico
+"¿hola, dime: muestrame el monto de comisiones cobradas en los ultimos 14 dias?",comisiones,comisiones-11,sintetico
+"¿para revisar, muestrame el monto de comisiones cobradas?",comisiones,comisiones-11,sintetico
+"¿para revisar, muestrame el monto de comisiones cobradas este mes?",comisiones,comisiones-11,sintetico
+"¿para revisar, muestrame el monto de comisiones cobradas del 2 al 13 de octubre?",comisiones,comisiones-11,sintetico
+"¿para revisar, muestrame el monto de comisiones cobradas en los ultimos 14 dias?",comisiones,comisiones-11,sintetico
+¿quisiera averiguar: muestrame el monto de comisiones cobradas?,comisiones,comisiones-11,sintetico
+¿quisiera averiguar: muestrame el monto de comisiones cobradas este mes?,comisiones,comisiones-11,sintetico
+¿quisiera averiguar: muestrame el monto de comisiones cobradas del 2 al 13 de octubre?,comisiones,comisiones-11,sintetico
+¿quisiera averiguar: muestrame el monto de comisiones cobradas en los ultimos 14 dias?,comisiones,comisiones-11,sintetico
+¿una duda: muestrame el monto de comisiones cobradas?,comisiones,comisiones-11,sintetico
+¿una duda: muestrame el monto de comisiones cobradas este mes?,comisiones,comisiones-11,sintetico
+¿una duda: muestrame el monto de comisiones cobradas del 2 al 13 de octubre?,comisiones,comisiones-11,sintetico
+¿una duda: muestrame el monto de comisiones cobradas en los ultimos 14 dias?,comisiones,comisiones-11,sintetico
+¿cuantas empresas y usuarios tenemos?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿cuantas empresas y usuarios tenemos este mes?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿cuantas empresas y usuarios tenemos del 2 al 13 de octubre?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿cuantas empresas y usuarios tenemos en los ultimos 14 dias?,resumen_plataforma,resumen_plataforma-10,sintetico
+"¿hola, dime: cuantas empresas y usuarios tenemos?",resumen_plataforma,resumen_plataforma-10,sintetico
+"¿hola, dime: cuantas empresas y usuarios tenemos este mes?",resumen_plataforma,resumen_plataforma-10,sintetico
+"¿hola, dime: cuantas empresas y usuarios tenemos del 2 al 13 de octubre?",resumen_plataforma,resumen_plataforma-10,sintetico
+"¿hola, dime: cuantas empresas y usuarios tenemos en los ultimos 14 dias?",resumen_plataforma,resumen_plataforma-10,sintetico
+"¿para revisar, cuantas empresas y usuarios tenemos?",resumen_plataforma,resumen_plataforma-10,sintetico
+"¿para revisar, cuantas empresas y usuarios tenemos este mes?",resumen_plataforma,resumen_plataforma-10,sintetico
+"¿para revisar, cuantas empresas y usuarios tenemos del 2 al 13 de octubre?",resumen_plataforma,resumen_plataforma-10,sintetico
+"¿para revisar, cuantas empresas y usuarios tenemos en los ultimos 14 dias?",resumen_plataforma,resumen_plataforma-10,sintetico
+¿quisiera averiguar: cuantas empresas y usuarios tenemos?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿quisiera averiguar: cuantas empresas y usuarios tenemos este mes?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿quisiera averiguar: cuantas empresas y usuarios tenemos del 2 al 13 de octubre?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿quisiera averiguar: cuantas empresas y usuarios tenemos en los ultimos 14 dias?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿una duda: cuantas empresas y usuarios tenemos?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿una duda: cuantas empresas y usuarios tenemos este mes?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿una duda: cuantas empresas y usuarios tenemos del 2 al 13 de octubre?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿una duda: cuantas empresas y usuarios tenemos en los ultimos 14 dias?,resumen_plataforma,resumen_plataforma-10,sintetico
+¿dame la cantidad de empresas dadas de alta?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿dame la cantidad de empresas dadas de alta este mes?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿dame la cantidad de empresas dadas de alta del 2 al 13 de octubre?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿dame la cantidad de empresas dadas de alta en los ultimos 14 dias?,resumen_plataforma,resumen_plataforma-11,sintetico
+"¿hola, dime: dame la cantidad de empresas dadas de alta?",resumen_plataforma,resumen_plataforma-11,sintetico
+"¿hola, dime: dame la cantidad de empresas dadas de alta este mes?",resumen_plataforma,resumen_plataforma-11,sintetico
+"¿hola, dime: dame la cantidad de empresas dadas de alta del 2 al 13 de octubre?",resumen_plataforma,resumen_plataforma-11,sintetico
+"¿hola, dime: dame la cantidad de empresas dadas de alta en los ultimos 14 dias?",resumen_plataforma,resumen_plataforma-11,sintetico
+"¿para revisar, dame la cantidad de empresas dadas de alta?",resumen_plataforma,resumen_plataforma-11,sintetico
+"¿para revisar, dame la cantidad de empresas dadas de alta este mes?",resumen_plataforma,resumen_plataforma-11,sintetico
+"¿para revisar, dame la cantidad de empresas dadas de alta del 2 al 13 de octubre?",resumen_plataforma,resumen_plataforma-11,sintetico
+"¿para revisar, dame la cantidad de empresas dadas de alta en los ultimos 14 dias?",resumen_plataforma,resumen_plataforma-11,sintetico
+¿quisiera averiguar: dame la cantidad de empresas dadas de alta?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿quisiera averiguar: dame la cantidad de empresas dadas de alta este mes?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿quisiera averiguar: dame la cantidad de empresas dadas de alta del 2 al 13 de octubre?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿quisiera averiguar: dame la cantidad de empresas dadas de alta en los ultimos 14 dias?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿una duda: dame la cantidad de empresas dadas de alta?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿una duda: dame la cantidad de empresas dadas de alta este mes?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿una duda: dame la cantidad de empresas dadas de alta del 2 al 13 de octubre?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿una duda: dame la cantidad de empresas dadas de alta en los ultimos 14 dias?,resumen_plataforma,resumen_plataforma-11,sintetico
+¿dime cual articulo vale mas dinero?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿dime cual articulo vale mas dinero este mes?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿dime cual articulo vale mas dinero del 2 al 13 de octubre?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿dime cual articulo vale mas dinero en los ultimos 14 dias?,producto_mas_caro,producto_mas_caro-10,sintetico
+"¿hola, dime: dime cual articulo vale mas dinero?",producto_mas_caro,producto_mas_caro-10,sintetico
+"¿hola, dime: dime cual articulo vale mas dinero este mes?",producto_mas_caro,producto_mas_caro-10,sintetico
+"¿hola, dime: dime cual articulo vale mas dinero del 2 al 13 de octubre?",producto_mas_caro,producto_mas_caro-10,sintetico
+"¿hola, dime: dime cual articulo vale mas dinero en los ultimos 14 dias?",producto_mas_caro,producto_mas_caro-10,sintetico
+"¿para revisar, dime cual articulo vale mas dinero?",producto_mas_caro,producto_mas_caro-10,sintetico
+"¿para revisar, dime cual articulo vale mas dinero este mes?",producto_mas_caro,producto_mas_caro-10,sintetico
+"¿para revisar, dime cual articulo vale mas dinero del 2 al 13 de octubre?",producto_mas_caro,producto_mas_caro-10,sintetico
+"¿para revisar, dime cual articulo vale mas dinero en los ultimos 14 dias?",producto_mas_caro,producto_mas_caro-10,sintetico
+¿quisiera averiguar: dime cual articulo vale mas dinero?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿quisiera averiguar: dime cual articulo vale mas dinero este mes?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿quisiera averiguar: dime cual articulo vale mas dinero del 2 al 13 de octubre?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿quisiera averiguar: dime cual articulo vale mas dinero en los ultimos 14 dias?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿una duda: dime cual articulo vale mas dinero?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿una duda: dime cual articulo vale mas dinero este mes?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿una duda: dime cual articulo vale mas dinero del 2 al 13 de octubre?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿una duda: dime cual articulo vale mas dinero en los ultimos 14 dias?,producto_mas_caro,producto_mas_caro-10,sintetico
+¿que producto tiene mayor precio?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿que producto tiene mayor precio este mes?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿que producto tiene mayor precio del 2 al 13 de octubre?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿que producto tiene mayor precio en los ultimos 14 dias?,producto_mas_caro,producto_mas_caro-11,sintetico
+"¿hola, dime: que producto tiene mayor precio?",producto_mas_caro,producto_mas_caro-11,sintetico
+"¿hola, dime: que producto tiene mayor precio este mes?",producto_mas_caro,producto_mas_caro-11,sintetico
+"¿hola, dime: que producto tiene mayor precio del 2 al 13 de octubre?",producto_mas_caro,producto_mas_caro-11,sintetico
+"¿hola, dime: que producto tiene mayor precio en los ultimos 14 dias?",producto_mas_caro,producto_mas_caro-11,sintetico
+"¿para revisar, que producto tiene mayor precio?",producto_mas_caro,producto_mas_caro-11,sintetico
+"¿para revisar, que producto tiene mayor precio este mes?",producto_mas_caro,producto_mas_caro-11,sintetico
+"¿para revisar, que producto tiene mayor precio del 2 al 13 de octubre?",producto_mas_caro,producto_mas_caro-11,sintetico
+"¿para revisar, que producto tiene mayor precio en los ultimos 14 dias?",producto_mas_caro,producto_mas_caro-11,sintetico
+¿quisiera averiguar: que producto tiene mayor precio?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿quisiera averiguar: que producto tiene mayor precio este mes?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿quisiera averiguar: que producto tiene mayor precio del 2 al 13 de octubre?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿quisiera averiguar: que producto tiene mayor precio en los ultimos 14 dias?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿una duda: que producto tiene mayor precio?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿una duda: que producto tiene mayor precio este mes?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿una duda: que producto tiene mayor precio del 2 al 13 de octubre?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿una duda: que producto tiene mayor precio en los ultimos 14 dias?,producto_mas_caro,producto_mas_caro-11,sintetico
+¿dime cual articulo vale menos dinero?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿dime cual articulo vale menos dinero este mes?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿dime cual articulo vale menos dinero del 2 al 13 de octubre?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿dime cual articulo vale menos dinero en los ultimos 14 dias?,producto_mas_barato,producto_mas_barato-10,sintetico
+"¿hola, dime: dime cual articulo vale menos dinero?",producto_mas_barato,producto_mas_barato-10,sintetico
+"¿hola, dime: dime cual articulo vale menos dinero este mes?",producto_mas_barato,producto_mas_barato-10,sintetico
+"¿hola, dime: dime cual articulo vale menos dinero del 2 al 13 de octubre?",producto_mas_barato,producto_mas_barato-10,sintetico
+"¿hola, dime: dime cual articulo vale menos dinero en los ultimos 14 dias?",producto_mas_barato,producto_mas_barato-10,sintetico
+"¿para revisar, dime cual articulo vale menos dinero?",producto_mas_barato,producto_mas_barato-10,sintetico
+"¿para revisar, dime cual articulo vale menos dinero este mes?",producto_mas_barato,producto_mas_barato-10,sintetico
+"¿para revisar, dime cual articulo vale menos dinero del 2 al 13 de octubre?",producto_mas_barato,producto_mas_barato-10,sintetico
+"¿para revisar, dime cual articulo vale menos dinero en los ultimos 14 dias?",producto_mas_barato,producto_mas_barato-10,sintetico
+¿quisiera averiguar: dime cual articulo vale menos dinero?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿quisiera averiguar: dime cual articulo vale menos dinero este mes?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿quisiera averiguar: dime cual articulo vale menos dinero del 2 al 13 de octubre?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿quisiera averiguar: dime cual articulo vale menos dinero en los ultimos 14 dias?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿una duda: dime cual articulo vale menos dinero?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿una duda: dime cual articulo vale menos dinero este mes?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿una duda: dime cual articulo vale menos dinero del 2 al 13 de octubre?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿una duda: dime cual articulo vale menos dinero en los ultimos 14 dias?,producto_mas_barato,producto_mas_barato-10,sintetico
+¿que producto tiene menor precio?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿que producto tiene menor precio este mes?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿que producto tiene menor precio del 2 al 13 de octubre?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿que producto tiene menor precio en los ultimos 14 dias?,producto_mas_barato,producto_mas_barato-11,sintetico
+"¿hola, dime: que producto tiene menor precio?",producto_mas_barato,producto_mas_barato-11,sintetico
+"¿hola, dime: que producto tiene menor precio este mes?",producto_mas_barato,producto_mas_barato-11,sintetico
+"¿hola, dime: que producto tiene menor precio del 2 al 13 de octubre?",producto_mas_barato,producto_mas_barato-11,sintetico
+"¿hola, dime: que producto tiene menor precio en los ultimos 14 dias?",producto_mas_barato,producto_mas_barato-11,sintetico
+"¿para revisar, que producto tiene menor precio?",producto_mas_barato,producto_mas_barato-11,sintetico
+"¿para revisar, que producto tiene menor precio este mes?",producto_mas_barato,producto_mas_barato-11,sintetico
+"¿para revisar, que producto tiene menor precio del 2 al 13 de octubre?",producto_mas_barato,producto_mas_barato-11,sintetico
+"¿para revisar, que producto tiene menor precio en los ultimos 14 dias?",producto_mas_barato,producto_mas_barato-11,sintetico
+¿quisiera averiguar: que producto tiene menor precio?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿quisiera averiguar: que producto tiene menor precio este mes?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿quisiera averiguar: que producto tiene menor precio del 2 al 13 de octubre?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿quisiera averiguar: que producto tiene menor precio en los ultimos 14 dias?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿una duda: que producto tiene menor precio?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿una duda: que producto tiene menor precio este mes?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿una duda: que producto tiene menor precio del 2 al 13 de octubre?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿una duda: que producto tiene menor precio en los ultimos 14 dias?,producto_mas_barato,producto_mas_barato-11,sintetico
+¿que producto se esta agotando?,stock_bajo,stock_bajo-10,sintetico
+¿que producto se esta agotando este mes?,stock_bajo,stock_bajo-10,sintetico
+¿que producto se esta agotando del 2 al 13 de octubre?,stock_bajo,stock_bajo-10,sintetico
+¿que producto se esta agotando en los ultimos 14 dias?,stock_bajo,stock_bajo-10,sintetico
+"¿hola, dime: que producto se esta agotando?",stock_bajo,stock_bajo-10,sintetico
+"¿hola, dime: que producto se esta agotando este mes?",stock_bajo,stock_bajo-10,sintetico
+"¿hola, dime: que producto se esta agotando del 2 al 13 de octubre?",stock_bajo,stock_bajo-10,sintetico
+"¿hola, dime: que producto se esta agotando en los ultimos 14 dias?",stock_bajo,stock_bajo-10,sintetico
+"¿para revisar, que producto se esta agotando?",stock_bajo,stock_bajo-10,sintetico
+"¿para revisar, que producto se esta agotando este mes?",stock_bajo,stock_bajo-10,sintetico
+"¿para revisar, que producto se esta agotando del 2 al 13 de octubre?",stock_bajo,stock_bajo-10,sintetico
+"¿para revisar, que producto se esta agotando en los ultimos 14 dias?",stock_bajo,stock_bajo-10,sintetico
+¿quisiera averiguar: que producto se esta agotando?,stock_bajo,stock_bajo-10,sintetico
+¿quisiera averiguar: que producto se esta agotando este mes?,stock_bajo,stock_bajo-10,sintetico
+¿quisiera averiguar: que producto se esta agotando del 2 al 13 de octubre?,stock_bajo,stock_bajo-10,sintetico
+¿quisiera averiguar: que producto se esta agotando en los ultimos 14 dias?,stock_bajo,stock_bajo-10,sintetico
+¿una duda: que producto se esta agotando?,stock_bajo,stock_bajo-10,sintetico
+¿una duda: que producto se esta agotando este mes?,stock_bajo,stock_bajo-10,sintetico
+¿una duda: que producto se esta agotando del 2 al 13 de octubre?,stock_bajo,stock_bajo-10,sintetico
+¿una duda: que producto se esta agotando en los ultimos 14 dias?,stock_bajo,stock_bajo-10,sintetico
+¿en que articulo quedan menos existencias?,stock_bajo,stock_bajo-11,sintetico
+¿en que articulo quedan menos existencias este mes?,stock_bajo,stock_bajo-11,sintetico
+¿en que articulo quedan menos existencias del 2 al 13 de octubre?,stock_bajo,stock_bajo-11,sintetico
+¿en que articulo quedan menos existencias en los ultimos 14 dias?,stock_bajo,stock_bajo-11,sintetico
+"¿hola, dime: en que articulo quedan menos existencias?",stock_bajo,stock_bajo-11,sintetico
+"¿hola, dime: en que articulo quedan menos existencias este mes?",stock_bajo,stock_bajo-11,sintetico
+"¿hola, dime: en que articulo quedan menos existencias del 2 al 13 de octubre?",stock_bajo,stock_bajo-11,sintetico
+"¿hola, dime: en que articulo quedan menos existencias en los ultimos 14 dias?",stock_bajo,stock_bajo-11,sintetico
+"¿para revisar, en que articulo quedan menos existencias?",stock_bajo,stock_bajo-11,sintetico
+"¿para revisar, en que articulo quedan menos existencias este mes?",stock_bajo,stock_bajo-11,sintetico
+"¿para revisar, en que articulo quedan menos existencias del 2 al 13 de octubre?",stock_bajo,stock_bajo-11,sintetico
+"¿para revisar, en que articulo quedan menos existencias en los ultimos 14 dias?",stock_bajo,stock_bajo-11,sintetico
+¿quisiera averiguar: en que articulo quedan menos existencias?,stock_bajo,stock_bajo-11,sintetico
+¿quisiera averiguar: en que articulo quedan menos existencias este mes?,stock_bajo,stock_bajo-11,sintetico
+¿quisiera averiguar: en que articulo quedan menos existencias del 2 al 13 de octubre?,stock_bajo,stock_bajo-11,sintetico
+¿quisiera averiguar: en que articulo quedan menos existencias en los ultimos 14 dias?,stock_bajo,stock_bajo-11,sintetico
+¿una duda: en que articulo quedan menos existencias?,stock_bajo,stock_bajo-11,sintetico
+¿una duda: en que articulo quedan menos existencias este mes?,stock_bajo,stock_bajo-11,sintetico
+¿una duda: en que articulo quedan menos existencias del 2 al 13 de octubre?,stock_bajo,stock_bajo-11,sintetico
+¿una duda: en que articulo quedan menos existencias en los ultimos 14 dias?,stock_bajo,stock_bajo-11,sintetico
+¿quien es mi mejor cliente?,clientes_principales,clientes_principales-10,sintetico
+¿quien es mi mejor cliente este mes?,clientes_principales,clientes_principales-10,sintetico
+¿quien es mi mejor cliente del 2 al 13 de octubre?,clientes_principales,clientes_principales-10,sintetico
+¿quien es mi mejor cliente en los ultimos 14 dias?,clientes_principales,clientes_principales-10,sintetico
+"¿hola, dime: quien es mi mejor cliente?",clientes_principales,clientes_principales-10,sintetico
+"¿hola, dime: quien es mi mejor cliente este mes?",clientes_principales,clientes_principales-10,sintetico
+"¿hola, dime: quien es mi mejor cliente del 2 al 13 de octubre?",clientes_principales,clientes_principales-10,sintetico
+"¿hola, dime: quien es mi mejor cliente en los ultimos 14 dias?",clientes_principales,clientes_principales-10,sintetico
+"¿para revisar, quien es mi mejor cliente?",clientes_principales,clientes_principales-10,sintetico
+"¿para revisar, quien es mi mejor cliente este mes?",clientes_principales,clientes_principales-10,sintetico
+"¿para revisar, quien es mi mejor cliente del 2 al 13 de octubre?",clientes_principales,clientes_principales-10,sintetico
+"¿para revisar, quien es mi mejor cliente en los ultimos 14 dias?",clientes_principales,clientes_principales-10,sintetico
+¿quisiera averiguar: quien es mi mejor cliente?,clientes_principales,clientes_principales-10,sintetico
+¿quisiera averiguar: quien es mi mejor cliente este mes?,clientes_principales,clientes_principales-10,sintetico
+¿quisiera averiguar: quien es mi mejor cliente del 2 al 13 de octubre?,clientes_principales,clientes_principales-10,sintetico
+¿quisiera averiguar: quien es mi mejor cliente en los ultimos 14 dias?,clientes_principales,clientes_principales-10,sintetico
+¿una duda: quien es mi mejor cliente?,clientes_principales,clientes_principales-10,sintetico
+¿una duda: quien es mi mejor cliente este mes?,clientes_principales,clientes_principales-10,sintetico
+¿una duda: quien es mi mejor cliente del 2 al 13 de octubre?,clientes_principales,clientes_principales-10,sintetico
+¿una duda: quien es mi mejor cliente en los ultimos 14 dias?,clientes_principales,clientes_principales-10,sintetico
+¿muestrame la persona que mas dinero gasto en compras?,clientes_principales,clientes_principales-11,sintetico
+¿muestrame la persona que mas dinero gasto en compras este mes?,clientes_principales,clientes_principales-11,sintetico
+¿muestrame la persona que mas dinero gasto en compras del 2 al 13 de octubre?,clientes_principales,clientes_principales-11,sintetico
+¿muestrame la persona que mas dinero gasto en compras en los ultimos 14 dias?,clientes_principales,clientes_principales-11,sintetico
+"¿hola, dime: muestrame la persona que mas dinero gasto en compras?",clientes_principales,clientes_principales-11,sintetico
+"¿hola, dime: muestrame la persona que mas dinero gasto en compras este mes?",clientes_principales,clientes_principales-11,sintetico
+"¿hola, dime: muestrame la persona que mas dinero gasto en compras del 2 al 13 de octubre?",clientes_principales,clientes_principales-11,sintetico
+"¿hola, dime: muestrame la persona que mas dinero gasto en compras en los ultimos 14 dias?",clientes_principales,clientes_principales-11,sintetico
+"¿para revisar, muestrame la persona que mas dinero gasto en compras?",clientes_principales,clientes_principales-11,sintetico
+"¿para revisar, muestrame la persona que mas dinero gasto en compras este mes?",clientes_principales,clientes_principales-11,sintetico
+"¿para revisar, muestrame la persona que mas dinero gasto en compras del 2 al 13 de octubre?",clientes_principales,clientes_principales-11,sintetico
+"¿para revisar, muestrame la persona que mas dinero gasto en compras en los ultimos 14 dias?",clientes_principales,clientes_principales-11,sintetico
+¿quisiera averiguar: muestrame la persona que mas dinero gasto en compras?,clientes_principales,clientes_principales-11,sintetico
+¿quisiera averiguar: muestrame la persona que mas dinero gasto en compras este mes?,clientes_principales,clientes_principales-11,sintetico
+¿quisiera averiguar: muestrame la persona que mas dinero gasto en compras del 2 al 13 de octubre?,clientes_principales,clientes_principales-11,sintetico
+¿quisiera averiguar: muestrame la persona que mas dinero gasto en compras en los ultimos 14 dias?,clientes_principales,clientes_principales-11,sintetico
+¿una duda: muestrame la persona que mas dinero gasto en compras?,clientes_principales,clientes_principales-11,sintetico
+¿una duda: muestrame la persona que mas dinero gasto en compras este mes?,clientes_principales,clientes_principales-11,sintetico
+¿una duda: muestrame la persona que mas dinero gasto en compras del 2 al 13 de octubre?,clientes_principales,clientes_principales-11,sintetico
+¿una duda: muestrame la persona que mas dinero gasto en compras en los ultimos 14 dias?,clientes_principales,clientes_principales-11,sintetico
+¿ver listado general de productos?,catalogo,catalogo-10,sintetico
+¿ver listado general de productos este mes?,catalogo,catalogo-10,sintetico
+¿ver listado general de productos del 2 al 13 de octubre?,catalogo,catalogo-10,sintetico
+¿ver listado general de productos en los ultimos 14 dias?,catalogo,catalogo-10,sintetico
+"¿hola, dime: ver listado general de productos?",catalogo,catalogo-10,sintetico
+"¿hola, dime: ver listado general de productos este mes?",catalogo,catalogo-10,sintetico
+"¿hola, dime: ver listado general de productos del 2 al 13 de octubre?",catalogo,catalogo-10,sintetico
+"¿hola, dime: ver listado general de productos en los ultimos 14 dias?",catalogo,catalogo-10,sintetico
+"¿para revisar, ver listado general de productos?",catalogo,catalogo-10,sintetico
+"¿para revisar, ver listado general de productos este mes?",catalogo,catalogo-10,sintetico
+"¿para revisar, ver listado general de productos del 2 al 13 de octubre?",catalogo,catalogo-10,sintetico
+"¿para revisar, ver listado general de productos en los ultimos 14 dias?",catalogo,catalogo-10,sintetico
+¿quisiera averiguar: ver listado general de productos?,catalogo,catalogo-10,sintetico
+¿quisiera averiguar: ver listado general de productos este mes?,catalogo,catalogo-10,sintetico
+¿quisiera averiguar: ver listado general de productos del 2 al 13 de octubre?,catalogo,catalogo-10,sintetico
+¿quisiera averiguar: ver listado general de productos en los ultimos 14 dias?,catalogo,catalogo-10,sintetico
+¿una duda: ver listado general de productos?,catalogo,catalogo-10,sintetico
+¿una duda: ver listado general de productos este mes?,catalogo,catalogo-10,sintetico
+¿una duda: ver listado general de productos del 2 al 13 de octubre?,catalogo,catalogo-10,sintetico
+¿una duda: ver listado general de productos en los ultimos 14 dias?,catalogo,catalogo-10,sintetico
+¿necesito un reporte del catalogo?,catalogo,catalogo-11,sintetico
+¿necesito un reporte del catalogo este mes?,catalogo,catalogo-11,sintetico
+¿necesito un reporte del catalogo del 2 al 13 de octubre?,catalogo,catalogo-11,sintetico
+¿necesito un reporte del catalogo en los ultimos 14 dias?,catalogo,catalogo-11,sintetico
+"¿hola, dime: necesito un reporte del catalogo?",catalogo,catalogo-11,sintetico
+"¿hola, dime: necesito un reporte del catalogo este mes?",catalogo,catalogo-11,sintetico
+"¿hola, dime: necesito un reporte del catalogo del 2 al 13 de octubre?",catalogo,catalogo-11,sintetico
+"¿hola, dime: necesito un reporte del catalogo en los ultimos 14 dias?",catalogo,catalogo-11,sintetico
+"¿para revisar, necesito un reporte del catalogo?",catalogo,catalogo-11,sintetico
+"¿para revisar, necesito un reporte del catalogo este mes?",catalogo,catalogo-11,sintetico
+"¿para revisar, necesito un reporte del catalogo del 2 al 13 de octubre?",catalogo,catalogo-11,sintetico
+"¿para revisar, necesito un reporte del catalogo en los ultimos 14 dias?",catalogo,catalogo-11,sintetico
+¿quisiera averiguar: necesito un reporte del catalogo?,catalogo,catalogo-11,sintetico
+¿quisiera averiguar: necesito un reporte del catalogo este mes?,catalogo,catalogo-11,sintetico
+¿quisiera averiguar: necesito un reporte del catalogo del 2 al 13 de octubre?,catalogo,catalogo-11,sintetico
+¿quisiera averiguar: necesito un reporte del catalogo en los ultimos 14 dias?,catalogo,catalogo-11,sintetico
+¿una duda: necesito un reporte del catalogo?,catalogo,catalogo-11,sintetico
+¿una duda: necesito un reporte del catalogo este mes?,catalogo,catalogo-11,sintetico
+¿una duda: necesito un reporte del catalogo del 2 al 13 de octubre?,catalogo,catalogo-11,sintetico
+¿una duda: necesito un reporte del catalogo en los ultimos 14 dias?,catalogo,catalogo-11,sintetico
+¿abre el reporte de inventario?,inventario,inventario-10,sintetico
+¿abre el reporte de inventario este mes?,inventario,inventario-10,sintetico
+¿abre el reporte de inventario del 2 al 13 de octubre?,inventario,inventario-10,sintetico
+¿abre el reporte de inventario en los ultimos 14 dias?,inventario,inventario-10,sintetico
+"¿hola, dime: abre el reporte de inventario?",inventario,inventario-10,sintetico
+"¿hola, dime: abre el reporte de inventario este mes?",inventario,inventario-10,sintetico
+"¿hola, dime: abre el reporte de inventario del 2 al 13 de octubre?",inventario,inventario-10,sintetico
+"¿hola, dime: abre el reporte de inventario en los ultimos 14 dias?",inventario,inventario-10,sintetico
+"¿para revisar, abre el reporte de inventario?",inventario,inventario-10,sintetico
+"¿para revisar, abre el reporte de inventario este mes?",inventario,inventario-10,sintetico
+"¿para revisar, abre el reporte de inventario del 2 al 13 de octubre?",inventario,inventario-10,sintetico
+"¿para revisar, abre el reporte de inventario en los ultimos 14 dias?",inventario,inventario-10,sintetico
+¿quisiera averiguar: abre el reporte de inventario?,inventario,inventario-10,sintetico
+¿quisiera averiguar: abre el reporte de inventario este mes?,inventario,inventario-10,sintetico
+¿quisiera averiguar: abre el reporte de inventario del 2 al 13 de octubre?,inventario,inventario-10,sintetico
+¿quisiera averiguar: abre el reporte de inventario en los ultimos 14 dias?,inventario,inventario-10,sintetico
+¿una duda: abre el reporte de inventario?,inventario,inventario-10,sintetico
+¿una duda: abre el reporte de inventario este mes?,inventario,inventario-10,sintetico
+¿una duda: abre el reporte de inventario del 2 al 13 de octubre?,inventario,inventario-10,sintetico
+¿una duda: abre el reporte de inventario en los ultimos 14 dias?,inventario,inventario-10,sintetico
+¿quiero consultar la disponibilidad de stock?,inventario,inventario-11,sintetico
+¿quiero consultar la disponibilidad de stock este mes?,inventario,inventario-11,sintetico
+¿quiero consultar la disponibilidad de stock del 2 al 13 de octubre?,inventario,inventario-11,sintetico
+¿quiero consultar la disponibilidad de stock en los ultimos 14 dias?,inventario,inventario-11,sintetico
+"¿hola, dime: quiero consultar la disponibilidad de stock?",inventario,inventario-11,sintetico
+"¿hola, dime: quiero consultar la disponibilidad de stock este mes?",inventario,inventario-11,sintetico
+"¿hola, dime: quiero consultar la disponibilidad de stock del 2 al 13 de octubre?",inventario,inventario-11,sintetico
+"¿hola, dime: quiero consultar la disponibilidad de stock en los ultimos 14 dias?",inventario,inventario-11,sintetico
+"¿para revisar, quiero consultar la disponibilidad de stock?",inventario,inventario-11,sintetico
+"¿para revisar, quiero consultar la disponibilidad de stock este mes?",inventario,inventario-11,sintetico
+"¿para revisar, quiero consultar la disponibilidad de stock del 2 al 13 de octubre?",inventario,inventario-11,sintetico
+"¿para revisar, quiero consultar la disponibilidad de stock en los ultimos 14 dias?",inventario,inventario-11,sintetico
+¿quisiera averiguar: quiero consultar la disponibilidad de stock?,inventario,inventario-11,sintetico
+¿quisiera averiguar: quiero consultar la disponibilidad de stock este mes?,inventario,inventario-11,sintetico
+¿quisiera averiguar: quiero consultar la disponibilidad de stock del 2 al 13 de octubre?,inventario,inventario-11,sintetico
+¿quisiera averiguar: quiero consultar la disponibilidad de stock en los ultimos 14 dias?,inventario,inventario-11,sintetico
+¿una duda: quiero consultar la disponibilidad de stock?,inventario,inventario-11,sintetico
+¿una duda: quiero consultar la disponibilidad de stock este mes?,inventario,inventario-11,sintetico
+¿una duda: quiero consultar la disponibilidad de stock del 2 al 13 de octubre?,inventario,inventario-11,sintetico
+¿una duda: quiero consultar la disponibilidad de stock en los ultimos 14 dias?,inventario,inventario-11,sintetico
+¿abre el reporte de facturas?,facturas,facturas-10,sintetico
+¿abre el reporte de facturas este mes?,facturas,facturas-10,sintetico
+¿abre el reporte de facturas del 2 al 13 de octubre?,facturas,facturas-10,sintetico
+¿abre el reporte de facturas en los ultimos 14 dias?,facturas,facturas-10,sintetico
+"¿hola, dime: abre el reporte de facturas?",facturas,facturas-10,sintetico
+"¿hola, dime: abre el reporte de facturas este mes?",facturas,facturas-10,sintetico
+"¿hola, dime: abre el reporte de facturas del 2 al 13 de octubre?",facturas,facturas-10,sintetico
+"¿hola, dime: abre el reporte de facturas en los ultimos 14 dias?",facturas,facturas-10,sintetico
+"¿para revisar, abre el reporte de facturas?",facturas,facturas-10,sintetico
+"¿para revisar, abre el reporte de facturas este mes?",facturas,facturas-10,sintetico
+"¿para revisar, abre el reporte de facturas del 2 al 13 de octubre?",facturas,facturas-10,sintetico
+"¿para revisar, abre el reporte de facturas en los ultimos 14 dias?",facturas,facturas-10,sintetico
+¿quisiera averiguar: abre el reporte de facturas?,facturas,facturas-10,sintetico
+¿quisiera averiguar: abre el reporte de facturas este mes?,facturas,facturas-10,sintetico
+¿quisiera averiguar: abre el reporte de facturas del 2 al 13 de octubre?,facturas,facturas-10,sintetico
+¿quisiera averiguar: abre el reporte de facturas en los ultimos 14 dias?,facturas,facturas-10,sintetico
+¿una duda: abre el reporte de facturas?,facturas,facturas-10,sintetico
+¿una duda: abre el reporte de facturas este mes?,facturas,facturas-10,sintetico
+¿una duda: abre el reporte de facturas del 2 al 13 de octubre?,facturas,facturas-10,sintetico
+¿una duda: abre el reporte de facturas en los ultimos 14 dias?,facturas,facturas-10,sintetico
+¿necesito consultar facturas de la tienda?,facturas,facturas-11,sintetico
+¿necesito consultar facturas de la tienda este mes?,facturas,facturas-11,sintetico
+¿necesito consultar facturas de la tienda del 2 al 13 de octubre?,facturas,facturas-11,sintetico
+¿necesito consultar facturas de la tienda en los ultimos 14 dias?,facturas,facturas-11,sintetico
+"¿hola, dime: necesito consultar facturas de la tienda?",facturas,facturas-11,sintetico
+"¿hola, dime: necesito consultar facturas de la tienda este mes?",facturas,facturas-11,sintetico
+"¿hola, dime: necesito consultar facturas de la tienda del 2 al 13 de octubre?",facturas,facturas-11,sintetico
+"¿hola, dime: necesito consultar facturas de la tienda en los ultimos 14 dias?",facturas,facturas-11,sintetico
+"¿para revisar, necesito consultar facturas de la tienda?",facturas,facturas-11,sintetico
+"¿para revisar, necesito consultar facturas de la tienda este mes?",facturas,facturas-11,sintetico
+"¿para revisar, necesito consultar facturas de la tienda del 2 al 13 de octubre?",facturas,facturas-11,sintetico
+"¿para revisar, necesito consultar facturas de la tienda en los ultimos 14 dias?",facturas,facturas-11,sintetico
+¿quisiera averiguar: necesito consultar facturas de la tienda?,facturas,facturas-11,sintetico
+¿quisiera averiguar: necesito consultar facturas de la tienda este mes?,facturas,facturas-11,sintetico
+¿quisiera averiguar: necesito consultar facturas de la tienda del 2 al 13 de octubre?,facturas,facturas-11,sintetico
+¿quisiera averiguar: necesito consultar facturas de la tienda en los ultimos 14 dias?,facturas,facturas-11,sintetico
+¿una duda: necesito consultar facturas de la tienda?,facturas,facturas-11,sintetico
+¿una duda: necesito consultar facturas de la tienda este mes?,facturas,facturas-11,sintetico
+¿una duda: necesito consultar facturas de la tienda del 2 al 13 de octubre?,facturas,facturas-11,sintetico
+¿una duda: necesito consultar facturas de la tienda en los ultimos 14 dias?,facturas,facturas-11,sintetico
+¿haz una devolucion al cliente?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿haz una devolucion al cliente este mes?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿haz una devolucion al cliente del 2 al 13 de octubre?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿haz una devolucion al cliente en los ultimos 14 dias?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+"¿hola, dime: haz una devolucion al cliente?",fuera_de_alcance,fuera_de_alcance-10,sintetico
+"¿hola, dime: haz una devolucion al cliente este mes?",fuera_de_alcance,fuera_de_alcance-10,sintetico
+"¿hola, dime: haz una devolucion al cliente del 2 al 13 de octubre?",fuera_de_alcance,fuera_de_alcance-10,sintetico
+"¿hola, dime: haz una devolucion al cliente en los ultimos 14 dias?",fuera_de_alcance,fuera_de_alcance-10,sintetico
+"¿para revisar, haz una devolucion al cliente?",fuera_de_alcance,fuera_de_alcance-10,sintetico
+"¿para revisar, haz una devolucion al cliente este mes?",fuera_de_alcance,fuera_de_alcance-10,sintetico
+"¿para revisar, haz una devolucion al cliente del 2 al 13 de octubre?",fuera_de_alcance,fuera_de_alcance-10,sintetico
+"¿para revisar, haz una devolucion al cliente en los ultimos 14 dias?",fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿quisiera averiguar: haz una devolucion al cliente?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿quisiera averiguar: haz una devolucion al cliente este mes?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿quisiera averiguar: haz una devolucion al cliente del 2 al 13 de octubre?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿quisiera averiguar: haz una devolucion al cliente en los ultimos 14 dias?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿una duda: haz una devolucion al cliente?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿una duda: haz una devolucion al cliente este mes?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿una duda: haz una devolucion al cliente del 2 al 13 de octubre?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿una duda: haz una devolucion al cliente en los ultimos 14 dias?,fuera_de_alcance,fuera_de_alcance-10,sintetico
+¿modifica el precio de un articulo?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿modifica el precio de un articulo este mes?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿modifica el precio de un articulo del 2 al 13 de octubre?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿modifica el precio de un articulo en los ultimos 14 dias?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+"¿hola, dime: modifica el precio de un articulo?",fuera_de_alcance,fuera_de_alcance-11,sintetico
+"¿hola, dime: modifica el precio de un articulo este mes?",fuera_de_alcance,fuera_de_alcance-11,sintetico
+"¿hola, dime: modifica el precio de un articulo del 2 al 13 de octubre?",fuera_de_alcance,fuera_de_alcance-11,sintetico
+"¿hola, dime: modifica el precio de un articulo en los ultimos 14 dias?",fuera_de_alcance,fuera_de_alcance-11,sintetico
+"¿para revisar, modifica el precio de un articulo?",fuera_de_alcance,fuera_de_alcance-11,sintetico
+"¿para revisar, modifica el precio de un articulo este mes?",fuera_de_alcance,fuera_de_alcance-11,sintetico
+"¿para revisar, modifica el precio de un articulo del 2 al 13 de octubre?",fuera_de_alcance,fuera_de_alcance-11,sintetico
+"¿para revisar, modifica el precio de un articulo en los ultimos 14 dias?",fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿quisiera averiguar: modifica el precio de un articulo?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿quisiera averiguar: modifica el precio de un articulo este mes?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿quisiera averiguar: modifica el precio de un articulo del 2 al 13 de octubre?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿quisiera averiguar: modifica el precio de un articulo en los ultimos 14 dias?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿una duda: modifica el precio de un articulo?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿una duda: modifica el precio de un articulo este mes?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿una duda: modifica el precio de un articulo del 2 al 13 de octubre?,fuera_de_alcance,fuera_de_alcance-11,sintetico
+¿una duda: modifica el precio de un articulo en los ultimos 14 dias?,fuera_de_alcance,fuera_de_alcance-11,sintetico
